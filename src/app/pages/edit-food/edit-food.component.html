@@ -1,0 +1,233 @@
+<app-toolbar>
+  <button mat-icon-button (click)="onDelete()" [disabled]="!deletable">
+    <mat-icon>delete_sweep</mat-icon>
+  </button>
+</app-toolbar>
+
+<form [formGroup]="addFoodForm" (ngSubmit)="onSubmit()">
+
+  <section class="edit-body">
+
+    <section class="edit-grid">
+
+      <mat-card>
+        <span class="editable-card-header mat-typography">
+          <h4>Identifiers</h4>
+        </span>
+        <mat-card-content class="edit-card-content">
+          <mat-form-field>
+            <mat-label>Name</mat-label>
+            <input type="text" matInput required placeholder="ex. 2.10" maxlength="30" minlength="4" autocomplete="off"
+              formControlName="name">
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Category</mat-label>
+            <mat-select>
+              <mat-option>None</mat-option>
+              <mat-option>Something Else</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-chip-list #chipList aria-label="Tags selection">
+              <mat-chip selectable="true" removable="true">
+                Example
+                <mat-icon matChipRemove>cancel</mat-icon>
+              </mat-chip>
+              <input placeholder="Tags" [matChipInputFor]="chipList">
+            </mat-chip-list>
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card>
+        <span class="editable-card-header mat-typography">
+          <h4>Macronutrients</h4>
+          <i>in g.</i>
+        </span>
+        <mat-card-content class="edit-card-content">
+          <mat-form-field appearance="fill" class="column-item">
+            <mat-label>Proteins</mat-label>
+            <input type="number" matInput required placeholder="ex. 12.25" step="1" min="0" max="99" autocomplete="off"
+              formControlName="proteins" (click)="$event.target.select()">
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="column-item">
+            <mat-label>Carbs</mat-label>
+            <input type="number" matInput required placeholder="ex. 20" step="1" min="0" max="99" autocomplete="off"
+              formControlName="carbs" (click)="$event.target.select()">
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="column-item">
+            <mat-label>Fats</mat-label>
+            <input type="number" matInput required placeholder="ex. 8.8" step="1" min="0" max="99" autocomplete="off"
+              formControlName="fats" (click)="$event.target.select()">
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card>
+        <span class="editable-card-header mat-typography">
+          <h4>Carbohydrates</h4>
+          <i>in g.</i>
+        </span>
+        <mat-card-content class="edit-card-content">
+          <mat-form-field appearance="fill" class="column-item">
+            <mat-label>Fibres</mat-label>
+            <input type="number" matInput placeholder="ex. 2.10" step="1" min="0" max="99" autocomplete="off"
+              formControlName="fibres" (click)="$event.target.select()">
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="column-item">
+            <mat-label>Sugar</mat-label>
+            <input type="number" matInput placeholder="ex. 2.10" step="1" min="0" max="99" autocomplete="off"
+              formControlName="sugar" (click)="$event.target.select()">
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="column-item">
+            <mat-label>Starch</mat-label>
+            <input type="number" matInput placeholder="ex. 2.10" step="1" min="0" max="99" autocomplete="off"
+              formControlName="starch" (click)="$event.target.select()">
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card>
+        <span class="editable-card-header mat-typography">
+          <h4>Fats</h4>
+          <i>in g.</i>
+        </span>
+        <mat-card-content class="edit-card-content">
+          <mat-form-field appearance="fill" class="column-item">
+            <mat-label>Saturated</mat-label>
+            <input type="number" matInput placeholder="ex. 2.10" step="1" min="0" max="99" autocomplete="off"
+              formControlName="saturated" (click)="$event.target.select()">
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="column-item">
+            <mat-label>Monounsaturated</mat-label>
+            <input type="number" matInput placeholder="ex. 2.10" step="1" min="0" max="99" autocomplete="off"
+              formControlName="monounsaturated" (click)="$event.target.select()">
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="column-item">
+            <mat-label>Polyunsaturated</mat-label>
+            <input type="number" matInput placeholder="ex. 2.10" step="1" min="0" max="99" autocomplete="off"
+              formControlName="polyunsaturated" (click)="$event.target.select()">
+          </mat-form-field>
+
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card>
+        <span class="editable-card-header mat-typography">
+          <h4>Minerals</h4>
+          <i>RDA %</i>
+        </span>
+
+        <mat-card-content class="edit-card-content">
+          <section class="edit-card-row">
+            <mat-form-field appearance="fill" class="mg-field">
+              <mat-label>Sodium</mat-label>
+              <input type="number" matInput placeholder="ex. 300" min="0" max="9900" autocomplete="off"
+                formControlName="sodium" (click)="$event.target.select()" />
+            </mat-form-field>
+            <span>10%</span>
+          </section>
+          <section class="edit-card-row">
+            <mat-form-field appearance="fill" class="mg-field">
+              <mat-label>Calcium</mat-label>
+              <input type="number" matInput placeholder="ex. 300" min="0" max="9900" autocomplete="off"
+                formControlName="calcium" (click)="$event.target.select()">
+            </mat-form-field>
+            <span>30%</span>
+          </section>
+          <section class="edit-card-row">
+            <mat-form-field appearance="fill" class="mg-field">
+              <mat-label>Potassium</mat-label>
+              <input type="number" matInput placeholder="ex. 300" min="0" max="9900" autocomplete="off"
+                formControlName="potassium" (click)="$event.target.select()">
+            </mat-form-field>
+            <span>30%</span>
+          </section>
+          <section class="edit-card-row">
+            <mat-form-field appearance="fill" class="mg-field">
+              <mat-label>Magnesium</mat-label>
+              <input type="number" matInput autocomplete="off" min="0" max="9900" formControlName="magnesium"
+                (click)="$event.target.select()">
+            </mat-form-field>
+            <span>15%</span>
+          </section>
+          <section class="edit-card-row">
+            <mat-form-field appearance="fill" class="mg-field">
+              <mat-label>Zinc</mat-label>
+              <input type="number" matInput placeholder="ex. 300" min="0" max="9900" autocomplete="off"
+                formControlName="zinc" (click)="$event.target.select()">
+            </mat-form-field>
+            <span>70%</span>
+          </section>
+          <section class="edit-card-row">
+            <mat-form-field appearance="fill" class="mg-field">
+              <mat-label>Iron</mat-label>
+              <input type="number" matInput placeholder="ex. 210" min="0" max="9900" autocomplete="off"
+                formControlName="iron" (click)="$event.target.select()">
+            </mat-form-field>
+            <span>80%</span>
+          </section>
+
+
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card>
+        <span class="editable-card-header mat-typography">
+          <h4>Other Nutrients</h4>
+          <i>in g.</i>
+        </span>
+        <mat-card-content class="edit-card-content">
+          <mat-form-field appearance="fill" class="column-item">
+            <mat-label>Alcohol</mat-label>
+            <input type="number" matInput placeholder="ex. 2.10" step="1" min="0" max="99" autocomplete="off"
+              formControlName="alcohol" (click)="$event.target.select()">
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="column-item">
+            <mat-label>Cholesterol</mat-label>
+            <input type="number" matInput placeholder="ex. 2.10" step="1" min="0" max="99" autocomplete="off"
+              formControlName="cholesterol" (click)="$event.target.select()">
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="column-item">
+            <mat-label>Trans Fats</mat-label>
+            <input type="number" matInput placeholder="ex. 2.10" step="1" min="0" max="99" autocomplete="off"
+              formControlName="trans" (click)="$event.target.select()">
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+
+
+    </section>
+
+    <mat-divider vertical="true">
+
+    </mat-divider>
+    <section class="infographics">
+      <mat-form-field>
+        <mat-label>Source</mat-label>
+        <input type="text" matInput autocomplete="off" formControlName="source" (click)="$event.target.select()">
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Notes</mat-label>
+        <input type="text" matInput autocomplete="off" formControlName="notes" (click)="$event.target.select()">
+      </mat-form-field>
+    </section>
+
+  </section>
+
+
+  <button class="save" mat-fab color="primary" type="submit">
+    <mat-icon aria-label="Save food changes">save</mat-icon>
+  </button>
+</form>

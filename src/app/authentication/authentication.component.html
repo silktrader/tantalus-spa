@@ -1,0 +1,57 @@
+<div class="mat-elevation-z3 tabs-contents">
+  <mat-tab-group mat-align-tabs="center" mat-stretch-tabs color="accent" backgroundColor="primary">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <h2 class="label">
+          <mat-icon>person</mat-icon><span>Login</span>
+        </h2>
+      </ng-template>
+      <form class="container" [formGroup]="loginForm" (ngSubmit)="handleLogin()">
+        <mat-form-field class="form-row" appearance="fill">
+          <mat-label>User Name</mat-label>
+          <input matInput type="text" formControlName="loginName" />
+          <mat-error *ngIf="loginName.invalid">Invalid email address</mat-error>
+        </mat-form-field>
+        <mat-form-field class="form-row" appearance="fill">
+          <mat-label>Password</mat-label>
+          <input matInput [type]="show ? 'text' : 'password'" formControlName="loginPassword" />
+          <mat-icon *ngIf="loginPassword.dirty || loginPassword.touched" matSuffix (click)="show = !show">
+            {{ show ? 'visibility_off' : 'visibility' }}</mat-icon>
+          <mat-error *ngIf="loginPassword.invalid">{{
+            loginPasswordError
+          }}</mat-error>
+        </mat-form-field>
+        <button class="login-button" mat-raised-button color="primary" [disabled]="!loginForm.valid">
+          Login
+        </button>
+      </form>
+    </mat-tab>
+    <mat-tab label="Register">
+      <ng-template mat-tab-label>
+        <h2 class="label">
+          <mat-icon>person_add</mat-icon><span>Register</span>
+        </h2>
+      </ng-template>
+      <form class="container" [formGroup]="registerForm" autocomplete="off">
+        <mat-form-field class="form-row" appearance="fill">
+          <mat-label>User Name</mat-label>
+          <input matInput type="text" formControlName="registerName" />
+        </mat-form-field>
+        <mat-form-field class="form-row" appearance="fill">
+          <mat-label>Password</mat-label>
+          <input matInput type="password" formControlName="registerPassword" />
+          <mat-error *ngIf="registerPassword.hasError('minlength')">Password must have at least 8 characters</mat-error>
+        </mat-form-field>
+        <mat-form-field class="form-row" appearance="fill">
+          <mat-label>Confirm Password</mat-label>
+          <input matInput type="password" formControlName="confirmPassword" />
+        </mat-form-field>
+        <div *ngIf="passwordsMismatch">Entered passwords mismatch</div>
+        <button class="login-button" mat-raised-button color="primary" [disabled]="!registerForm.valid"
+          (click)="handleRegistration()">
+          Register
+        </button>
+      </form>
+    </mat-tab>
+  </mat-tab-group>
+</div>

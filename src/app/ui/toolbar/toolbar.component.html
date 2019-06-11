@@ -1,0 +1,10 @@
+<mat-toolbar color="primary">
+  <button class="toolbar-menu" mat-icon-button *ngIf="!sidenavOpened" (click)="this.ui.toggleSidenav()">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <h3 class="toolbar-title">{{ title }}</h3>
+  <span class="toolbar-actions">
+    <ng-content select="a"></ng-content>
+    <ng-content select="button"></ng-content>
+  </span>
+</mat-toolbar>

@@ -1,0 +1,68 @@
+<app-toolbar [title]="'Foods'">
+  <a mat-icon-button routerLink="/add-food" routerLinkActive="active">
+    <mat-icon>add</mat-icon>
+  </a>
+</app-toolbar>
+
+<section>
+  <section #tableControls class="table-controls">
+    <mat-form-field class="table-filter">
+      <input
+        matInput
+        type="text"
+        (keyup)="doFilter($event.target.value)"
+        placeholder="Filter"
+      />
+    </mat-form-field>
+
+    <mat-form-field *ngIf="ui.mobile | async" class="table-selector">
+      <mat-select [formControl]="columnSelector">
+        <mat-option
+          *ngFor="let selection of mobileColumnSets | keyvalue"
+          [value]="selection.key"
+          >{{ selection.key }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-button-toggle-group *ngIf="desktop">
+      <!-- <mat-button-toggle *ngFor="let selection of desktopColumnSets | keyvalue" [value]="selection.key">{{selection.key}}</mat-button-toggle> -->
+      <mat-button-toggle value="Overview">Overview</mat-button-toggle>
+      <mat-button-toggle value="Carbohydrates">Carbs</mat-button-toggle>
+      <mat-button-toggle value="Fats">Fats</mat-button-toggle>
+      <mat-button-toggle value="Minerals">Minerals</mat-button-toggle>
+    </mat-button-toggle-group>
+  </section>
+
+  <mat-divider></mat-divider>
+
+  <mat-table [dataSource]="dataSource" matSort class="mat-elevation-z6">
+    <ng-container
+      [matColumnDef]="column"
+      *ngFor="let column of selectedColumns"
+    >
+      <mat-header-cell
+        mat-header-cell
+        mat-sort-header
+        *matHeaderCellDef
+        class="cell"
+        [ngClass]="column"
+      >
+        {{ columnNames.get(column) || column }}</mat-header-cell
+      >
+      <mat-cell class="cell" [ngClass]="column" *matCellDef="let element">{{
+        format(column, element[column])
+      }}</mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="selectedColumns"></mat-header-row>
+    <mat-row
+      *matRowDef="let food; columns: selectedColumns"
+      (click)="edit(food)"
+      matRipple
+    ></mat-row>
+  </mat-table>
+
+  <mat-paginator class="mat-elevation-z6" showFirstLastButtons hidePageSize>
+  </mat-paginator>
+</section>

@@ -1,0 +1,89 @@
+.edit-card-content {
+  display: flex;
+  flex-direction: column;
+  width: 15rem;
+}
+
+.edit-body {
+  display: flex;
+  flex-direction: row;
+}
+
+.edit-grid {
+  display: grid;
+  align-items: baseline;
+  justify-items: center;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  flex-grow: 1;
+  padding: 2rem;
+  grid-gap: 1rem;
+}
+
+.infographics {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 300px;
+  height: 100%;
+  padding: 1rem;
+}
+
+::ng-deep div.mat-form-field-infix {
+  width: auto;
+}
+
+.editable-card-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 16px;
+  padding-top: 0;
+}
+
+.editable-card-header > h4 {
+  font-weight: 500;
+  font-size: 20px;
+  margin: 0px;
+}
+
+.editable-card-header > i {
+  font-style: italic;
+  text-align: right;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.edit-card-row {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.edit-card-row span {
+  width: 2rem;
+  color: rgba(0, 0, 0, 0.6);
+  text-align: right;
+}
+
+.details {
+  display: flex;
+}
+
+.mg-field {
+  width: 8rem;
+}
+
+.save {
+  position: fixed;
+  right: 26px;
+  bottom: 26px;
+}
+
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+}

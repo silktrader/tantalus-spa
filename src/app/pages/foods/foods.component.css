@@ -1,0 +1,64 @@
+mat-row {
+  cursor: pointer;
+}
+
+mat-row:hover {
+  background: #f5f5f5;
+}
+
+mat-row:active {
+  background: #efefef;
+}
+
+.table-controls {
+  width: 100%;
+  height: 60px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: baseline;
+}
+
+.table-filter {
+  flex-basis: 40%;
+  max-width: 30ch;
+}
+
+.table-selector {
+  flex-basis: 40%;
+  max-width: 30ch;
+}
+
+.cell {
+  display: flex;
+  justify-content: flex-end;
+  flex-basis: 10%;
+}
+
+.name {
+  flex-basis: 40%;
+  overflow: visible;
+  white-space: nowrap;
+  justify-content: flex-start;
+}
+
+.calories,
+.proteins,
+.carbs,
+.fats,
+.sugar,
+.fibres,
+.carbsPercentage,
+.detailsPercentage {
+  flex-basis: 10%;
+  justify-content: flex-end;
+}
+
+@media only screen and (min-width: 960px) {
+  mat-table {
+    margin: 24px 24px 0px 24px;
+  }
+
+  mat-paginator {
+    margin: 0px 24px 0px 24px;
+  }
+}
