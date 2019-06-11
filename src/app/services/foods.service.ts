@@ -58,6 +58,13 @@ export class FoodsService {
         this.foods$.getValue().filter(item => item.id !== food.id)
       );
     });
+
+    connection.on('FoodEdit', (food: FoodDto) => {
+      const foods = this.foods$.getValue();
+      const index = foods.findIndex(item => item.id === food.id);
+      foods[index] = this.createFood(food);
+      this.foods$.next(foods);
+    });
   }
 
   private createFood(data: FoodDto): Food {
@@ -68,8 +75,12 @@ export class FoodsService {
     return this.http.post<FoodDto>(`${this.baseUrl}`, food);
   }
 
-  public deleteFood(id: number): Promise<FoodDto> {
-    return this.http.delete<FoodDto>(`${this.baseUrl}/${id}`).toPromise();
+  public editFood(food: FoodDto): Observable<FoodDto> {
+    return this.http.put<FoodDto>(`${this.baseUrl}/${food.id}`, food);
+  }
+
+  public deleteFood(id: number): Observable<FoodDto> {
+    return this.http.delete<FoodDto>(`${this.baseUrl}/${id}`);
   }
 
   public getFood(id: number): Promise<Food> {

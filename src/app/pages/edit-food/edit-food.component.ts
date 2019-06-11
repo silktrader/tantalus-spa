@@ -105,7 +105,18 @@ export class EditFoodComponent implements OnInit, OnDestroy {
     }
   }
 
-  private editFood(values: FoodDto): void {}
+  private editFood(values: FoodDto): void {
+    this.foodsService.editFood({ ...values, id: this.food.id }).subscribe(
+      (food: FoodDto) => {
+        this.ui.notify(`Updated ${food.name}`);
+        this.ui.goToFoods();
+      },
+      error => {
+        this.ui.warn(`Couldn't update ${values.name}`);
+        console.log(error);
+      }
+    );
+  }
 
   private addFood(values: FoodDto): void {
     this.foodsService.addFood(values).subscribe(
@@ -120,7 +131,7 @@ export class EditFoodComponent implements OnInit, OnDestroy {
   }
 
   onDelete() {
-    this.foodsService.deleteFood(this.food.id).then(() => {
+    this.foodsService.deleteFood(this.food.id).subscribe(() => {
       // this.ui.warn(`Deleted ${food.name} and its ${result.portions.length} portions`);
       this.ui.warn(`Deleted ${this.food.name}`);
       this.ui.goToFoods();
