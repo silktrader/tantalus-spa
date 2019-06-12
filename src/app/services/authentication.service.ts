@@ -49,6 +49,9 @@ export class AuthenticationService {
   }
 
   register(name: string, password: string): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}register`, { name, password });
+    return this.http.post<void>(`${this.baseUrl}register`, {
+      Name: name,
+      Password: password
+    });
   }
 }

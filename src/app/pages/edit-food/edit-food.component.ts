@@ -121,7 +121,9 @@ export class EditFoodComponent implements OnInit, OnDestroy {
   private addFood(values: FoodDto): void {
     this.foodsService.addFood(values).subscribe(
       (food: FoodDto) => {
-        this.ui.notify(`Added ${food.name} (#${food.id})`);
+        this.ui.notify(`Added ${food.name} (#${food.id})`, 'View', () => {
+          this.ui.goToFood(food.id);
+        });
         this.ui.goToFoods();
       },
       error => {

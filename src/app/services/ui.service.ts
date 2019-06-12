@@ -33,13 +33,14 @@ export class UiService {
       });
   }
 
-  public notify(message: string): void;
   public notify(
     message: string,
     actionName?: string,
     actionFunction?: () => void
   ): void {
-    const snackbarRef = this.snackBar.open(message, actionName);
+    const snackbarRef = this.snackBar.open(message, actionName || '', {
+      duration: this.notificationsDuration
+    });
     if (actionFunction) {
       snackbarRef.onAction().subscribe(actionFunction);
     }
@@ -79,5 +80,9 @@ export class UiService {
 
   public goToFoods() {
     this.router.navigate(['/foods']);
+  }
+
+  public goToFood(id: number) {
+    this.router.navigate([`/foods/${id}`]);
   }
 }
