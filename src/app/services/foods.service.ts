@@ -19,18 +19,17 @@ export class FoodsService {
     private readonly auth: AuthenticationService
   ) {
     // populate the initial foods store
-    this.http
-      .get(this.baseUrl)
-      .pipe(shareReplay(1))
-      .subscribe(
-        (response: FoodDto[]) => {
-          this.foods$.next(response.map(item => this.createFood(item)));
-          console.log(response);
-        },
-        error => {
-          console.log(error);
-        }
-      );
+    // this.http
+    //   .get(this.baseUrl)
+    //   .pipe(shareReplay(1))
+    //   .subscribe(
+    //     (response: FoodDto[]) => {
+    //       this.foods$.next(response.map(item => this.createFood(item)));
+    //     },
+    //     error => {
+    //       console.log(error);
+    //     }
+    //   );
 
     const connection = new signalR.HubConnectionBuilder()
       .configureLogging(signalR.LogLevel.Information)

@@ -1,0 +1,99 @@
+<app-toolbar>
+  <button *ngIf="hasContents" mat-icon-button (click)="deleteAll()">
+    <mat-icon>delete_sweep</mat-icon>
+  </button>
+
+</app-toolbar> -->
+
+<ng-container *ngIf="hasContents">
+
+  <!-- Header -->
+
+  <section class="header">
+    <section class="header-notes">
+      <mat-form-field class="columns-selector">
+        <mat-select [formControl]="columnSelector" required>
+          <mat-option *ngFor="let column of columns" [value]="column">{{column}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </section>
+
+    <!-- Macronutrients header -->
+    <ng-container *ngIf="focus == 'Macronutrients'">
+
+      <section class="header-columns">
+        <section class="header-macro-column">
+          <span class="mat-caption header-macro-label">Prot.</span>
+          <span class="proteins">{{entry.proteins | number:'1.0-0'}}</span>
+        </section>
+        <section class="header-macro-column">
+          <span class="mat-caption header-macro-label">Carb.</span>
+          <span class="carbs">{{entry.carbs | number:'1.0-0'}}</span>
+        </section>
+        <section class="header-macro-column">
+          <span class="mat-caption header-macro-label">Fats</span>
+          <span class="fats">{{entry.fats | number:'1.0-0'}}</span>
+        </section>
+      </section>
+    </ng-container>
+
+    <!-- Calories header -->
+    <ng-container *ngIf="focus == 'Calories'">
+      <section class="header-columns">
+        <span class="meal-header-aggregate calories">{{entry.calories | number:'1.0-0'}}</span>
+      </section>
+    </ng-container>
+  </section>
+
+  <mat-divider></mat-divider>
+
+  <!-- Portions and columns -->
+  <mat-accordion class="meals-container" multi="true">
+    <mat-expansion-panel [expanded]="true" hideToggle *ngFor="let meal of entry.meals">
+      <mat-expansion-panel-header>
+        <span class="meal-header mat-subheading-2">
+          <span class="meal-header-title">{{meal.name}}</span>
+          <span *ngIf="focus == 'Macronutrients'" class="meal-header-aggregate">
+            <span class="meal-header-macro proteins">{{meal.proteins | number:'1.0-0'}}</span>
+            <span class="meal-header-macro carbs">{{meal.carbs | number:'1.0-0'}}</span>
+            <span class="meal-header-macro fats">{{meal.fats | number:'1.0-0'}}</span>
+          </span>
+          <span *ngIf="focus == 'Calories'" class="meal-header-aggregate calories">{{meal.calories |
+            number:'1.0-0'}}</span>
+        </span>
+      </mat-expansion-panel-header>
+      <mat-nav-list>
+        <mat-list-item class="portion" *ngFor="let portion of meal.portions">
+          <a [routerLink]="['edit-portion', portion.id]" routerLinkActive="active">
+            <span class="portion-header">
+              <span class="mat-body-2">{{portion.food.name}}</span>
+              <span class="portion-header-quantity mat-caption">{{portion.quantity | number:'1.0-0'}} g.</span>
+            </span>
+            <span *ngIf="focus == 'Macronutrients'" class="portion-column mat-body-1">
+              <span class="portion-macro">{{portion.proteins | number:'1.0-0'}}</span>
+              <span class="portion-macro">{{portion.carbs | number:'1.0-0'}}</span>
+              <span class="portion-macro">{{portion.fats | number:'1.0-0'}}</span>
+            </span>
+            <span *ngIf="focus == 'Calories'" class="portion-column calories">{{portion.calories |
+              number:'1.0-0'}}</span>
+          </a>
+        </mat-list-item>
+      </mat-nav-list>
+
+    </mat-expansion-panel>
+
+  </mat-accordion>
+</ng-container>
+
+<ng-container *ngIf="!hasContents">
+  <mat-card class="no-meals"><span>No recorded meals</span></mat-card>
+</ng-container>
+
+
+<button class="add-meal" mat-fab (click)="addMeal()">
+  <mat-icon>add</mat-icon>
+</button>
+
+<button class="add-meal" mat-fab (click)="sendtest()">
+  <mat-icon>add</mat-icon>
+</button>

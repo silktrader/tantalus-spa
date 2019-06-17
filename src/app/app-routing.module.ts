@@ -6,15 +6,28 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { AuthGuard } from './auth.guard';
 import { FoodsComponent } from './pages/foods/foods.component';
 import { EditFoodComponent } from './pages/edit-food/edit-food.component';
+import { DiaryComponent } from './pages/diary/diary.component';
+import { DiarySummaryComponent } from './pages/diary/diary-summary/diary-summary.component';
 
 const routes: Routes = [
+  { path: 'login', component: AuthenticationComponent },
+  { path: 'register', component: AuthenticationComponent },
+  {
+    path: 'diary/:year/:month/:day',
+    component: DiaryComponent,
+    canActivate: [AuthGuard],
+    children: [
+      { path: '', component: DiarySummaryComponent }
+      // { path: 'add-portion/:foodID', component: AddPortionComponent },
+      // { path: 'add-portion', component: SelectPortionComponent },
+      // { path: 'edit-portion/:portionID', component: EditPortionComponent }
+    ]
+  },
   {
     path: 'dashboard',
     component: DashboardComponent,
     canActivate: [AuthGuard]
   },
-  { path: 'login', component: AuthenticationComponent },
-  { path: 'register', component: AuthenticationComponent },
   {
     path: 'foods',
     component: FoodsComponent,

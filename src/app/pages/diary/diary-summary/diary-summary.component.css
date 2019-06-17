@@ -1,0 +1,149 @@
+mat-expansion-panel {
+  margin: 3%;
+  margin-top: 5%;
+}
+
+.header {
+  display: flex;
+  /* matches the padding of the cards below  */
+  padding-right: 24px;
+  padding-left: 24px;
+  margin: 3%;
+  margin-top: 0%;
+  align-items: center;
+}
+
+.columns-selector {
+  width: 16ch;
+}
+
+.header-notes {
+  flex-basis: 65%;
+}
+
+.header-columns {
+  display: flex;
+  justify-content: flex-end;
+  flex-basis: 35%;
+}
+
+.header-macro-column {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 33.3%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: right;
+  font-weight: bold;
+  align-items: flex-end;
+}
+
+.header-macro-label {
+  font-style: italic;
+  text-align: right;
+  max-width: 5ch;
+}
+
+.meals-container {
+  margin: 3%;
+  margin-top: 20px;
+}
+
+.meal-header {
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+
+.meal-header-title {
+  flex-wrap: nowrap;
+  flex-basis: 65%;
+  font-weight: bold;
+}
+
+.meal-header-aggregate {
+  display: flex;
+  flex-basis: 35%;
+  text-align: right;
+  font-weight: bold;
+  justify-content: flex-end;
+}
+
+.meal-header-macro {
+  text-align: right;
+  align-items: center;
+  font-weight: 500;
+  flex-basis: 33.3%;
+}
+
+.calories {
+  color: #673ab7;
+}
+
+.proteins {
+  /* color: #916965; */
+  color: #673ab7;
+}
+
+.carbs {
+  /* color:#F2DC6F; */
+  color: #673ab7;
+}
+
+.fats {
+  /* color:#928D87; */
+  color: #673ab7;
+}
+
+.mat-list-item-content,
+a {
+  display: flex;
+  width: 100%;
+}
+
+.portion {
+  margin-bottom: 5px;
+}
+
+.portion-header {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 65%;
+  margin-bottom: 10px;
+}
+
+.portion-header-quantity {
+  font-style: italic;
+  color: gray;
+}
+
+.portion-column {
+  display: flex;
+  flex-basis: 35%;
+  justify-content: flex-end;
+}
+
+.portion-macro {
+  flex-basis: 33.3%;
+  text-align: right;
+}
+
+mat-card.no-meals {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 25%;
+  margin: 3%;
+  font-style: italic;
+  font-weight: 500;
+}
+
+.add-meal {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+}
+
+::ng-deep mat-list-item > div.mat-list-item-content {
+  padding: 0px !important;
+}
