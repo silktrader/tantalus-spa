@@ -14,6 +14,7 @@ import { HttpClient } from '@angular/common/http';
 import { FoodDto } from '../models/food-dto.model';
 import { ShortDate } from '../models/date-ymd.model';
 import { PortionDto } from '../models/portion-dto-model';
+import { DiaryEntryDto } from '../models/diary-entry-dto.model';
 
 @Injectable({ providedIn: 'root' })
 export class DiaryService {
@@ -187,9 +188,4 @@ export class DiaryService {
 
   //     return (<any>this.document).set(data);
   // }
-}
-
-export interface DiaryEntryDto {
-  comments: string;
-  portions: PortionDto[];
 }

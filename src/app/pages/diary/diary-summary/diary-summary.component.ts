@@ -6,6 +6,7 @@ import { UiService } from 'src/app/services/ui.service';
 import { Diary } from 'src/app/models/diary.model';
 import { DiaryService } from 'src/app/services/diary.service';
 import { ShortDate } from 'src/app/models/date-ymd.model';
+import { DiaryEntryDto } from 'src/app/models/diary-entry-dto.model';
 
 @Component({
   selector: 'app-diary-summary',
@@ -18,7 +19,7 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
   public columns: ReadonlyArray<string> = ['Calories', 'Macronutrients'];
   public columnSelector = new FormControl();
 
-  // private entry: DiaryEntry;
+  public entry: Diary;
 
   private subscription: Subscription = new Subscription();
 
@@ -26,16 +27,18 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     // sets up the colums selector and specify a default value
-    // this.subscription.add(
-    //   this.columnSelector.valueChanges.subscribe(value => (this.focus = value))
-    // );
-    // this.columnSelector.setValue(this.columns[0]);
+    this.subscription.add(
+      this.columnSelector.valueChanges.subscribe(value => (this.focus = value))
+    );
+    this.columnSelector.setValue(this.columns[0]);
 
     // fetch the entry's data
     this.subscription.add(
-      this.ds.getCurrentDiary$(new ShortDate(2019, 6, 13)).subscribe(value => {
-        console.log(value);
-      })
+      this.ds
+        .getCurrentDiary$(new ShortDate(2019, 6, 13))
+        .subscribe((diaryDto: DiaryEntryDto) => {
+          this.entry = new Diary(diaryDto);
+        })
     );
   }
 
@@ -46,9 +49,9 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
   public sendtest() {
     this.ds
       .addPortion(new ShortDate(2019, 6, 13), {
-        FoodId: 2,
-        MealNumber: 1,
-        Quantity: 150
+        foodId: 2,
+        mealNumber: 1,
+        quantity: 150
       })
       .subscribe(
         whatever => {
@@ -58,40 +61,32 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
       );
   }
 
-  // public get entry(): Diary {
-  //   return this.ds.diaryEntry.getValue();
-  // }
+  public get hasContents(): boolean {
+    return this.entry && this.entry.hasContents;
+  }
 
-  // public get date(): Readonly<Date> {
-  //   return this.ds.date;
-  // }
+  public addMeal() {
+    // this.router.navigate(['add-portion'], { relativeTo: this.route });
+  }
 
-  // public get hasContents(): boolean {
-  //   return this.ds.meals.length > 0;
-  // }
-
-  // public addMeal() {
-  //   this.router.navigate(['add-portion'], { relativeTo: this.route });
-  // }
-
-  // public deleteAll(): void {
-  //   this.ds.deleteDay().then(result => {
-  //     if (result === null) {
-  //       this.ui.warn(
-  //         `Couldn't delete ${this.date.toLocaleDateString()}'s entries`
-  //       );
-  //     } else {
-  //       this.ui.notify(
-  //         `Deleted ${this.date.toLocaleDateString()}'s entries`,
-  //         'Undo',
-  //         () => {
-  //           this.ds.restoreDay(result);
-  //           this.ui.warn(
-  //             `Restored ${this.date.toLocaleDateString()}'s entries`
-  //           );
-  //         }
-  //       );
-  //     }
-  //   });
-  // }
+  public deleteAll(): void {
+    // this.ds.deleteDay().then(result => {
+    //   if (result === null) {
+    //     this.ui.warn(
+    //       `Couldn't delete ${this.date.toLocaleDateString()}'s entries`
+    //     );
+    //   } else {
+    //     this.ui.notify(
+    //       `Deleted ${this.date.toLocaleDateString()}'s entries`,
+    //       'Undo',
+    //       () => {
+    //         this.ds.restoreDay(result);
+    //         this.ui.warn(
+    //           `Restored ${this.date.toLocaleDateString()}'s entries`
+    //         );
+    //       }
+    //     );
+    //   }
+    // });
+  }
 }

@@ -47,9 +47,8 @@ export class FoodsService {
         return console.error(err.toString());
       });
 
-    connection.on('FoodAdd', food => {
-      this.foods$.next([...this.foods$.getValue(), this.createFood(food)]);
-      console.log(food);
+    connection.on('FoodAdd', foodDto => {
+      this.foods$.next([...this.foods$.getValue(), new Food(foodDto)]);
     });
 
     connection.on('FoodRemove', (food: FoodDto) => {
@@ -58,16 +57,12 @@ export class FoodsService {
       );
     });
 
-    connection.on('FoodEdit', (food: FoodDto) => {
+    connection.on('FoodEdit', (foodDto: FoodDto) => {
       const foods = this.foods$.getValue();
-      const index = foods.findIndex(item => item.id === food.id);
-      foods[index] = this.createFood(food);
+      const index = foods.findIndex(item => item.id === foodDto.id);
+      foods[index] = new Food(foodDto);
       this.foods$.next(foods);
     });
-  }
-
-  private createFood(data: FoodDto): Food {
-    return new Food(data);
   }
 
   public addFood(food: FoodDto): Observable<FoodDto> {

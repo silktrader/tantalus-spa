@@ -3,7 +3,7 @@
     <mat-icon>delete_sweep</mat-icon>
   </button>
 
-</app-toolbar> -->
+</app-toolbar>
 
 <ng-container *ngIf="hasContents">
 
@@ -24,15 +24,15 @@
       <section class="header-columns">
         <section class="header-macro-column">
           <span class="mat-caption header-macro-label">Prot.</span>
-          <span class="proteins">{{entry.proteins | number:'1.0-0'}}</span>
+          <span class="proteins">{{entry.getTotalProperty('proteins') | number:'1.0-0'}}</span>
         </section>
         <section class="header-macro-column">
           <span class="mat-caption header-macro-label">Carb.</span>
-          <span class="carbs">{{entry.carbs | number:'1.0-0'}}</span>
+          <span class="carbs">{{entry.getTotalProperty('carbs') | number:'1.0-0'}}</span>
         </section>
         <section class="header-macro-column">
           <span class="mat-caption header-macro-label">Fats</span>
-          <span class="fats">{{entry.fats | number:'1.0-0'}}</span>
+          <span class="fats">{{entry.getTotalProperty('fats') | number:'1.0-0'}}</span>
         </section>
       </section>
     </ng-container>
@@ -40,7 +40,7 @@
     <!-- Calories header -->
     <ng-container *ngIf="focus == 'Calories'">
       <section class="header-columns">
-        <span class="meal-header-aggregate calories">{{entry.calories | number:'1.0-0'}}</span>
+        <span class="meal-header-aggregate calories">{{entry.getTotalProperty('calories') | number:'1.0-0'}}</span>
       </section>
     </ng-container>
   </section>
@@ -49,21 +49,21 @@
 
   <!-- Portions and columns -->
   <mat-accordion class="meals-container" multi="true">
-    <mat-expansion-panel [expanded]="true" hideToggle *ngFor="let meal of entry.meals">
+    <mat-expansion-panel [expanded]="true" hideToggle *ngFor="let meal of entry.Meals">
       <mat-expansion-panel-header>
         <span class="meal-header mat-subheading-2">
           <span class="meal-header-title">{{meal.name}}</span>
           <span *ngIf="focus == 'Macronutrients'" class="meal-header-aggregate">
-            <span class="meal-header-macro proteins">{{meal.proteins | number:'1.0-0'}}</span>
-            <span class="meal-header-macro carbs">{{meal.carbs | number:'1.0-0'}}</span>
-            <span class="meal-header-macro fats">{{meal.fats | number:'1.0-0'}}</span>
+            <span class="meal-header-macro proteins">{{meal.getTotalProperty('proteins') | number:'1.0-0'}}</span>
+            <span class="meal-header-macro carbs">{{meal.getTotalProperty('carbs') | number:'1.0-0'}}</span>
+            <span class="meal-header-macro fats">{{meal.getTotalProperty('fats') | number:'1.0-0'}}</span>
           </span>
-          <span *ngIf="focus == 'Calories'" class="meal-header-aggregate calories">{{meal.calories |
+          <span *ngIf="focus == 'Calories'" class="meal-header-aggregate calories">{{meal.getTotalProperty('calories') |
             number:'1.0-0'}}</span>
         </span>
       </mat-expansion-panel-header>
       <mat-nav-list>
-        <mat-list-item class="portion" *ngFor="let portion of meal.portions">
+        <mat-list-item class="portion" *ngFor="let portion of meal.Portions">
           <a [routerLink]="['edit-portion', portion.id]" routerLinkActive="active">
             <span class="portion-header">
               <span class="mat-body-2">{{portion.food.name}}</span>

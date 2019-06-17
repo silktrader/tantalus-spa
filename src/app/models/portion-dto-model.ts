@@ -1,6 +1,6 @@
 export class PortionDto {
   id?: number;
-  MealNumber: number;
-  FoodId: number;
-  Quantity: number;
+  mealNumber: number;
+  foodId: number;
+  quantity: number;
 }

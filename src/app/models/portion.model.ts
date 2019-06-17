@@ -4,37 +4,28 @@ import { PortionDto } from './portion-dto-model';
 export class Portion implements PortionDto {
   constructor(
     public id: number,
-    public Quantity: number,
+    public quantity: number,
     public food: Food,
-    public MealNumber: number
+    public mealNumber: number
   ) {}
 
-  get FoodId(): number {
+  get foodId(): number {
     return this.food.id;
   }
 
   get proteins(): number {
-    return (this.food.proteins * this.Quantity) / 100;
+    return (this.food.proteins * this.quantity) / 100;
   }
 
   get carbs(): number {
-    return (this.food.carbs * this.Quantity) / 100;
+    return (this.food.carbs * this.quantity) / 100;
   }
 
   get fats(): number {
-    return (this.food.fats * this.Quantity) / 100;
+    return (this.food.fats * this.quantity) / 100;
   }
 
   get calories(): number {
-    return (this.food.calories * this.Quantity) / 100;
-  }
-
-  get serialised(): PortionDto {
-    return {
-      id: this.id,
-      Quantity: this.Quantity,
-      FoodId: this.FoodId,
-      MealNumber: this.MealNumber
-    };
+    return (this.food.calories * this.quantity) / 100;
   }
 }
