@@ -1,0 +1,94 @@
+mat-card {
+    margin: 3%;
+}
+
+::ng-deep .mat-card-header-text {
+    width: 100%;
+}
+
+.header {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.header-left {
+    display: flex;
+    flex-basis: 25%;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.header-title {
+    flex-basis: 50%;
+    align-items: center;
+    text-align: center;
+}
+
+.header-right {
+    display: flex;
+    flex-basis: 25%;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.summary {
+    width: 100%;
+}
+
+.inputs {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.quantity {
+    width: 10ch;
+}
+
+.quantity-editor {
+    width: 5ch;
+}
+
+.quantity-unit {
+    font-style: italic;    
+}
+
+.meal-selector {
+    width: 12ch;
+}
+
+.macronutrients {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding-top: 8%;
+    padding-bottom: 8%;
+}
+
+.macronutrients-section {
+    display:flex;
+    width: 25%;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.macronutrients-number {
+    font-weight: 500;
+    text-align: center;
+}
+
+.macronutrients-label {
+    text-align: center;
+    font-style: italic;
+}
+
+.buttons {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: baseline;
+    margin-top: 10%;
+}

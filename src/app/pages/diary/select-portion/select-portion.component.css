@@ -1,0 +1,76 @@
+.inputs {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.search {
+  width: 26ch;
+}
+
+.search-item {
+  width: 100%!;
+  min-height: 40px!;
+  display: flex!;
+  justify-content: space-between!;
+  margin-bottom: 10px!;
+  cursor: pointer!;
+}
+
+.mat-list-item-content {
+  justify-content: space-between;
+}
+
+.search-item-icon {
+  margin-left: 5%;
+  flex-basis: 10%;
+}
+
+.search-item-name {
+  font-weight: bold;
+  flex-basis: 60%;
+  /* border-bottom: 1px solid rgba(0,0,0,.12) */
+}
+
+.search-item-calories {
+  font-weight: 500;
+  font-style: italic;
+  flex-basis: 20%;
+  justify-content: flex-end;
+  text-align: right;
+  margin-right: 5%;
+  color: #673ab7;
+}
+
+.search-items:hover {
+  background: #f5f5f5;
+}
+
+.search-items:active {
+  background: #efefef;
+}
+
+.meal-selector {
+  width: 12ch;
+}
+
+span.select-entry {
+  display: flex;
+  justify-content: space-between;
+}
+
+.meals-number {
+  font-style: italic;
+  padding-right: 1ch;
+}
+
+.no-results {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.no-results-message {
+  font-style: italic;
+  margin: 10%;
+}

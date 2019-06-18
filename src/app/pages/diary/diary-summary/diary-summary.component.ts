@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subscription, BehaviorSubject } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { UiService } from 'src/app/services/ui.service';
 import { Diary } from 'src/app/models/diary.model';
@@ -19,11 +19,18 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
   public columns: ReadonlyArray<string> = ['Calories', 'Macronutrients'];
   public columnSelector = new FormControl();
 
-  public entry: Diary;
+  public get diary$(): BehaviorSubject<Diary | undefined> {
+    return this.ds.diary$;
+  }
 
   private subscription: Subscription = new Subscription();
 
-  constructor(readonly ds: DiaryService, public ui: UiService) {}
+  constructor(
+    readonly ds: DiaryService,
+    public ui: UiService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit() {
     // sets up the colums selector and specify a default value
@@ -31,15 +38,6 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
       this.columnSelector.valueChanges.subscribe(value => (this.focus = value))
     );
     this.columnSelector.setValue(this.columns[0]);
-
-    // fetch the entry's data
-    this.subscription.add(
-      this.ds
-        .getCurrentDiary$(new ShortDate(2019, 6, 13))
-        .subscribe((diaryDto: DiaryEntryDto) => {
-          this.entry = new Diary(diaryDto);
-        })
-    );
   }
 
   ngOnDestroy() {
@@ -47,26 +45,26 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
   }
 
   public sendtest() {
-    this.ds
-      .addPortion(new ShortDate(2019, 6, 13), {
-        foodId: 2,
-        mealNumber: 1,
-        quantity: 150
-      })
-      .subscribe(
-        whatever => {
-          console.log(whatever);
-        },
-        error => console.log(error)
-      );
+    // this.ds
+    //   .addPortion(new ShortDate(2019, 6, 13), {
+    //     foodId: 2,
+    //     mealNumber: 1,
+    //     quantity: 150
+    //   })
+    //   .subscribe(
+    //     whatever => {
+    //       console.log(whatever);
+    //     },
+    //     error => console.log(error)
+    //   );
   }
 
   public get hasContents(): boolean {
-    return this.entry && this.entry.hasContents;
+    return this.diary$.value && this.diary$.value.hasContents;
   }
 
   public addMeal() {
-    // this.router.navigate(['add-portion'], { relativeTo: this.route });
+    this.router.navigate(['add-portion'], { relativeTo: this.route });
   }
 
   public deleteAll(): void {

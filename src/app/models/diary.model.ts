@@ -49,4 +49,26 @@ export class Diary {
     this.meals.forEach(meal => (total += meal.getTotalProperty(propertyName)));
     return total;
   }
+
+  public get latestMeal(): number {
+    let latestMeal = 0;
+    this.meals.forEach(meal => {
+      if (meal.order > latestMeal) {
+        latestMeal = meal.order;
+      }
+    });
+    return latestMeal;
+  }
+
+  public getMealName(mealNumber: number): string {
+    return Meal.mealNames[mealNumber];
+  }
+
+  public recordedMeals(mealNumber: number): number {
+    const meal = this.meals.get(mealNumber);
+    if (meal === undefined) {
+      return 0;
+    }
+    return meal.Portions.length;
+  }
 }

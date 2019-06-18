@@ -1,6 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { map, shareReplay, switchMap } from 'rxjs/operators';
+import {
+  map,
+  shareReplay,
+  switchMap,
+  debounceTime,
+  distinctUntilChanged
+} from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Food } from '../models/food.model';
 import { FoodDto } from '../models/food-dto.model';
@@ -19,17 +25,17 @@ export class FoodsService {
     private readonly auth: AuthenticationService
   ) {
     // populate the initial foods store
-    // this.http
-    //   .get(this.baseUrl)
-    //   .pipe(shareReplay(1))
-    //   .subscribe(
-    //     (response: FoodDto[]) => {
-    //       this.foods$.next(response.map(item => this.createFood(item)));
-    //     },
-    //     error => {
-    //       console.log(error);
-    //     }
-    //   );
+    this.http
+      .get(this.baseUrl)
+      .pipe(shareReplay(1))
+      .subscribe(
+        (response: FoodDto[]) => {
+          this.foods$.next(response.map(dto => new Food(dto)));
+        },
+        error => {
+          console.log(error);
+        }
+      );
 
     const connection = new signalR.HubConnectionBuilder()
       .configureLogging(signalR.LogLevel.Information)
@@ -82,5 +88,18 @@ export class FoodsService {
       .get<FoodDto>(`${this.baseUrl}/${id}`)
       .pipe(map((data: FoodDto) => new Food(data)))
       .toPromise();
+  }
+
+  public getFilteredFoods(filter: BehaviorSubject<string>): Observable<Food[]> {
+    return filter.pipe(
+      switchMap(filterText => {
+        const text = filterText.toLowerCase();
+        console.log('filtering');
+        return this.http.get<FoodDto[]>(`${this.baseUrl}/filter?name=${text}`);
+      }),
+      debounceTime(300),
+      distinctUntilChanged(),
+      map(foodsDtos => foodsDtos.map(dto => new Food(dto)))
+    );
   }
 }

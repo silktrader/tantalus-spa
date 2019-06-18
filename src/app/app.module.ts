@@ -16,6 +16,8 @@ import { MainNavigationComponent } from './navigation/main-navigation/main-navig
 import { UnauthorisedErrorInterceptor } from './services/unauthorised-error.interceptor.ts.service';
 import { DiaryComponent } from './pages/diary/diary.component';
 import { DiarySummaryComponent } from './pages/diary/diary-summary/diary-summary.component';
+import { AddPortionComponent } from './pages/diary/add-portion/add-portion.component';
+import { SelectPortionComponent } from './pages/diary/select-portion/select-portion.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,9 @@ import { DiarySummaryComponent } from './pages/diary/diary-summary/diary-summary
     EditFoodComponent,
     MainNavigationComponent,
     DiaryComponent,
-    DiarySummaryComponent
+    DiarySummaryComponent,
+    AddPortionComponent,
+    SelectPortionComponent
   ],
   imports: [
     BrowserModule,
