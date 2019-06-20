@@ -49,7 +49,7 @@
 
   <!-- Portions and columns -->
   <mat-accordion class="meals-container" multi="true">
-    <mat-expansion-panel [expanded]="true" hideToggle *ngFor="let meal of diary.Meals">
+    <mat-expansion-panel [expanded]="true" hideToggle *ngFor="let meal of diary.meals">
       <mat-expansion-panel-header>
         <span class="meal-header mat-subheading-2">
           <span class="meal-header-title">{{meal.name}}</span>

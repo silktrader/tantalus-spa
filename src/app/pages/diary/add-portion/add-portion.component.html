@@ -1,14 +1,8 @@
-<mat-toolbar class="toolbar" color="primary">
-  <button class="toolbar-item" mat-icon-button (click)="back()">
-    <mat-icon>arrow_back</mat-icon>
-  </button>
-  <span class="toolbar-item toolbar-title">
-    <h3>Add Portion</h3>
-  </span>
-  <button class="toolbar-item" mat-icon-button>
-    <mat-icon>file_copy</mat-icon>
-  </button>
-</mat-toolbar>
+<app-toolbar>
+  <a routerLink="../.." routerLinkActive="active">{{ds.date | date:'longDate'}}</a>
+  <a routerLink="../" routerLinkActive="active">Select Food</a>
+  <a>Add Portion</a>
+</app-toolbar>
 
 <ng-container *ngIf="food !== undefined && diary$ | async as diary">
   <mat-card>

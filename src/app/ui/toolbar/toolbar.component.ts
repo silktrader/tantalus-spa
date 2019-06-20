@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { UiService } from 'src/app/services/ui.service';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-toolbar',

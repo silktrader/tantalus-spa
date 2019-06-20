@@ -3,7 +3,6 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { shareReplay, tap, map, switchMap } from 'rxjs/operators';
 import { Meal } from '../models/meal.model';
 import { HttpClient } from '@angular/common/http';
-import { ShortDate } from '../models/date-ymd.model';
 import { PortionDto } from '../models/portion-dto-model';
 import { DiaryEntryDto } from '../models/diary-entry-dto.model';
 import { ActivatedRoute, Params } from '@angular/router';
@@ -13,8 +12,9 @@ import { Diary } from '../models/diary.model';
 export class DiaryService {
   private baseUrl = 'https://localhost:5001/api/diary/';
 
-  private _date: ShortDate;
-  public get date(): ShortDate {
+  private dateUrl: string;
+  private _date: Date;
+  public get date(): Date {
     return this._date;
   }
 
@@ -26,10 +26,11 @@ export class DiaryService {
     // tk unsubscribtion?
     this.route.params
       .pipe(
-        switchMap(params => {
+        switchMap((params: Params) => {
           // determine date and fetch new data
           const { year, month, day } = params;
-          this._date = new ShortDate(year, month, day);
+          this.dateUrl = `${year}/${month}/${day}`;
+          this._date = new Date(year, month, day);
           return this.getDiaryData();
         })
       )
@@ -45,16 +46,12 @@ export class DiaryService {
   }
 
   private getDiaryData(): Observable<DiaryEntryDto> {
-    return this.http.get<DiaryEntryDto>(
-      `${this.baseUrl}${this.date.year}/${this.date.month}/${this.date.day}`
-    );
+    return this.http.get<DiaryEntryDto>(`${this.baseUrl}${this.dateUrl}`);
   }
 
   public addPortion(portionDto: PortionDto): Observable<PortionDto> {
     return this.http.post<PortionDto>(
-      `${this.baseUrl}${this.date.year}/${this.date.month}/${
-        this.date.day
-      }/add-portion`,
+      `${this.baseUrl}${this.dateUrl}/add-portion`,
       portionDto
     );
   }

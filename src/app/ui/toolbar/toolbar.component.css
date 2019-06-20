@@ -1,3 +1,7 @@
+.sandwich-menu {
+  flex: 1 1 0;
+}
+
 .toolbar-menu {
   flex: 1 1 0;
 }
@@ -9,4 +13,29 @@
 .toolbar-title {
   flex: 8 1 0;
   text-align: center;
+  font-weight: 500;
+}
+
+/* explore ::slotted() */
+::ng-deep .toolbar-title a {
+  /* padding-left: 0.5rem; */
+  /* padding-right: 0.5rem; */
+  text-decoration: none;
+  color: white;
+}
+
+::ng-deep .toolbar-title a::after {
+  font-size: 120%;
+  padding-right: 1rem;
+  padding-left: 1rem;
+  content: '/';
+}
+
+::ng-deep .toolbar-title a:last-of-type::after {
+  content: '';
+}
+
+::ng-deep .toolbar-title span {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
 }

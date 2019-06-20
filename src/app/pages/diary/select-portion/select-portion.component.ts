@@ -29,6 +29,10 @@ export class SelectPortionComponent implements OnInit, OnDestroy {
     return this.ds.diary$;
   }
 
+  public get title(): string {
+    return 'Select Food & Meal';
+  }
+
   private subscription = new Subscription();
 
   constructor(

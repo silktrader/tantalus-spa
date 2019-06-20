@@ -39,7 +39,7 @@ export class AddPortionComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    private ds: DiaryService,
+    public ds: DiaryService,
     private fs: FoodsService,
     private ui: UiService
   ) {}

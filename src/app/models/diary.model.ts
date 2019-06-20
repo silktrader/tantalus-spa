@@ -4,32 +4,28 @@ import { DiaryEntryDto } from './diary-entry-dto.model';
 import { Food } from './food.model';
 
 export class Diary {
-  private foods: Map<number, Food> = new Map<number, Food>();
-  public get Foods() {
-    return this.foods.values;
+  private _foods: Map<number, Food> = new Map<number, Food>();
+  public get foods() {
+    return this._foods.values;
   }
 
-  private meals: Map<number, Meal> = new Map<number, Meal>();
-  public get Meals(): ReadonlyArray<Meal> {
-    return Array.from(this.meals.values()); // TK slow
-  }
-
-  public get hasContents(): boolean {
-    return this.foods.size > 0;
+  private _meals: Map<number, Meal> = new Map<number, Meal>();
+  public get meals(): ReadonlyArray<Meal> {
+    return Array.from(this._meals.values()); // TK slow
   }
 
   constructor(diaryDto: DiaryEntryDto) {
     // populate foods map for quick lookup and to avoid multiple identical objects
     diaryDto.foods.forEach(foodDto =>
-      this.foods.set(foodDto.id, new Food(foodDto))
+      this._foods.set(foodDto.id, new Food(foodDto))
     );
 
     diaryDto.portions.forEach(portionDto => {
       // create a meal when it's not present
-      let meal = this.meals.get(portionDto.mealNumber);
+      let meal = this._meals.get(portionDto.mealNumber);
       if (meal === undefined) {
         meal = new Meal(portionDto.mealNumber);
-        this.meals.set(portionDto.mealNumber, meal);
+        this._meals.set(portionDto.mealNumber, meal);
       }
 
       // add the portion to the meal
@@ -37,7 +33,7 @@ export class Diary {
         new Portion(
           portionDto.id,
           portionDto.quantity,
-          this.foods.get(portionDto.foodId),
+          this._foods.get(portionDto.foodId),
           portionDto.mealNumber
         )
       );
@@ -46,13 +42,13 @@ export class Diary {
 
   public getTotalProperty(propertyName: string) {
     let total = 0;
-    this.meals.forEach(meal => (total += meal.getTotalProperty(propertyName)));
+    this._meals.forEach(meal => (total += meal.getTotalProperty(propertyName)));
     return total;
   }
 
   public get latestMeal(): number {
     let latestMeal = 0;
-    this.meals.forEach(meal => {
+    this._meals.forEach(meal => {
       if (meal.order > latestMeal) {
         latestMeal = meal.order;
       }
@@ -60,12 +56,16 @@ export class Diary {
     return latestMeal;
   }
 
+  public get hasContents(): boolean {
+    return this._foods.size > 0;
+  }
+
   public getMealName(mealNumber: number): string {
     return Meal.mealNames[mealNumber];
   }
 
   public recordedMeals(mealNumber: number): number {
-    const meal = this.meals.get(mealNumber);
+    const meal = this._meals.get(mealNumber);
     if (meal === undefined) {
       return 0;
     }

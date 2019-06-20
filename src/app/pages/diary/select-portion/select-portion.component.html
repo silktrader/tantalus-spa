@@ -1,14 +1,7 @@
-<!-- <mat-toolbar class="toolbar" color="primary">
-  <button class="toolbar-item" mat-icon-button (click)="back()">
-    <mat-icon>arrow_back</mat-icon>
-  </button>
-  <span class="toolbar-item toolbar-title">
-    <h3>Select Food & Meal</h3>
-  </span>
-  <button class="toolbar-item" mat-icon-button>
-    <mat-icon>file_copy</mat-icon>
-  </button>
-</mat-toolbar> -->
+<app-toolbar>
+  <a routerLink="../" routerLinkActive="active">{{ds.date | date:'longDate'}}</a>
+  <a>Select Food</a>
+</app-toolbar>
 
 <ng-container *ngIf="diary$ | async as diary">
   <form class="inputs" [formGroup]="filterForm">
