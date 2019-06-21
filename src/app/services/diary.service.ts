@@ -19,7 +19,8 @@ export class DiaryService {
     return this._date;
   }
 
-  public diary$ = new BehaviorSubject<Diary>(undefined);
+  private readonly diarySubject$ = new BehaviorSubject<Diary>(undefined);
+  public readonly diary$ = this.diarySubject$.asObservable();
 
   public focusedMeal: number;
 
@@ -35,9 +36,13 @@ export class DiaryService {
           return this.getDiaryData();
         })
       )
-      .subscribe(diaryData => {
-        this.diary$.next(new Diary(diaryData));
-        this.focusedMeal = this.diary$.value.latestMeal;
+      .subscribe(diaryDto => {
+        if (diaryDto) {
+          this.diarySubject$.next(new Diary(diaryDto));
+          this.focusedMeal = this.diarySubject$.value.latestMeal;
+        } else {
+          this.diarySubject$.next(undefined);
+        }
       });
   }
 

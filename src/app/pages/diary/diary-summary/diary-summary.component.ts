@@ -5,7 +5,6 @@ import { FormControl } from '@angular/forms';
 import { UiService } from 'src/app/services/ui.service';
 import { Diary } from 'src/app/models/diary.model';
 import { DiaryService } from 'src/app/services/diary.service';
-import { ShortDate } from 'src/app/models/date-ymd.model';
 import { DiaryEntryDto } from 'src/app/models/diary-entry-dto.model';
 
 @Component({
@@ -19,14 +18,10 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
   public columns: ReadonlyArray<string> = ['Calories', 'Macronutrients'];
   public columnSelector = new FormControl();
 
-  public get diary$(): BehaviorSubject<Diary | undefined> {
-    return this.ds.diary$;
-  }
-
   private subscription: Subscription = new Subscription();
 
   constructor(
-    readonly ds: DiaryService,
+    public readonly ds: DiaryService,
     public ui: UiService,
     private router: Router,
     private route: ActivatedRoute
@@ -42,10 +37,6 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
-  }
-
-  public get hasContents(): boolean {
-    return this.diary$.value && this.diary$.value.hasContents;
   }
 
   public addMeal() {

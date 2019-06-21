@@ -1,12 +1,12 @@
 <app-toolbar>
   <a>{{ds.date | date:'longDate'}}</a>
-  <button *ngIf="diary$ | async" mat-icon-button (click)="deleteAll()">
+  <button *ngIf="ds.diary$ | async" mat-icon-button (click)="deleteAll()">
     <mat-icon>delete_sweep</mat-icon>
   </button>
 
 </app-toolbar>
 
-<ng-container *ngIf="diary$ | async as diary">
+<ng-container *ngIf="ds.diary$ | async as diary; else noMeals">
 
   <!-- Header -->
 
@@ -86,10 +86,9 @@
   </mat-accordion>
 </ng-container>
 
-<!-- could use else statement in above *ngIf -->
-<ng-container *ngIf="!hasContents">
+<ng-template #noMeals>
   <mat-card class="no-meals"><span>No recorded meals</span></mat-card>
-</ng-container>
+</ng-template>
 
 
 <button class="add-meal" mat-fab (click)="addMeal()">

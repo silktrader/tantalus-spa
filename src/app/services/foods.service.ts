@@ -18,24 +18,20 @@ export class FoodsService {
   private baseUrl = 'https://localhost:5001/api/foods';
 
   private readonly foods$ = new BehaviorSubject<Food[]>([]);
-  public foods = this.foods$.asObservable();
+  public readonly foods = this.foods$.asObservable();
 
   constructor(
     private readonly http: HttpClient,
     private readonly auth: AuthenticationService
   ) {
     // populate the initial foods store
-    this.http
-      .get(this.baseUrl)
-      .pipe(shareReplay(1))
-      .subscribe(
-        (response: FoodDto[]) => {
-          this.foods$.next(response.map(dto => new Food(dto)));
-        },
-        error => {
-          console.log(error);
-        }
-      );
+    this.http.get(this.baseUrl).subscribe(
+      (foods: FoodDto[]) => {
+        console.log('RAN');
+        this.foods$.next(foods.map(dto => new Food(dto)));
+      },
+      error => console.log(error)
+    );
 
     const connection = new signalR.HubConnectionBuilder()
       .configureLogging(signalR.LogLevel.Information)
@@ -44,14 +40,9 @@ export class FoodsService {
       })
       .build();
 
-    connection
-      .start()
-      .then(() => {
-        console.log('Connected!');
-      })
-      .catch(err => {
-        return console.error(err.toString());
-      });
+    connection.start().catch(err => {
+      return console.error(err.toString());
+    });
 
     connection.on('FoodAdd', foodDto => {
       this.foods$.next([...this.foods$.getValue(), new Food(foodDto)]);
