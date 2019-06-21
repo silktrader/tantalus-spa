@@ -65,7 +65,7 @@ export class SelectPortionComponent implements OnInit, OnDestroy {
   }
 
   public get availableMeals(): ReadonlyArray<number> {
-    return Meal.mealIDs;
+    return Meal.mealNumbers;
   }
 
   public back(): void {

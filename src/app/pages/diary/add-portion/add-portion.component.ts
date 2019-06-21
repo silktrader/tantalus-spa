@@ -9,9 +9,8 @@ import { DiaryService } from 'src/app/services/diary.service';
 import { FoodsService } from 'src/app/services/foods.service';
 import { UiService } from 'src/app/services/ui.service';
 import { PortionQuantityValidator } from 'src/app/validators/portion-quantity.validator';
-import { PortionDto } from 'src/app/models/portion-dto-model';
 import { Diary } from 'src/app/models/diary.model';
-import { Meal } from 'src/app/models/meal.model';
+import { PortionAddDto } from 'src/app/models/portion-add-dto.model';
 
 @Component({
   selector: 'app-add-portion',
@@ -70,10 +69,6 @@ export class AddPortionComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  public get availableMeals(): ReadonlyArray<number> {
-    return Meal.mealIDs;
-  }
-
   getQuantitiesControlError() {
     if (this.quantitiesControl.hasError('required')) {
       return 'Required';
@@ -96,7 +91,7 @@ export class AddPortionComponent implements OnInit, OnDestroy {
   }
 
   public save(): void {
-    const portionData: PortionDto = {
+    const portionData: PortionAddDto = {
       mealNumber: this.mealSelector.value,
       foodId: this.food.id,
       quantity: this.quantitiesControl.value

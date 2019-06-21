@@ -1,4 +1,5 @@
 <app-toolbar>
+  <a>{{ds.date | date:'longDate'}}</a>
   <button *ngIf="diary$ | async" mat-icon-button (click)="deleteAll()">
     <mat-icon>delete_sweep</mat-icon>
   </button>
@@ -64,7 +65,7 @@
       </mat-expansion-panel-header>
       <mat-nav-list>
         <mat-list-item class="portion" *ngFor="let portion of meal.Portions">
-          <a [routerLink]="['edit-portion', portion.id]" routerLinkActive="active">
+          <a [routerLink]="[portion.id]" routerLinkActive="active">
             <span class="portion-header">
               <span class="mat-body-2">{{portion.food.name}}</span>
               <span class="portion-header-quantity mat-caption">{{portion.quantity | number:'1.0-0'}} g.</span>

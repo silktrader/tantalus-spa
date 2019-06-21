@@ -60,6 +60,11 @@ export class Diary {
     return this._foods.size > 0;
   }
 
+  /** Which meals can be recorded [0-5] */
+  public get availableMeals(): ReadonlyArray<number> {
+    return Meal.mealNumbers;
+  }
+
   public getMealName(mealNumber: number): string {
     return Meal.mealNames[mealNumber];
   }
@@ -70,5 +75,15 @@ export class Diary {
       return 0;
     }
     return meal.Portions.length;
+  }
+
+  public getPortion(id: number): Portion | undefined {
+    for (const meal of this._meals.values()) {
+      for (const portion of meal.Portions) {
+        if (portion.id === id) { return portion; }
+      }
+    }
+
+    return undefined;
   }
 }

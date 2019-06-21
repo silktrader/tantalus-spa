@@ -1,5 +1,4 @@
-export class PortionDto {
-  id: number;
+export interface PortionAddDto {
   mealNumber: number;
   foodId: number;
   quantity: number;

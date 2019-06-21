@@ -10,7 +10,7 @@ export class Meal {
     'Snacks'
   ];
 
-  public static mealIDs: ReadonlyArray<number> = Array.from(
+  public static mealNumbers: ReadonlyArray<number> = Array.from(
     Meal.mealNames.keys()
   );
 

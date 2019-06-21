@@ -95,8 +95,7 @@ mat-expansion-panel {
   color: #673ab7;
 }
 
-.mat-list-item-content,
-a {
+mat-list-item a {
   display: flex;
   width: 100%;
 }

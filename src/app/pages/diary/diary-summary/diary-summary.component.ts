@@ -44,21 +44,6 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  public sendtest() {
-    // this.ds
-    //   .addPortion(new ShortDate(2019, 6, 13), {
-    //     foodId: 2,
-    //     mealNumber: 1,
-    //     quantity: 150
-    //   })
-    //   .subscribe(
-    //     whatever => {
-    //       console.log(whatever);
-    //     },
-    //     error => console.log(error)
-    //   );
-  }
-
   public get hasContents(): boolean {
     return this.diary$.value && this.diary$.value.hasContents;
   }

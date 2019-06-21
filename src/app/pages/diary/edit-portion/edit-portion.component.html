@@ -1,0 +1,83 @@
+<app-toolbar>
+  <button mat-icon-button (click)="delete()">
+    <mat-icon>delete</mat-icon>
+  </button>
+
+</app-toolbar>
+
+<ng-container *ngIf="!originalPortion">
+  <mat-card class="no-meals"><span>Missing portion</span></mat-card>
+</ng-container>
+
+<ng-container *ngIf="originalPortion">
+  <mat-card>
+    <mat-card-header class="header">
+      <mat-card-title>
+        <section class="header">
+          <section class="header-left">
+            <button mat-icon-button>
+              <mat-icon>star_border</mat-icon>
+            </button>
+          </section>
+          <span class="header-title">{{originalPortion.food.name}}</span>
+          <section class="header-right">
+            <a mat-icon-button [routerLink]="[ '/food/', originalPortion.food.id]">
+              <mat-icon>edit</mat-icon>
+            </a>
+          </section>
+        </section>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="summary">
+      <section class="macronutrients">
+        <div class="macronutrients-section">
+          <span class="macronutrients-number">{{previewCalories}}</span>
+          <span class="macronutrients-label">Calories</span>
+        </div>
+        <div class="macronutrients-section">
+          <span class="macronutrients-number">{{previewProteins}}</span>
+          <span class="macronutrients-label">Proteins</span>
+        </div>
+        <div class="macronutrients-section">
+          <span class="macronutrients-number">{{previewCarbs}}</span>
+          <span class="macronutrients-label">Carbs</span>
+        </div>
+        <div class="macronutrients-section">
+          <span class="macronutrients-number">{{previewFats}}</span>
+          <span class="macronutrients-label">Fats</span>
+        </div>
+      </section>
+
+      <section class="inputs">
+        <mat-form-field class="quantity">
+          <input class="quantity-editor" matInput type="number" autocomplete="off" [formControl]="quantitiesControl"
+            required floatLabel="in grams" />
+          <span matSuffix class="quantity-unit">grams</span>
+          <mat-error *ngIf="quantitiesControl.invalid">{{getQuantitiesControlError()}}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="meal-selector">
+          <mat-select [formControl]="mealSelector" required>
+            <mat-select-trigger>
+              <span>{{diary.getMealName(mealSelector.value)}}</span>
+            </mat-select-trigger>
+            <mat-option *ngFor="let availableMeal of diary.availableMeals" [value]="availableMeal">
+              <span [matBadge]="diary.recordedMeals[availableMeal]" matBadgeOverlap="false"
+                matBadgeSize="small">{{diary.getMealName(availableMeal)}}</span>
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </section>
+
+      <section class="buttons">
+        <!-- <button type="button" (click)="delete()" color="warn" mat-stroked-button>Delete</button> -->
+        <button type="button" (click)="reset()" color="primary" mat-raised-button
+          [disabled]="portionUnchanged">Reset</button>
+        <button type="submit" (click)="save()" color="primary" mat-raised-button
+          [disabled]="saveDisabled">Change</button>
+      </section>
+    </mat-card-content>
+
+
+  </mat-card>
+</ng-container>
