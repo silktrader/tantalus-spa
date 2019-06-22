@@ -8,6 +8,7 @@ import { UiService } from 'src/app/services/ui.service';
 import { PortionQuantityValidator } from 'src/app/validators/portion-quantity.validator';
 import { Meal } from 'src/app/models/meal.model';
 import { Diary } from 'src/app/models/diary.model';
+import { PortionAddDto } from 'src/app/models/portion-add-dto.model';
 
 @Component({
   selector: 'app-edit-portion',
@@ -127,9 +128,15 @@ export class EditPortionComponent implements OnInit, OnDestroy {
   }
 
   public delete(): void {
+    const foodName = this.originalPortion.food.name;
+    const portionDto = {
+      foodId: this.originalPortion.foodId,
+      quantity: this.originalPortion.quantity,
+      mealNumber: this.originalPortion.mealNumber
+    };
     this.ds.removePortion(this.originalPortion.id).subscribe(
       () => {
-        this.notifyDeletedPortion(this.originalPortion);
+        this.notifyDeletedPortion(portionDto, foodName);
         this.back();
       },
       error =>
@@ -196,13 +203,10 @@ export class EditPortionComponent implements OnInit, OnDestroy {
     this.ui.notify(message, 'Undo', () => this.changePortion(final, initial));
   }
 
-  private notifyDeletedPortion(portion: Portion) {
-    this.ui.notify(`Removed ${portion.food.name}`, 'Undo', () => {
-      this.ds.addPortion({
-        foodId: portion.food.id,
-        quantity: portion.quantity,
-        mealNumber: portion.mealNumber
-      });
+  // can't send the portion object as it's being deleted
+  private notifyDeletedPortion(portionDto: PortionAddDto, foodName: string) {
+    this.ui.notify(`Removed ${foodName}`, 'Undo', () => {
+      this.ds.addPortion(portionDto);
     });
   }
 

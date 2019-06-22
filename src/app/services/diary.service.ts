@@ -8,6 +8,9 @@ import { DiaryEntryDto } from '../models/diary-entry-dto.model';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Diary } from '../models/diary.model';
 import { PortionAddDto } from '../models/portion-add-dto.model';
+import * as signalR from '@aspnet/signalr';
+import { AuthenticationService } from './authentication.service';
+import { FoodDto } from '../models/food-dto.model';
 
 @Injectable()
 export class DiaryService {
@@ -24,7 +27,11 @@ export class DiaryService {
 
   public focusedMeal: number;
 
-  constructor(private http: HttpClient, private route: ActivatedRoute) {
+  constructor(
+    private http: HttpClient,
+    private route: ActivatedRoute,
+    private auth: AuthenticationService
+  ) {
     // tk unsubscribtion?
     this.route.params
       .pipe(
@@ -44,6 +51,59 @@ export class DiaryService {
           this.diarySubject$.next(undefined);
         }
       });
+
+    const connection = new signalR.HubConnectionBuilder()
+      .configureLogging(signalR.LogLevel.Debug)
+      .withUrl(`https://localhost:5001/foodshub`, {
+        accessTokenFactory: () => this.auth.currentUserValue.token
+      })
+      .build();
+
+    connection.on(
+      'PortionAdd',
+      (response: { portion: PortionDto; food: FoodDto }) => {
+        const newState = { ...this.diarySubject$.getValue().dto };
+        newState.portions.push(response.portion);
+        newState.foods.push(response.food); // the constructor handles duplicates
+        this.diarySubject$.next(new Diary(newState));
+      }
+    );
+
+    connection.on(
+      'PortionRemove',
+      (response: { id: number; foodId: number }) => {
+        const newState = { ...this.diarySubject$.getValue().dto };
+
+        // check which portion and foods to delete from current state
+        let deleteFood = true;
+        let deletedPortionIndex: number;
+        for (let i = 0; i < newState.portions.length; i++) {
+          if (newState.portions[i].id === response.id) {
+            deletedPortionIndex = i;
+          } else if (newState.portions[i].foodId === response.foodId) {
+            deleteFood = false;
+          }
+        }
+
+        // delete portion
+        newState.portions.splice(deletedPortionIndex);
+
+        // delete food
+        if (deleteFood) {
+          for (let i = 0; i < newState.foods.length; i++) {
+            if (newState.foods[i].id === response.foodId) {
+              newState.foods.splice(i); // tk modifying collection while iterating
+              break;
+            }
+          }
+        }
+        this.diarySubject$.next(new Diary(newState));
+      }
+    );
+
+    connection.start().catch(err => {
+      return console.error(err.toString());
+    });
   }
 
   // should this be configurable by users? tk
