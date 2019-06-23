@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import {
   map,
-  shareReplay,
   switchMap,
   debounceTime,
   distinctUntilChanged
@@ -10,8 +9,8 @@ import {
 import { HttpClient } from '@angular/common/http';
 import { Food } from '../models/food.model';
 import { FoodDto } from '../models/food-dto.model';
-import * as signalR from '@aspnet/signalr';
 import { AuthenticationService } from './authentication.service';
+import { HubService } from './hub.service';
 
 @Injectable({ providedIn: 'root' })
 export class FoodsService {
@@ -22,7 +21,8 @@ export class FoodsService {
 
   constructor(
     private readonly http: HttpClient,
-    private readonly auth: AuthenticationService
+    private readonly auth: AuthenticationService,
+    private hub: HubService
   ) {
     // populate the initial foods store
     this.http.get(this.baseUrl).subscribe(
@@ -33,28 +33,17 @@ export class FoodsService {
       error => console.log(error)
     );
 
-    const connection = new signalR.HubConnectionBuilder()
-      .configureLogging(signalR.LogLevel.Information)
-      .withUrl(`https://localhost:5001/foodshub`, {
-        accessTokenFactory: () => this.auth.currentUserValue.token
-      })
-      .build();
-
-    connection.start().catch(err => {
-      return console.error(err.toString());
-    });
-
-    connection.on('FoodAdd', foodDto => {
+    this.hub.register('FoodAdd', foodDto => {
       this.foods$.next([...this.foods$.getValue(), new Food(foodDto)]);
     });
 
-    connection.on('FoodRemove', (food: FoodDto) => {
+    this.hub.register('FoodRemove', (food: FoodDto) => {
       this.foods$.next(
         this.foods$.getValue().filter(item => item.id !== food.id)
       );
     });
 
-    connection.on('FoodEdit', (foodDto: FoodDto) => {
+    this.hub.register('FoodEdit', (foodDto: FoodDto) => {
       const foods = this.foods$.getValue();
       const index = foods.findIndex(item => item.id === foodDto.id);
       foods[index] = new Food(foodDto);

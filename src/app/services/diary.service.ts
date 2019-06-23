@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { shareReplay, tap, map, switchMap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { Meal } from '../models/meal.model';
 import { HttpClient } from '@angular/common/http';
 import { PortionDto } from '../models/portion-dto-model';
@@ -8,12 +8,11 @@ import { DiaryEntryDto } from '../models/diary-entry-dto.model';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Diary } from '../models/diary.model';
 import { PortionAddDto } from '../models/portion-add-dto.model';
-import * as signalR from '@aspnet/signalr';
-import { AuthenticationService } from './authentication.service';
 import { FoodDto } from '../models/food-dto.model';
+import { HubService } from './hub.service';
 
 @Injectable()
-export class DiaryService {
+export class DiaryService implements OnDestroy {
   private baseUrl = 'https://localhost:5001/api/diary/';
 
   private dateUrl: string;
@@ -30,7 +29,7 @@ export class DiaryService {
   constructor(
     private http: HttpClient,
     private route: ActivatedRoute,
-    private auth: AuthenticationService
+    private hub: HubService
   ) {
     // tk unsubscribtion?
     this.route.params
@@ -52,14 +51,8 @@ export class DiaryService {
         }
       });
 
-    const connection = new signalR.HubConnectionBuilder()
-      .configureLogging(signalR.LogLevel.Debug)
-      .withUrl(`https://localhost:5001/foodshub`, {
-        accessTokenFactory: () => this.auth.currentUserValue.token
-      })
-      .build();
-
-    connection.on(
+    this.hub.register(
+      this.constructor.name,
       'PortionAdd',
       (response: { portion: PortionDto; food: FoodDto }) => {
         const newState = { ...this.diarySubject$.getValue().dto };
@@ -69,7 +62,8 @@ export class DiaryService {
       }
     );
 
-    connection.on(
+    this.hub.register(
+      this.constructor.name,
       'PortionRemove',
       (response: { id: number; foodId: number }) => {
         const newState = { ...this.diarySubject$.getValue().dto };
@@ -100,10 +94,10 @@ export class DiaryService {
         this.diarySubject$.next(new Diary(newState));
       }
     );
+  }
 
-    connection.start().catch(err => {
-      return console.error(err.toString());
-    });
+  ngOnDestroy(): void {
+    this.hub.deregisterAll(this.constructor.name);
   }
 
   // should this be configurable by users? tk
@@ -131,5 +125,9 @@ export class DiaryService {
 
   public removePortion(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}${this.dateUrl}/${id}`);
+  }
+
+  public unregisterHandlers(): void {
+    this.hub.deregisterAll(this.constructor.name);
   }
 }
