@@ -24,7 +24,7 @@ export class DiaryService implements OnDestroy {
   private readonly diarySubject$ = new BehaviorSubject<Diary>(undefined);
   public readonly diary$ = this.diarySubject$.asObservable();
 
-  public focusedMeal: number;
+  public focusedMeal = 0;
 
   constructor(
     private http: HttpClient,

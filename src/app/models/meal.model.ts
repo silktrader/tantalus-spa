@@ -3,9 +3,7 @@ import { Portion } from './portion.model';
 export class Meal {
   public static mealNames: ReadonlyArray<string> = [
     'Breakfast',
-    'Morning',
     'Lunch',
-    'Afternoon',
     'Dinner',
     'Snacks'
   ];
@@ -14,9 +12,11 @@ export class Meal {
     Meal.mealNames.keys()
   );
 
-  constructor(public readonly order: number) {}
+  constructor(
+    public readonly order: number,
+    private readonly portions: Portion[]
+  ) {}
 
-  private portions: Portion[] = [];
   get Portions(): ReadonlyArray<Portion> {
     return this.portions;
   }
@@ -27,11 +27,6 @@ export class Meal {
 
   public static getName(order: number): string {
     return this.mealNames[order];
-  }
-
-  // tk handle duplicate portions with same id?
-  public addPortion(portion: Portion) {
-    this.portions.push(portion);
   }
 
   public getTotalProperty(propertyName: string): number {

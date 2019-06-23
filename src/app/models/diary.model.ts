@@ -4,7 +4,6 @@ import { DiaryEntryDto } from './diary-entry-dto.model';
 import { Food } from './food.model';
 
 export class Diary {
-  private readonly diaryDto: DiaryEntryDto;
   public get dto() {
     return this.diaryDto;
   }
@@ -19,32 +18,37 @@ export class Diary {
     return Array.from(this.mealsMap.values()); // TK slow
   }
 
-  constructor(diaryDto: DiaryEntryDto) {
-    this.diaryDto = diaryDto;
+  constructor(private readonly diaryDto: DiaryEntryDto) {
     // populate foods map for quick lookup and to avoid multiple identical objects
     for (const foodDto of diaryDto.foods) {
       this.foodsMap.set(foodDto.id, new Food(foodDto));
     }
 
-    // tk remove forEach and switch to for of
-    diaryDto.portions.forEach(portionDto => {
-      // create a meal when it's not present
-      let meal = this.mealsMap.get(portionDto.mealNumber);
-      if (meal === undefined) {
-        meal = new Meal(portionDto.mealNumber);
-        this.mealsMap.set(portionDto.mealNumber, meal);
-      }
+    // create a collection that will hosts portions according to their ordered meal number
+    const orderedMeals = new Map<number, Array<Portion>>();
+    for (const mealNumber of Meal.mealNumbers) {
+      orderedMeals.set(mealNumber, []);
+    }
 
-      // add the portion to the meal
-      meal.addPortion(
-        new Portion(
-          portionDto.id,
-          portionDto.quantity,
-          this.foodsMap.get(portionDto.foodId),
-          portionDto.mealNumber
-        )
+    // create portions and slot them in the cached meals map
+    for (const portionDto of diaryDto.portions) {
+      const portion = new Portion(
+        portionDto.id,
+        portionDto.quantity,
+        this.foodsMap.get(portionDto.foodId),
+        portionDto.mealNumber
       );
-    });
+
+      orderedMeals.get(portion.mealNumber).push(portion);
+    }
+
+    // set the final meals map
+    for (const mealKvp of orderedMeals) {
+      if (mealKvp[1].length === 0) {
+        continue;
+      }
+      this.mealsMap.set(mealKvp[0], new Meal(mealKvp[0], mealKvp[1]));
+    }
   }
 
   public getTotalProperty(propertyName: string) {
@@ -57,11 +61,11 @@ export class Diary {
 
   public get latestMeal(): number {
     let latestMeal = 0;
-    this.mealsMap.forEach(meal => {
+    for (const meal of this.mealsMap.values()) {
       if (meal.order > latestMeal) {
         latestMeal = meal.order;
       }
-    });
+    }
     return latestMeal;
   }
 
