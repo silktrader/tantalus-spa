@@ -13,18 +13,9 @@ import { HubService } from './hub.service';
 
 @Injectable()
 export class DiaryService implements OnDestroy {
-  private baseUrl = 'https://localhost:5001/api/diary/';
-
-  private dateUrl: string;
-  private _date: Date;
   public get date(): Date {
     return this._date;
   }
-
-  private readonly diarySubject$ = new BehaviorSubject<Diary>(undefined);
-  public readonly diary$ = this.diarySubject$.asObservable();
-
-  public focusedMeal = 0;
 
   constructor(
     private http: HttpClient,
@@ -36,9 +27,7 @@ export class DiaryService implements OnDestroy {
       .pipe(
         switchMap((params: Params) => {
           // determine date and fetch new data
-          const { year, month, day } = params;
-          this.dateUrl = `${year}/${month}/${day}`;
-          this._date = new Date(year, month, day);
+          this._date = new Date(params.date);
           return this.getDiaryData();
         })
       )
@@ -112,13 +101,24 @@ export class DiaryService implements OnDestroy {
     );
   }
 
-  ngOnDestroy(): void {
-    this.hub.deregisterAll(this.constructor.name);
-  }
-
   // should this be configurable by users? tk
   public get availableMealsIDs(): ReadonlyArray<number> {
     return Meal.mealNumbers;
+  }
+  private baseUrl = 'https://localhost:5001/api/diary/';
+  private _date: Date;
+
+  private readonly diarySubject$ = new BehaviorSubject<Diary>(undefined);
+  public readonly diary$ = this.diarySubject$.asObservable();
+
+  public focusedMeal = 0;
+
+  private get dateUrl(): string {
+    return this._date.toISOString().substring(0, 10);
+  }
+
+  ngOnDestroy(): void {
+    this.hub.deregisterAll(this.constructor.name);
   }
 
   private getDiaryData(): Observable<DiaryEntryDto> {

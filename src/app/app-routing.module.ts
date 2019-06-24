@@ -16,7 +16,7 @@ const routes: Routes = [
   { path: 'login', component: AuthenticationComponent },
   { path: 'register', component: AuthenticationComponent },
   {
-    path: 'diary/:year/:month/:day',
+    path: 'diary/:date',
     component: DiaryComponent,
     canActivate: [AuthGuard],
     children: [
