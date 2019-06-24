@@ -56,17 +56,14 @@
           <mat-error *ngIf="quantitiesControl.invalid">{{getQuantitiesControlError()}}</mat-error>
         </mat-form-field>
 
-        <mat-form-field class="meal-selector">
-          <mat-select [formControl]="mealSelector" required>
-            <mat-select-trigger>
-              <span>{{diary.getMealName(mealSelector.value)}}</span>
-            </mat-select-trigger>
-            <mat-option *ngFor="let availableMeal of diary.availableMeals" [value]="availableMeal">
-              <span [matBadge]="diary.recordedMeals[availableMeal]" matBadgeOverlap="false"
-                matBadgeSize="small">{{diary.getMealName(availableMeal)}}</span>
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+        <mat-button-toggle-group class="meal-toggle-group" [value]="ds.focusedMeal" [formControl]="mealSelector"
+          required>
+          <mat-button-toggle class="meal-toggle" *ngFor="let availableMeal of ds.availableMealsIDs"
+            [value]="availableMeal">
+            <span [matBadge]="diary.recordedMeals(availableMeal)" matBadgeOverlap="false"
+              matBadgeSize="medium">{{diary.getMealName(availableMeal)}}</span>
+          </mat-button-toggle>
+        </mat-button-toggle-group>
       </section>
 
       <section class="buttons">

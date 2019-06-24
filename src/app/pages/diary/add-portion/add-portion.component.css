@@ -1,94 +1,102 @@
 mat-card {
-    margin: 3%;
+  margin: 3%;
 }
 
 ::ng-deep .mat-card-header-text {
-    width: 100%;
+  width: 100%;
 }
 
 .header {
-    display: flex;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
 }
 
 .header-left {
-    display: flex;
-    flex-basis: 25%;
-    align-items: center;
-    justify-content: flex-start;
+  display: flex;
+  flex-basis: 25%;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .header-title {
-    flex-basis: 50%;
-    align-items: center;
-    text-align: center;
+  flex-basis: 50%;
+  align-items: center;
+  text-align: center;
 }
 
 .header-right {
-    display: flex;
-    flex-basis: 25%;
-    align-items: center;
-    justify-content: flex-end;
+  display: flex;
+  flex-basis: 25%;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 .summary {
-    width: 100%;
+  width: 100%;
 }
 
 .inputs {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .quantity {
-    width: 10ch;
+  width: 10ch;
 }
 
 .quantity-editor {
-    width: 5ch;
+  width: 5ch;
 }
 
 .quantity-unit {
-    font-style: italic;    
+  font-style: italic;
 }
 
 .meal-selector {
-    width: 12ch;
+  width: 12ch;
 }
 
 .macronutrients {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    padding-top: 8%;
-    padding-bottom: 8%;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  padding-top: 8%;
+  padding-bottom: 8%;
 }
 
 .macronutrients-section {
-    display:flex;
-    width: 25%;
-    flex-direction: column;
-    justify-content: center;
+  display: flex;
+  width: 25%;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .macronutrients-number {
-    font-weight: 500;
-    text-align: center;
+  font-weight: 500;
+  text-align: center;
 }
 
 .macronutrients-label {
-    text-align: center;
-    font-style: italic;
+  text-align: center;
+  font-style: italic;
 }
 
 .buttons {
-    width: 100%;
-    display: flex;
-    justify-content: space-around;
-    align-items: baseline;
-    margin-top: 10%;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: baseline;
+  margin-top: 10%;
+}
+
+.meal-toggle-group {
+  width: 90%;
+}
+
+.meal-toggle {
+  flex-grow: 1;
 }

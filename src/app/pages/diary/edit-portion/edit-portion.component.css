@@ -111,3 +111,11 @@ mat-card.no-meals {
   font-style: italic;
   font-weight: 500;
 }
+
+.meal-toggle-group {
+  width: 90%;
+}
+
+.meal-toggle {
+  flex-grow: 1;
+}

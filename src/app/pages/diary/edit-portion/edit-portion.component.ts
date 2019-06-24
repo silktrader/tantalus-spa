@@ -31,7 +31,7 @@ export class EditPortionComponent implements OnInit, OnDestroy {
   public diary: Diary;
 
   constructor(
-    private ds: DiaryService,
+    public ds: DiaryService,
     private route: ActivatedRoute,
     private router: Router,
     private ui: UiService
@@ -107,10 +107,6 @@ export class EditPortionComponent implements OnInit, OnDestroy {
       !this.quantitiesControl.dirty &&
       this.mealSelector.value === this.originalPortion.mealNumber
     );
-  }
-
-  get title(): string {
-    return 'Edit Portion';
   }
 
   public back(): void {

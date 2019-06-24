@@ -33,17 +33,17 @@ export class FoodsService {
       error => console.log(error)
     );
 
-    this.hub.register('FoodAdd', foodDto => {
+    this.hub.register(this.constructor.name, 'FoodAdd', foodDto => {
       this.foods$.next([...this.foods$.getValue(), new Food(foodDto)]);
     });
 
-    this.hub.register('FoodRemove', (food: FoodDto) => {
+    this.hub.register(this.constructor.name, 'FoodRemove', (food: FoodDto) => {
       this.foods$.next(
         this.foods$.getValue().filter(item => item.id !== food.id)
       );
     });
 
-    this.hub.register('FoodEdit', (foodDto: FoodDto) => {
+    this.hub.register(this.constructor.name, 'FoodEdit', (foodDto: FoodDto) => {
       const foods = this.foods$.getValue();
       const index = foods.findIndex(item => item.id === foodDto.id);
       foods[index] = new Food(foodDto);
