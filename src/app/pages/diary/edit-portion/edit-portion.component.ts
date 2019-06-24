@@ -17,6 +17,7 @@ import { PortionAddDto } from 'src/app/models/portion-add-dto.model';
 })
 export class EditPortionComponent implements OnInit, OnDestroy {
   private id: number;
+
   private subscription: Subscription;
 
   public originalPortion: Portion;

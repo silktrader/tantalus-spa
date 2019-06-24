@@ -53,6 +53,22 @@ export class DiaryService implements OnDestroy {
 
     this.hub.register(
       this.constructor.name,
+      'PortionEdit',
+      (portionDto: PortionDto) => {
+        const newState = { ...this.diarySubject$.getValue().dto };
+        // select the portion to be edited in the new state
+        for (const portion of newState.portions) {
+          if (portion.id === portionDto.id) {
+            portion.mealNumber = portionDto.mealNumber;
+            portion.quantity = portionDto.quantity;
+          }
+        }
+        this.diarySubject$.next(new Diary(newState));
+      }
+    );
+
+    this.hub.register(
+      this.constructor.name,
       'PortionAdd',
       (response: { portion: PortionDto; food: FoodDto }) => {
         const newState = { ...this.diarySubject$.getValue().dto };

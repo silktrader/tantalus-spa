@@ -1,4 +1,6 @@
 <app-toolbar>
+  <a routerLink="../" routerLinkActive="active">{{ds.date | date:'longDate'}}</a>
+  <a>Edit Portion</a>
   <button mat-icon-button (click)="delete()">
     <mat-icon>delete</mat-icon>
   </button>
