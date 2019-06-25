@@ -17,6 +17,18 @@ export class DiaryService implements OnDestroy {
     return this._date;
   }
 
+  private baseUrl = 'https://localhost:5001/api/diary/';
+  private _date: Date;
+
+  private readonly diarySubject$ = new BehaviorSubject<Diary>(undefined);
+  public readonly diary$ = this.diarySubject$.asObservable();
+
+  public focusedMeal = 0;
+
+  private get dateUrl(): string {
+    return this._date.toISOString().substring(0, 10);
+  }
+
   constructor(
     private http: HttpClient,
     private route: ActivatedRoute,
@@ -28,6 +40,7 @@ export class DiaryService implements OnDestroy {
         switchMap((params: Params) => {
           // determine date and fetch new data
           this._date = new Date(params.date);
+          this._date.setUTCHours(0, 0, 0);
           return this.getDiaryData();
         })
       )
@@ -99,22 +112,21 @@ export class DiaryService implements OnDestroy {
         this.diarySubject$.next(new Diary(newState));
       }
     );
+
+    this.hub.register(
+      this.constructor.name,
+      'DiaryDelete',
+      (response: { date: string }) => {
+        if (response.date.substring(0, 10) === this.dateUrl) {
+          this.diarySubject$.next(undefined);
+        }
+      }
+    );
   }
 
   // should this be configurable by users? tk
   public get availableMealsIDs(): ReadonlyArray<number> {
     return Meal.mealNumbers;
-  }
-  private baseUrl = 'https://localhost:5001/api/diary/';
-  private _date: Date;
-
-  private readonly diarySubject$ = new BehaviorSubject<Diary>(undefined);
-  public readonly diary$ = this.diarySubject$.asObservable();
-
-  public focusedMeal = 0;
-
-  private get dateUrl(): string {
-    return this._date.toISOString().substring(0, 10);
   }
 
   ngOnDestroy(): void {
@@ -145,5 +157,13 @@ export class DiaryService implements OnDestroy {
 
   public unregisterHandlers(): void {
     this.hub.deregisterAll(this.constructor.name);
+  }
+
+  public deleteDiary(): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}${this.dateUrl}`);
+  }
+
+  public restoreDiary(dto: { portions: PortionDto[] }): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}${this.dateUrl}`, dto);
   }
 }

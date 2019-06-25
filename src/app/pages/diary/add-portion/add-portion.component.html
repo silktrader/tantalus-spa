@@ -4,7 +4,7 @@
   <a>Add Portion</a>
 </app-toolbar>
 
-<ng-container *ngIf="food !== undefined && diary$ | async as diary">
+<ng-container *ngIf="food !== undefined">
   <mat-card>
     <mat-card-header class="header">
       <mat-card-title>
@@ -55,10 +55,9 @@
 
         <mat-button-toggle-group class="meal-toggle-group" [value]="ds.focusedMeal" [formControl]="mealSelector"
           required>
-          <mat-button-toggle class="meal-toggle" *ngFor="let availableMeal of ds.availableMealsIDs"
-            [value]="availableMeal">
-            <span [matBadge]="diary.recordedMeals(availableMeal)" matBadgeOverlap="false"
-              matBadgeSize="medium">{{diary.getMealName(availableMeal)}}</span>
+          <mat-button-toggle class="meal-toggle" *ngFor="let availableMeal of availableMeals" [value]="availableMeal">
+            <span [matBadge]="diary?.recordedMeals(availableMeal)" matBadgeOverlap="false"
+              matBadgeSize="medium">{{getMealName(availableMeal)}}</span>
           </mat-button-toggle>
         </mat-button-toggle-group>
 

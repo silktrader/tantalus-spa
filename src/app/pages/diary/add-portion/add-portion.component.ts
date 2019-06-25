@@ -11,6 +11,7 @@ import { UiService } from 'src/app/services/ui.service';
 import { PortionQuantityValidator } from 'src/app/validators/portion-quantity.validator';
 import { Diary } from 'src/app/models/diary.model';
 import { PortionAddDto } from 'src/app/models/portion-add-dto.model';
+import { Meal } from 'src/app/models/meal.model';
 
 @Component({
   selector: 'app-add-portion',
@@ -19,6 +20,7 @@ import { PortionAddDto } from 'src/app/models/portion-add-dto.model';
 })
 export class AddPortionComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
+  public diary: Diary;
   public food: Food;
   public previewedPortion: Portion;
 
@@ -31,10 +33,6 @@ export class AddPortionComponent implements OnInit, OnDestroy {
   public portionForm: FormGroup = new FormGroup({
     quantity: this.quantitiesControl
   });
-
-  public get diary$(): Observable<Diary> {
-    return this.ds.diary$;
-  }
 
   constructor(
     private route: ActivatedRoute,
@@ -60,6 +58,10 @@ export class AddPortionComponent implements OnInit, OnDestroy {
         this.previewedPortion = new Portion(undefined, 100, food, 0);
         this.food = food;
       });
+
+    this.subscription.add(
+      this.ds.diary$.subscribe(diary => (this.diary = diary))
+    );
 
     this.mealSelector.setValue(this.ds.focusedMeal);
     this.quantitiesControl.setValue(100);
@@ -109,5 +111,13 @@ export class AddPortionComponent implements OnInit, OnDestroy {
         this.ui.warn(`Couldn't record ${this.food.name}`);
       }
     );
+  }
+
+  public getMealName(mealNumber: number) {
+    return Meal.mealNames[mealNumber];
+  }
+
+  public get availableMeals() {
+    return Meal.mealNumbers;
   }
 }

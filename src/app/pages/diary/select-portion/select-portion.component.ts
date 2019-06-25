@@ -25,13 +25,7 @@ export class SelectPortionComponent implements OnInit, OnDestroy {
     searchBox: this.searchBox
   });
 
-  public get diary$(): Observable<Diary> {
-    return this.ds.diary$;
-  }
-
-  public get title(): string {
-    return 'Select Food & Meal';
-  }
+  public diary: Diary;
 
   private subscription = new Subscription();
 
@@ -52,6 +46,10 @@ export class SelectPortionComponent implements OnInit, OnDestroy {
     }
 
     this.mealSelector.setValue(this.ds.focusedMeal);
+
+    this.subscription.add(
+      this.ds.diary$.subscribe(diary => (this.diary = diary))
+    );
 
     this.subscription.add(
       this.mealSelector.valueChanges.subscribe(
@@ -89,5 +87,9 @@ export class SelectPortionComponent implements OnInit, OnDestroy {
 
   public proceedWithSelection(food: Food): void {
     this.router.navigate([food.id], { relativeTo: this.route });
+  }
+
+  public mealName(mealNumber: number) {
+    return Meal.mealNames[mealNumber];
   }
 }

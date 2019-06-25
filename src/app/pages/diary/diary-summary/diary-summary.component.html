@@ -1,12 +1,12 @@
 <app-toolbar>
-  <a>{{ds.date | date:'longDate'}}</a>
-  <button *ngIf="ds.diary$ | async" mat-icon-button (click)="deleteAll()">
+  <a>{{date | date:'longDate'}}</a>
+  <button *ngIf="diary" mat-icon-button (click)="deleteAll()">
     <mat-icon>delete_sweep</mat-icon>
   </button>
 
 </app-toolbar>
 
-<ng-container *ngIf="ds.diary$ | async as diary; else noMeals">
+<ng-container *ngIf="diary; else noMeals">
 
   <!-- Header -->
 
