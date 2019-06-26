@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, shareReplay } from 'rxjs/operators';
 import { Meal } from '../models/meal.model';
 import { HttpClient } from '@angular/common/http';
 import { PortionDto } from '../models/portion-dto-model';
@@ -44,14 +44,13 @@ export class DiaryService implements OnDestroy {
           return this.getDiaryData();
         })
       )
-      .subscribe(diaryDto => {
-        if (diaryDto) {
-          this.diarySubject$.next(new Diary(diaryDto));
-          this.focusedMeal = this.diarySubject$.value.latestMeal;
-        } else {
-          this.diarySubject$.next(undefined);
-        }
-      });
+      .subscribe(diaryDto => this.setDiaryData(diaryDto));
+
+    this.hub.register(this.constructor.name, 'EntryAdd', (date: Date) => {
+      this.getDiaryData()
+        .pipe(shareReplay(1))
+        .subscribe(diaryDto => this.setDiaryData(diaryDto));
+    });
 
     this.hub.register(
       this.constructor.name,
@@ -135,6 +134,15 @@ export class DiaryService implements OnDestroy {
 
   private getDiaryData(): Observable<DiaryEntryDto> {
     return this.http.get<DiaryEntryDto>(`${this.baseUrl}${this.dateUrl}`);
+  }
+
+  private setDiaryData(diaryDto: DiaryEntryDto): void {
+    if (diaryDto) {
+      this.diarySubject$.next(new Diary(diaryDto));
+      this.focusedMeal = this.diarySubject$.value.latestMeal;
+    } else {
+      this.diarySubject$.next(undefined);
+    }
   }
 
   public addPortion(portionDto: PortionAddDto): Observable<PortionDto> {
