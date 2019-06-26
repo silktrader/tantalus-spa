@@ -13,20 +13,27 @@ import { HubService } from './hub.service';
 
 @Injectable()
 export class DiaryService implements OnDestroy {
-  public get date(): Date {
-    return this._date;
-  }
-
-  private baseUrl = 'https://localhost:5001/api/diary/';
-  private _date: Date;
+  private readonly baseUrl = 'https://localhost:5001/api/diary/';
 
   private readonly diarySubject$ = new BehaviorSubject<Diary>(undefined);
   public readonly diary$ = this.diarySubject$.asObservable();
 
   public focusedMeal = 0;
 
+  private pDateUrl: string;
   private get dateUrl(): string {
-    return this._date.toISOString().substring(0, 10);
+    return this.pDateUrl;
+  }
+
+  private pDate: Date;
+  public get date(): Date {
+    return this.pDate;
+  }
+
+  private setDate(date: Date) {
+    this.pDate = date;
+    this.pDate.setUTCHours(0, 0, 0);
+    this.pDateUrl = this.pDate.toISOString().substring(0, 10);
   }
 
   constructor(
@@ -38,9 +45,27 @@ export class DiaryService implements OnDestroy {
     this.route.params
       .pipe(
         switchMap((params: Params) => {
-          // determine date and fetch new data
-          this._date = new Date(params.date);
-          this._date.setUTCHours(0, 0, 0);
+          switch (params.date) {
+            case 'today': {
+              this.setDate(new Date());
+              break;
+            }
+            case 'yesterday': {
+              const date = new Date();
+              date.setDate(date.getDate() - 1);
+              this.setDate(date);
+              break;
+            }
+            case 'tomorrow': {
+              const date = new Date();
+              date.setDate(date.getDate() + 1);
+              this.setDate(date);
+              break;
+            }
+            default:
+              this.setDate(new Date(params.date));
+          }
+
           return this.getDiaryData();
         })
       )

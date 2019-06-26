@@ -8,10 +8,10 @@ import {
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { CalendarService } from 'src/app/services/calendar.service';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { UiService } from 'src/app/services/ui.service';
 import { MatSidenav } from '@angular/material';
+import { User } from 'src/app/models/user';
 
 @Component({
   selector: 'app-main-navigation',
@@ -28,7 +28,6 @@ export class MainNavigationComponent
 
   constructor(
     private breakpointObserver: BreakpointObserver,
-    public calendar: CalendarService,
     private auth: AuthenticationService,
     private ui: UiService
   ) {}
@@ -62,8 +61,24 @@ export class MainNavigationComponent
     this.ui.sidenav = undefined;
   }
 
-  get User() {
+  get User(): Observable<User> {
     return this.auth.currentUser;
+  }
+
+  public get today(): Date {
+    return new Date();
+  }
+
+  public get yesterday(): Date {
+    const date = this.today;
+    date.setDate(date.getDate() - 1);
+    return date;
+  }
+
+  public get tomorrow(): Date {
+    const date = this.today;
+    date.setDate(date.getDate() + 1);
+    return date;
   }
 
   handleLogout(): void {

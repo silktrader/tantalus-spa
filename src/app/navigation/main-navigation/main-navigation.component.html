@@ -23,20 +23,20 @@
     <mat-nav-list>
       <!-- routerLink is needed in concomitance with anchors to allow keyboard navigation with tab -->
       <h3 mat-subheader>Diary</h3>
-      <a mat-list-item routerLink cdkFocusRegionStart (click)="calendar.gotoDate(calendar.yesterday)">
+      <a mat-list-item routerLink="/diary/yesterday" cdkFocusRegionStart>
         <mat-icon mat-list-icon>calendar_today</mat-icon>
         <h4 mat-line>Yesterday</h4>
-        <p mat-line>{{ calendar.yesterday | date }}</p>
+        <p mat-line>{{ yesterday | date }}</p>
       </a>
-      <a mat-list-item routerLink cdkFocusInitial (click)="calendar.gotoDate(calendar.today)">
+      <a mat-list-item routerLink="/diary/today" cdkFocusInitial>
         <mat-icon mat-list-icon>today</mat-icon>
         <h4 mat-line>Today</h4>
-        <p mat-line>{{ calendar.today | date }}</p>
+        <p mat-line>{{ today | date }}</p>
       </a>
-      <a mat-list-item routerLink (click)="calendar.gotoDate(calendar.tomorrow)">
+      <a mat-list-item routerLink="/diary/tomorrow">
         <mat-icon mat-list-icon>calendar_today</mat-icon>
         <h4 mat-line>Tomorrow</h4>
-        <p mat-line>{{ calendar.tomorrow | date }}</p>
+        <p mat-line>{{ tomorrow | date }}</p>
       </a>
 
       <mat-divider></mat-divider>
@@ -53,15 +53,7 @@
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
-    <!-- <mat-toolbar color="primary">
-      <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()"
-        *ngIf="isHandset$ | async">
-        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
-      </button>
-      <span>Tantalus-SPA</span>
-    </mat-toolbar> -->
 
-    <!-- Add Content Here -->
     <ng-content></ng-content>
   </mat-sidenav-content>
 </mat-sidenav-container>
