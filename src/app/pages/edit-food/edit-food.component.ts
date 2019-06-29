@@ -22,17 +22,6 @@ import { FoodDto } from 'src/app/models/food-dto.model';
   styleUrls: ['./edit-food.component.css']
 })
 export class EditFoodComponent implements OnInit, OnDestroy {
-  addFoodForm: FormGroup;
-
-  // undefined when the food is being added
-  private food: Food | undefined;
-
-  private subscription: Subscription;
-
-  public get isNew(): boolean {
-    return !this.food;
-  }
-
   constructor(
     private foodsService: FoodsService,
     public ui: UiService,
@@ -40,6 +29,62 @@ export class EditFoodComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     public dialog: MatDialog
   ) {}
+
+  // private changeFood(food: Food, values: FoodData): void {
+  //   this.foodsService.editFood({ id: food.id, ...values }).then(() => {
+  //     this.ui.notify(`Changed ${values.name}`, 'Undo', () => {
+  //       this.foodsService.editFood(food.deserialised);
+  //       this.ui.warn(`Reverted changes to ${food.name}`);
+  //     });
+  //     this.ui.goBack();
+  //   });
+  // }
+
+  // onDelete() {
+
+  //   const dialogRef = this.dialog.open(DeleteFoodDialogComponent, {
+  //     data: { food: this.food },
+  //   });
+
+  //   dialogRef.afterClosed().subscribe(
+  // (result: { documents: Array<IDiaryEntryData>, portions: Array<{ date: string, portion: Portion }> }) => {
+  //     if (result && this.food) {
+  //       const food = this.food;     // undefined scoped check
+  //       this.foodsService.deleteFood(food, result.documents).then(() => {
+  //         this.ui.warn(`Deleted ${food.name} and its ${result.portions.length} portions`);
+  //       });
+  //     }
+  //   });
+  // }
+
+  public get editable() {
+    return this.food !== undefined;
+  }
+
+  public get deletable() {
+    return this.editable;
+  }
+
+  private isSaveableFlag = false;
+  public get isSaveable() {
+    return this.isSaveableFlag;
+  }
+
+  private isResettableFlag = false;
+  public get isResettable() {
+    return this.isResettableFlag;
+  }
+
+  public get isNew(): boolean {
+    return !this.food;
+  }
+  public addFoodForm: FormGroup;
+  private unmodifiedState;
+
+  // undefined when the food is being added
+  private food: Food | undefined;
+
+  private subscription: Subscription;
 
   ngOnInit() {
     this.addFoodForm = this.fb.group(
@@ -93,7 +138,18 @@ export class EditFoodComponent implements OnInit, OnDestroy {
         }
 
         this.addFoodForm.patchValue(food);
+        this.unmodifiedState = JSON.stringify(this.addFoodForm.value);
       });
+
+    this.subscription.add(
+      this.addFoodForm.valueChanges.subscribe(newValue => {
+        // store the form's saveable state to avoid unnecessary calls from multiple elements
+        const jsonValue = JSON.stringify(newValue);
+        this.isResettableFlag =
+          this.unmodifiedState && jsonValue !== this.unmodifiedState;
+        this.isSaveableFlag = this.addFoodForm.valid && this.isResettableFlag;
+      })
+    );
   }
 
   ngOnDestroy(): void {
@@ -162,38 +218,7 @@ export class EditFoodComponent implements OnInit, OnDestroy {
     // });
   }
 
-  // private changeFood(food: Food, values: FoodData): void {
-  //   this.foodsService.editFood({ id: food.id, ...values }).then(() => {
-  //     this.ui.notify(`Changed ${values.name}`, 'Undo', () => {
-  //       this.foodsService.editFood(food.deserialised);
-  //       this.ui.warn(`Reverted changes to ${food.name}`);
-  //     });
-  //     this.ui.goBack();
-  //   });
-  // }
-
-  // onDelete() {
-
-  //   const dialogRef = this.dialog.open(DeleteFoodDialogComponent, {
-  //     data: { food: this.food },
-  //   });
-
-  //   dialogRef.afterClosed().subscribe(
-  // (result: { documents: Array<IDiaryEntryData>, portions: Array<{ date: string, portion: Portion }> }) => {
-  //     if (result && this.food) {
-  //       const food = this.food;     // undefined scoped check
-  //       this.foodsService.deleteFood(food, result.documents).then(() => {
-  //         this.ui.warn(`Deleted ${food.name} and its ${result.portions.length} portions`);
-  //       });
-  //     }
-  //   });
-  // }
-
-  public get editable() {
-    return this.food !== undefined;
-  }
-
-  public get deletable() {
-    return this.editable;
+  public undoChanges() {
+    this.addFoodForm.patchValue(JSON.parse(this.unmodifiedState));
   }
 }

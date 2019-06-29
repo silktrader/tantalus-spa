@@ -1,6 +1,9 @@
 <app-toolbar>
   <a routerLink="/foods" routerLinkActive="active">Foods</a>
   <a>Edit Food</a>
+  <button mat-icon-button [disabled]="!isResettable" (click)="undoChanges()">
+    <mat-icon aria-label="Reset changes">undo</mat-icon>
+  </button>
   <button mat-icon-button (click)="onDelete()" [disabled]="!deletable">
     <mat-icon>delete_sweep</mat-icon>
   </button>
@@ -240,7 +243,8 @@
   </section>
 
 
-  <button class="save" mat-fab color="primary" type="submit">
-    <mat-icon aria-label="Save food changes">save</mat-icon>
+  <button class="save" mat-fab color="primary" type="submit" [disabled]="!isSaveable">
+    <mat-icon aria-label="Save changes">save</mat-icon>
   </button>
+
 </form>
