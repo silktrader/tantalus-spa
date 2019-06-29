@@ -31,13 +31,13 @@ export class Food extends FoodDto {
   }
 
   get detailsPercentage(): number {
-    let undefinedProperties = 0;
+    let definedProperties = 0;
     for (const prop of Food.detailProperties) {
-      if (this.data[prop] === undefined) {
-        undefinedProperties++;
+      if (this.data[prop] !== undefined && this.data[prop] !== null) {
+        definedProperties++;
       }
     }
-    return 1 - undefinedProperties / Food.detailProperties.length;
+    return definedProperties / Food.detailProperties.length;
   }
 
   get deserialised(): FoodDto {
@@ -50,7 +50,13 @@ export class Food extends FoodDto {
     FoodProp.saturated,
     FoodProp.trans,
     FoodProp.cholesterol,
-    FoodProp.sodium
+
+    FoodProp.sodium,
+    FoodProp.calcium,
+    FoodProp.potassium,
+    FoodProp.magnesium,
+    FoodProp.zinc,
+    FoodProp.iron
   ];
 
   private readonly data: FoodDto;

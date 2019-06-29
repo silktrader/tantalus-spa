@@ -16,6 +16,8 @@ export enum FoodProp {
   calcium = 'calcium',
   potassium = 'potassium',
   magnesium = 'magnesium',
+  omega3 = 'omega3',
+  omega6 = 'omega6',
   zinc = 'zinc',
   iron = 'iron',
   fatPercentage = 'fatsPercentage',

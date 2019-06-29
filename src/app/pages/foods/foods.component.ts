@@ -11,7 +11,6 @@ import {
   MatTableDataSource,
   MatSort,
   MatPaginator,
-  MatToolbar,
   MatButtonToggleGroup
 } from '@angular/material';
 import { Food } from '../../models/food.model';
@@ -39,7 +38,7 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public selectedColumns: Array<FoodProp> = new Array<FoodProp>();
 
-  private readonly mobileColumnSets = new Map<string, Array<FoodProp>>([
+  public readonly mobileColumnSets = new Map<string, Array<FoodProp>>([
     ['Overview', [FoodProp.detailsPercentage, FoodProp.calories]],
     ['Macronutrients', [FoodProp.proteins, FoodProp.carbs, FoodProp.fats]]
   ]);
@@ -159,7 +158,7 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
         )
       )
       .subscribe(value => {
-        if (value === undefined) return;
+        if (value === undefined) { return; }
         this.selectedColumns = this.selectMobileColumns(value);
       });
 
@@ -197,8 +196,9 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
     // listen to height changes
     const $resizeEvent = fromEvent(window, 'resize').pipe(
       map(() => {
-        if (document && document.documentElement)
+        if (document && document.documentElement) {
           return document.documentElement.clientHeight;
+        }
         return 800;
       }),
       debounceTime(200)
@@ -212,10 +212,11 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
     );
 
     // set the initial page size
-    if (document && document.documentElement)
+    if (document && document.documentElement) {
       this.paginator.pageSize = this.calculateRowsNumber(
         document.documentElement.clientHeight
       );
+    }
   }
 
   ngOnDestroy(): void {
@@ -230,19 +231,26 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.router.navigate(['/foods', food.id]);
   }
 
+  addNewFood(): void {
+    this.router.navigate(['/add-food']);
+  }
+
   public format(prop: FoodProp, item: any): string {
     if (typeof item === 'number') {
-      if (this.integerProperties.has(prop))
+      if (this.integerProperties.has(prop)) {
         return item.toLocaleString(undefined, { maximumFractionDigits: 0 });
+      }
 
-      if (this.oneDecimalProperties.has(prop))
+      if (this.oneDecimalProperties.has(prop)) {
         return item.toLocaleString(undefined, { maximumFractionDigits: 1 });
+      }
 
-      if (this.percentageProperties.has(prop))
+      if (this.percentageProperties.has(prop)) {
         return item.toLocaleString(undefined, { style: 'percent' });
+      }
     }
 
-    if (typeof item === 'undefined') return '∅';
+    if (typeof item === 'undefined') { return '∅'; }
 
     return item;
   }

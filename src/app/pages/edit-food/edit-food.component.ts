@@ -2,7 +2,13 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 import { Subscription, of } from 'rxjs';
 import { switchMap, map, tap } from 'rxjs/operators';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import {
+  ActivatedRoute,
+  ParamMap,
+  Router,
+  NavigationEnd,
+  Event
+} from '@angular/router';
 import { MatDialog } from '@angular/material';
 // import { DeleteFoodDialogComponent } from '../delete-food-dialog/delete-food-dialog.component';
 import { FoodsService } from 'src/app/services/foods.service';
@@ -52,6 +58,9 @@ export class EditFoodComponent implements OnInit, OnDestroy {
         polyunsaturated: undefined,
         trans: undefined,
         cholesterol: undefined,
+        omega3: undefined,
+        omega6: undefined,
+
         sodium: undefined,
         potassium: undefined,
         calcium: undefined,

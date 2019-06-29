@@ -1,3 +1,6 @@
 == Todo
 
+* [ ] fix timestamp when adding foods
+* [ ] delete diary entry when last portion is remove and no comments remain
+* [ ] fill name when entering new food from "Create" button
 * [ ] attempt reconnection after losing SignalR connection

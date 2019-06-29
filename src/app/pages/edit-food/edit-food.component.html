@@ -1,4 +1,6 @@
 <app-toolbar>
+  <a routerLink="/foods" routerLinkActive="active">Foods</a>
+  <a>Edit Food</a>
   <button mat-icon-button (click)="onDelete()" [disabled]="!deletable">
     <mat-icon>delete_sweep</mat-icon>
   </button>
@@ -202,6 +204,17 @@
             <mat-label>Trans Fats</mat-label>
             <input type="number" matInput placeholder="ex. 2.10" step="1" min="0" max="99" autocomplete="off"
               formControlName="trans" (click)="$event.target.select()">
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="column-item">
+            <mat-label>Omega-3</mat-label>
+            <input type="number" matInput placeholder="ex. 2.10" step="1" min="0" max="99" autocomplete="off"
+              formControlName="omega3" (click)="$event.target.select()">
+          </mat-form-field>
+          <mat-form-field appearance="fill" class="column-item">
+            <mat-label>Omega-6</mat-label>
+            <input type="number" matInput placeholder="ex. 2.10" step="1" min="0" max="99" autocomplete="off"
+              formControlName="omega6" (click)="$event.target.select()">
           </mat-form-field>
         </mat-card-content>
       </mat-card>

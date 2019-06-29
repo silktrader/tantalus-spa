@@ -9,7 +9,6 @@ import {
 import { HttpClient } from '@angular/common/http';
 import { Food } from '../models/food.model';
 import { FoodDto } from '../models/food-dto.model';
-import { AuthenticationService } from './authentication.service';
 import { HubService } from './hub.service';
 
 @Injectable({ providedIn: 'root' })
@@ -19,15 +18,10 @@ export class FoodsService {
   private readonly foods$ = new BehaviorSubject<Food[]>([]);
   public readonly foods = this.foods$.asObservable();
 
-  constructor(
-    private readonly http: HttpClient,
-    private readonly auth: AuthenticationService,
-    private hub: HubService
-  ) {
+  constructor(private readonly http: HttpClient, private hub: HubService) {
     // populate the initial foods store
     this.http.get(this.baseUrl).subscribe(
       (foods: FoodDto[]) => {
-        console.log('RAN');
         this.foods$.next(foods.map(dto => new Food(dto)));
       },
       error => console.log(error)
