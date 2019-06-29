@@ -150,41 +150,46 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
       )
     );
 
-    // tk shouldn't I unsubscribe?
-    this.ui.mobile
-      .pipe(
-        switchMap(isMobile =>
-          isMobile ? this.columnSelector.valueChanges : of(undefined)
+    this.subscription.add(
+      this.ui.mobile
+        .pipe(
+          switchMap(isMobile =>
+            isMobile ? this.columnSelector.valueChanges : of(undefined)
+          )
         )
-      )
-      .subscribe(value => {
-        if (value === undefined) { return; }
-        this.selectedColumns = this.selectMobileColumns(value);
-      });
-
-    this.ui.desktop
-      .pipe(
-        switchMap(isDesktop => {
-          if (!isDesktop) {
-            this.desktop = false;
-            return of(undefined);
+        .subscribe(value => {
+          if (value === undefined) {
+            return;
           }
-
-          this.desktop = true;
-          this.changeDetector.detectChanges();
-          this.columnToggle.value = 'Overview';
-          this.selectedColumns = this.selectDesktopColumns(
-            this.columnToggle.value
-          );
-          return this.columnToggle.valueChange.asObservable();
+          this.selectedColumns = this.selectMobileColumns(value);
         })
-      )
-      .subscribe(value => {
-        if (value === undefined) {
-          return;
-        }
-        this.selectedColumns = this.selectDesktopColumns(value);
-      });
+    );
+
+    this.subscription.add(
+      this.ui.desktop
+        .pipe(
+          switchMap(isDesktop => {
+            if (!isDesktop) {
+              this.desktop = false;
+              return of(undefined);
+            }
+
+            this.desktop = true;
+            this.changeDetector.detectChanges();
+            this.columnToggle.value = 'Overview';
+            this.selectedColumns = this.selectDesktopColumns(
+              this.columnToggle.value
+            );
+            return this.columnToggle.valueChange.asObservable();
+          })
+        )
+        .subscribe(value => {
+          if (value === undefined) {
+            return;
+          }
+          this.selectedColumns = this.selectDesktopColumns(value);
+        })
+    );
 
     this.columnSelector.setValue('Calories');
   }
@@ -250,7 +255,9 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     }
 
-    if (typeof item === 'undefined') { return '∅'; }
+    if (typeof item === 'undefined') {
+      return '∅';
+    }
 
     return item;
   }
