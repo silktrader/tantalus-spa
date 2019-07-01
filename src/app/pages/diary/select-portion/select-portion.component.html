@@ -6,7 +6,7 @@
 <form class="inputs" [formGroup]="filterForm">
   <mat-form-field class="search">
     <mat-label>Search</mat-label>
-    <input type="search" matInput [formControl]="searchBox" autocomplete="off" (keyup)="search($event)">
+    <input type="search" matInput #searchBoxInput [formControl]="searchBox" autocomplete="off" (keyup)="search($event)">
     <button matSuffix mat-icon-button (click)="resetSearch()">
       <mat-icon>close</mat-icon>
     </button>

@@ -30,16 +30,6 @@ export class EditFoodComponent implements OnInit, OnDestroy {
     public dialog: MatDialog
   ) {}
 
-  // private changeFood(food: Food, values: FoodData): void {
-  //   this.foodsService.editFood({ id: food.id, ...values }).then(() => {
-  //     this.ui.notify(`Changed ${values.name}`, 'Undo', () => {
-  //       this.foodsService.editFood(food.deserialised);
-  //       this.ui.warn(`Reverted changes to ${food.name}`);
-  //     });
-  //     this.ui.goBack();
-  //   });
-  // }
-
   // onDelete() {
 
   //   const dialogRef = this.dialog.open(DeleteFoodDialogComponent, {
@@ -75,9 +65,6 @@ export class EditFoodComponent implements OnInit, OnDestroy {
     return this.isResettableFlag;
   }
 
-  public get isNew(): boolean {
-    return !this.food;
-  }
   public addFoodForm: FormGroup;
   private unmodifiedState;
 
@@ -145,8 +132,11 @@ export class EditFoodComponent implements OnInit, OnDestroy {
       this.addFoodForm.valueChanges.subscribe(newValue => {
         // store the form's saveable state to avoid unnecessary calls from multiple elements
         const jsonValue = JSON.stringify(newValue);
+
+        // the form can be reset when no food's being edited or when there the food's values and the fields contents differ
         this.isResettableFlag =
-          this.unmodifiedState && jsonValue !== this.unmodifiedState;
+          (this.unmodifiedState && jsonValue !== this.unmodifiedState) ||
+          (this.unmodifiedState === undefined && this.addFoodForm.dirty);
         this.isSaveableFlag = this.addFoodForm.valid && this.isResettableFlag;
       })
     );
@@ -219,6 +209,10 @@ export class EditFoodComponent implements OnInit, OnDestroy {
   }
 
   public undoChanges() {
-    this.addFoodForm.patchValue(JSON.parse(this.unmodifiedState));
+    if (this.unmodifiedState) {
+      this.addFoodForm.patchValue(JSON.parse(this.unmodifiedState));
+    } else {
+      this.addFoodForm.reset();
+    }
   }
 }

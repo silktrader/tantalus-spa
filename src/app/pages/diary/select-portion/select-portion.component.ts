@@ -1,4 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  AfterViewInit,
+  ViewChild,
+  ElementRef
+} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { Food } from 'src/app/models/food.model';
@@ -14,7 +21,8 @@ import { Diary } from 'src/app/models/diary.model';
   templateUrl: './select-portion.component.html',
   styleUrls: ['./select-portion.component.css']
 })
-export class SelectPortionComponent implements OnInit, OnDestroy {
+export class SelectPortionComponent
+  implements OnInit, OnDestroy, AfterViewInit {
   public filteredFoods$: Observable<Food[]>;
   nameFilter: BehaviorSubject<string> = new BehaviorSubject('');
 
@@ -28,6 +36,8 @@ export class SelectPortionComponent implements OnInit, OnDestroy {
   public diary: Diary;
 
   private subscription = new Subscription();
+
+  @ViewChild('searchBoxInput') searchBoxInputRef: ElementRef;
 
   constructor(
     private foodsService: FoodsService,
@@ -56,6 +66,10 @@ export class SelectPortionComponent implements OnInit, OnDestroy {
         value => (this.ds.focusedMeal = value)
       )
     );
+    this.searchBoxInputRef.nativeElement.focus();
+  }
+
+  ngAfterViewInit() {
   }
 
   ngOnDestroy() {

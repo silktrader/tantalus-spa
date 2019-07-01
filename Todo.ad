@@ -1,6 +1,9 @@
 == Todo
 
-* [ ] fix timestamp when adding foods
+* [ ] design summary view so that it allows for an infographic bar
+* [ ] focus on last meal when others are present in new portions addition form
+* [ ] update nutrients data in preview when editing portions
+* [x] fix timestamp when adding foods
 * [ ] delete diary entry when last portion is remove and no comments remain
 * [ ] fill name when entering new food from "Create" button
 * [ ] attempt reconnection after losing SignalR connection

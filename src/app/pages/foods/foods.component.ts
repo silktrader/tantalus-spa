@@ -145,9 +145,9 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
   // might have to use AfterViewInit
   ngOnInit(): void {
     this.subscription.add(
-      this.foodsService.foods.subscribe(
-        (foods: Food[]) => (this.dataSource.data = foods)
-      )
+      this.foodsService.foods.subscribe((foods: Food[]) => {
+        this.dataSource.data = foods;
+      })
     );
 
     this.subscription.add(
