@@ -1,6 +1,6 @@
 export interface RecipeDto {
   name: string;
-  ingredients: { id: number; quantity: number }[];
+  ingredients: { foodId: number; quantity: number }[];
 }
 
 export interface RecipeFoodDto {

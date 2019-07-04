@@ -7,6 +7,8 @@ import {
   RecipeFoodDto,
   RecipeDto
 } from 'src/app/models/recipe-autocomplete.model';
+import { RecipesService } from 'src/app/services/recipes.service';
+import { UiService } from 'src/app/services/ui.service';
 
 @Component({
   selector: 'app-add-recipe',
@@ -14,7 +16,12 @@ import {
   styleUrls: ['./add-recipe.component.css']
 })
 export class AddRecipeComponent implements OnInit {
-  constructor(private fb: FormBuilder, private fs: FoodsService) {}
+  constructor(
+    private fb: FormBuilder,
+    private fs: FoodsService,
+    private rs: RecipesService,
+    private ui: UiService
+  ) {}
 
   public get ingredients(): FormArray {
     return this.editRecipeForm.get('ingredients') as FormArray;
@@ -72,15 +79,23 @@ export class AddRecipeComponent implements OnInit {
 
   public save(): void {
     // pack a usable JSON object from the form
-    const ingredients: { id: number; quantity: number }[] = [];
+    const ingredients: { foodId: number; quantity: number }[] = [];
     for (const field of this.editRecipeForm.get('ingredients').value) {
-      ingredients.push({ id: field.food.id, quantity: field.quantity });
+      ingredients.push({ foodId: field.food.id, quantity: field.quantity });
     }
     const recipeDto: RecipeDto = {
       name: this.editRecipeForm.get('name').value,
       ingredients
     };
-    console.log(recipeDto);
+
+    this.rs.saveRecipe(recipeDto).subscribe(
+      value => {
+        this.ui.notify(`Saved recipe ${recipeDto.name}`);
+      },
+      errorResponse => {
+        this.ui.warn(`Error: ${errorResponse}`);
+      }
+    );
   }
 
   public get saveable(): boolean {
