@@ -21,7 +21,8 @@ import {
   MatExpansionModule,
   MatDialogModule,
   MatGridListModule,
-  MatChipsModule
+  MatChipsModule,
+  MatAutocompleteModule
 } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -51,7 +52,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatExpansionModule,
     MatDialogModule,
     MatGridListModule,
-    MatChipsModule
+    MatChipsModule,
+    MatAutocompleteModule
   ],
   exports: [
     MatFormFieldModule,
@@ -77,7 +79,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatExpansionModule,
     MatDialogModule,
     MatGridListModule,
-    MatChipsModule
+    MatChipsModule,
+    MatAutocompleteModule
   ]
 })
 export class MaterialModule {}

@@ -19,6 +19,8 @@ import { DiarySummaryComponent } from './pages/diary/diary-summary/diary-summary
 import { AddPortionComponent } from './pages/diary/add-portion/add-portion.component';
 import { SelectPortionComponent } from './pages/diary/select-portion/select-portion.component';
 import { EditPortionComponent } from './pages/diary/edit-portion/edit-portion.component';
+import { RecipesSummaryComponent } from './pages/recipes/recipe-summary/recipes-summary.component';
+import { AddRecipeComponent } from './pages/recipes/add-recipe/add-recipe.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +35,9 @@ import { EditPortionComponent } from './pages/diary/edit-portion/edit-portion.co
     DiarySummaryComponent,
     AddPortionComponent,
     SelectPortionComponent,
-    EditPortionComponent
+    EditPortionComponent,
+    RecipesSummaryComponent,
+    AddRecipeComponent
   ],
   imports: [
     BrowserModule,

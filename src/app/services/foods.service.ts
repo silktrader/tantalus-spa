@@ -4,12 +4,15 @@ import {
   map,
   switchMap,
   debounceTime,
-  distinctUntilChanged
+  distinctUntilChanged,
+  shareReplay,
+  tap
 } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Food } from '../models/food.model';
 import { FoodDto } from '../models/food-dto.model';
 import { HubService } from './hub.service';
+import { RecipeFoodDto } from '../models/recipe-autocomplete.model';
 
 @Injectable({ providedIn: 'root' })
 export class FoodsService {
@@ -75,5 +78,11 @@ export class FoodsService {
       distinctUntilChanged(),
       map(foodsDtos => foodsDtos.map(dto => new Food(dto)))
     );
+  }
+
+  public getAutocompleteFoods(filter: string): Observable<RecipeFoodDto[]> {
+    return this.http
+      .get<RecipeFoodDto[]>(`${this.baseUrl}/autocomplete?filter=${filter}`)
+      .pipe(tap(value => console.log('fetching ' + filter + ' ')));
   }
 }

@@ -11,6 +11,8 @@ import { DiarySummaryComponent } from './pages/diary/diary-summary/diary-summary
 import { AddPortionComponent } from './pages/diary/add-portion/add-portion.component';
 import { SelectPortionComponent } from './pages/diary/select-portion/select-portion.component';
 import { EditPortionComponent } from './pages/diary/edit-portion/edit-portion.component';
+import { RecipesSummaryComponent } from './pages/recipes/recipe-summary/recipes-summary.component';
+import { AddRecipeComponent } from './pages/recipes/add-recipe/add-recipe.component';
 
 const routes: Routes = [
   { path: 'login', component: AuthenticationComponent },
@@ -42,7 +44,17 @@ const routes: Routes = [
     component: EditFoodComponent,
     canActivate: [AuthGuard]
   },
-  { path: '**', redirectTo: 'dashboard' }
+  {
+    path: 'recipes',
+    component: RecipesSummaryComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'add-recipes', // tk temporary: review routes
+    component: AddRecipeComponent,
+    canActivate: [AuthGuard]
+  }
+  // { path: '**', redirectTo: 'dashboard' }
 ];
 
 @NgModule({
