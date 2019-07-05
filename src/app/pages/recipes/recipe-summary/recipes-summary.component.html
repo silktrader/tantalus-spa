@@ -5,6 +5,14 @@
   </button>
 </app-toolbar>
 
-<p>
-  recipe-summary works!
-</p>
+<mat-table [dataSource]="dataSource" matSort class="mat-elevation-z6">
+  <ng-container matColumnDef="name">
+    <mat-header-cell mat-header-cell mat-sort-header *matHeaderCellDef class="cell">Name</mat-header-cell>
+    <mat-cell class="cell" *matCellDef="let element">{{element.name}}</mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="selectedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: selectedColumns" matRipple></mat-row>
+</mat-table>
+
+<mat-paginator [length]="dataSource?.recipesCount" [pageSize]="3" [pageSizeOptions]="[3, 20, 30]"></mat-paginator>
