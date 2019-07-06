@@ -11,6 +11,16 @@
     <mat-cell class="cell" *matCellDef="let element">{{element.name}}</mat-cell>
   </ng-container>
 
+  <ng-container matColumnDef="ingredientsCount">
+    <mat-header-cell mat-header-cell mat-sort-header *matHeaderCellDef class="cell">Ingredients</mat-header-cell>
+    <mat-cell class="cell" *matCellDef="let element">{{element.ingredientsCount}}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="calories">
+    <mat-header-cell mat-header-cell mat-sort-header *matHeaderCellDef class="cell">Calories</mat-header-cell>
+    <mat-cell class="cell" *matCellDef="let element">{{element.calories | number:'1.0-0'}}</mat-cell>
+  </ng-container>
+
   <mat-header-row *matHeaderRowDef="selectedColumns"></mat-header-row>
   <mat-row *matRowDef="let row; columns: selectedColumns" matRipple></mat-row>
 </mat-table>

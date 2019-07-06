@@ -1,6 +1,8 @@
+import { FoodDto } from './food-dto.model';
+
 export interface RecipeDto {
   name: string;
-  ingredients: { foodId: number; quantity: number }[];
+  ingredients: { food: FoodDto; quantity: number }[];
 }
 
 export interface RecipeFoodDto {

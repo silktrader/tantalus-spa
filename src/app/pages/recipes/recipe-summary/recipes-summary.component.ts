@@ -13,7 +13,7 @@ import { tap } from 'rxjs/operators';
 })
 export class RecipesSummaryComponent implements OnInit, AfterViewInit {
   dataSource: RecipesDataSource;
-  selectedColumns = ['name'];
+  selectedColumns = ['name', 'ingredientsCount', 'calories'];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
