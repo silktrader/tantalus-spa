@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { RecipeDto } from '../models/recipe-autocomplete.model';
+import { RecipeDto, SaveRecipeDto } from '../models/recipe-autocomplete.model';
 import { Observable } from 'rxjs';
 import { RecipesPaginationDto } from '../models/recipes-pagination.model';
 
@@ -12,13 +12,13 @@ export class RecipesService {
 
   constructor(private readonly http: HttpClient) {}
 
-  public saveRecipe(recipeDto: RecipeDto): Observable<RecipeDto> {
+  public saveRecipe(recipeDto: SaveRecipeDto): Observable<RecipeDto> {
     return this.http.post<RecipeDto>(this.baseUrl, recipeDto);
   }
 
   public findRecipes(
-    pageNumber = 0,
-    pageSize = 10
+    pageNumber: number,
+    pageSize: number
   ): Observable<RecipesPaginationDto> {
     return this.http.get<RecipesPaginationDto>(this.baseUrl, {
       params: new HttpParams()

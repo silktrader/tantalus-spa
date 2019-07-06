@@ -5,7 +5,8 @@ import { FoodsService } from 'src/app/services/foods.service';
 import { Observable } from 'rxjs';
 import {
   RecipeFoodDto,
-  RecipeDto
+  RecipeDto,
+  SaveRecipeDto
 } from 'src/app/models/recipe-autocomplete.model';
 import { RecipesService } from 'src/app/services/recipes.service';
 import { UiService } from 'src/app/services/ui.service';
@@ -79,11 +80,11 @@ export class AddRecipeComponent implements OnInit {
 
   public save(): void {
     // pack a usable JSON object from the form
-    const ingredients: { foodId: number; quantity: number }[] = [];
+    const ingredients: Array<{ foodId: number; quantity: number }> = [];
     for (const field of this.editRecipeForm.get('ingredients').value) {
       ingredients.push({ foodId: field.food.id, quantity: field.quantity });
     }
-    const recipeDto: RecipeDto = {
+    const recipeDto: SaveRecipeDto = {
       name: this.editRecipeForm.get('name').value,
       ingredients
     };

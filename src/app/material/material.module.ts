@@ -22,7 +22,8 @@ import {
   MatDialogModule,
   MatGridListModule,
   MatChipsModule,
-  MatAutocompleteModule
+  MatAutocompleteModule,
+  MatProgressSpinnerModule
 } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -53,7 +54,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatDialogModule,
     MatGridListModule,
     MatChipsModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatProgressSpinnerModule
   ],
   exports: [
     MatFormFieldModule,
@@ -80,7 +82,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatDialogModule,
     MatGridListModule,
     MatChipsModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatProgressSpinnerModule
   ]
 })
 export class MaterialModule {}

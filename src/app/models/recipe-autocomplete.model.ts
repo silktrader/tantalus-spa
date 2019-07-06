@@ -2,7 +2,12 @@ import { FoodDto } from './food-dto.model';
 
 export interface RecipeDto {
   name: string;
-  ingredients: { food: FoodDto; quantity: number }[];
+  ingredients: Array<{ food: FoodDto; quantity: number }>;
+}
+
+export interface SaveRecipeDto {
+  name: string;
+  ingredients: Array<{ foodId: number; quantity: number }>;
 }
 
 export interface RecipeFoodDto {

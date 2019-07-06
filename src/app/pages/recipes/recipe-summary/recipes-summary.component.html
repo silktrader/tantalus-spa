@@ -5,6 +5,8 @@
   </button>
 </app-toolbar>
 
+<mat-progress-spinner class="spinner" *ngIf="dataSource.loading$ | async" mode="intedeterminate"></mat-progress-spinner>
+
 <mat-table [dataSource]="dataSource" matSort class="mat-elevation-z6">
   <ng-container matColumnDef="name">
     <mat-header-cell mat-header-cell mat-sort-header *matHeaderCellDef class="cell">Name</mat-header-cell>
@@ -25,4 +27,5 @@
   <mat-row *matRowDef="let row; columns: selectedColumns" matRipple></mat-row>
 </mat-table>
 
-<mat-paginator [length]="dataSource?.recipesCount" [pageSize]="3" [pageSizeOptions]="[3, 20, 30]"></mat-paginator>
+<mat-paginator [length]="dataSource?.recipesCount" [pageSize]="pageSizeOptions[0]" [pageSizeOptions]="pageSizeOptions">
+</mat-paginator>
