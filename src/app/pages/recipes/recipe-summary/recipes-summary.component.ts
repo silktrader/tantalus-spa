@@ -4,6 +4,7 @@ import { RecipesDataSource } from '../recipes-data-source';
 import { RecipesService } from 'src/app/services/recipes.service';
 import { UiService } from 'src/app/services/ui.service';
 import { MatPaginator } from '@angular/material';
+import { RecipeDto } from 'src/app/models/recipe-autocomplete.model';
 
 @Component({
   selector: 'app-recipes-summary',
@@ -39,6 +40,10 @@ export class RecipesSummaryComponent implements OnInit, AfterViewInit {
   }
 
   public addNewRecipe(): void {
-    this.router.navigate(['/add-recipes']);
+    this.router.navigate(['/recipes/new']);
+  }
+
+  public edit(recipeDto: RecipeDto) {
+    this.router.navigate([`recipes/${recipeDto.id}`]);
   }
 }

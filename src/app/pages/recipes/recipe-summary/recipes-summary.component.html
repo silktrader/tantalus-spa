@@ -24,7 +24,7 @@
   </ng-container>
 
   <mat-header-row *matHeaderRowDef="selectedColumns"></mat-header-row>
-  <mat-row *matRowDef="let row; columns: selectedColumns" matRipple></mat-row>
+  <mat-row *matRowDef="let row; columns: selectedColumns" matRipple (click)="edit(row)"></mat-row>
 </mat-table>
 
 <mat-paginator [length]="dataSource?.recipesCount" [pageSize]="pageSizeOptions[0]" [pageSizeOptions]="pageSizeOptions">

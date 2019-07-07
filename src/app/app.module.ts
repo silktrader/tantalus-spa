@@ -20,7 +20,7 @@ import { AddPortionComponent } from './pages/diary/add-portion/add-portion.compo
 import { SelectPortionComponent } from './pages/diary/select-portion/select-portion.component';
 import { EditPortionComponent } from './pages/diary/edit-portion/edit-portion.component';
 import { RecipesSummaryComponent } from './pages/recipes/recipe-summary/recipes-summary.component';
-import { AddRecipeComponent } from './pages/recipes/add-recipe/add-recipe.component';
+import { EditRecipeComponent } from './pages/recipes/edit-recipe/edit-recipe.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +37,7 @@ import { AddRecipeComponent } from './pages/recipes/add-recipe/add-recipe.compon
     SelectPortionComponent,
     EditPortionComponent,
     RecipesSummaryComponent,
-    AddRecipeComponent
+    EditRecipeComponent
   ],
   imports: [
     BrowserModule,
