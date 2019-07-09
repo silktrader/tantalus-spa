@@ -1,7 +1,8 @@
 import { FoodDto } from './food-dto.model';
 import { FoodProp } from './food-prop.model';
+import { IPortion } from './portion.interface';
 
-export class Food extends FoodDto {
+export class Food extends FoodDto implements IPortion {
   constructor(data: FoodDto) {
     super();
 
@@ -12,10 +13,6 @@ export class Food extends FoodDto {
 
   get calories(): number {
     return this.proteins * 4 + this.carbs * 4 + this.fats * 9;
-  }
-
-  get approximateCalories(): number {
-    return Math.round(this.calories);
   }
 
   get proteinsPercentage(): number {

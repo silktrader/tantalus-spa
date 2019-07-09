@@ -15,6 +15,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FoodsService } from 'src/app/services/foods.service';
 import { Meal } from 'src/app/models/meal.model';
 import { Diary } from 'src/app/models/diary.model';
+import { Recipe } from 'src/app/models/recipe.model';
+import { IPortion } from 'src/app/models/portion.interface';
 
 @Component({
   selector: 'app-select-portion',
@@ -23,7 +25,7 @@ import { Diary } from 'src/app/models/diary.model';
 })
 export class SelectPortionComponent
   implements OnInit, OnDestroy, AfterViewInit {
-  public filteredFoods$: Observable<Food[]>;
+  public filteredFoods$: Observable<ReadonlyArray<IPortion>>;
   nameFilter: BehaviorSubject<string> = new BehaviorSubject('');
 
   public mealSelector: FormControl = new FormControl();
@@ -40,7 +42,7 @@ export class SelectPortionComponent
   @ViewChild('searchBoxInput') searchBoxInputRef: ElementRef;
 
   constructor(
-    private foodsService: FoodsService,
+    private fs: FoodsService,
     public ds: DiaryService,
     private ui: UiService,
     private route: ActivatedRoute,
@@ -48,7 +50,7 @@ export class SelectPortionComponent
   ) {}
 
   ngOnInit() {
-    this.filteredFoods$ = this.foodsService.getFilteredFoods(this.nameFilter);
+    this.filteredFoods$ = this.fs.getFilteredFoods(this.nameFilter);
 
     if (this.route.parent === null) {
       console.log('ERROR');
@@ -69,8 +71,7 @@ export class SelectPortionComponent
     this.searchBoxInputRef.nativeElement.focus();
   }
 
-  ngAfterViewInit() {
-  }
+  ngAfterViewInit() {}
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
@@ -93,17 +94,35 @@ export class SelectPortionComponent
     this.nameFilter.next('');
   }
 
+  /**
+   * Triggers the creation of a new food through the relevant route
+   */
   public startFoodCreation(): void {
     this.router.navigate(['/add-food'], {
       queryParams: { name: this.searchBox.value }
     });
   }
 
-  public proceedWithSelection(food: Food): void {
-    this.router.navigate([food.id], { relativeTo: this.route });
+  /**
+   * Leads to the dialog which allows editing quantities and which meal the portion(s) belong to
+   * @param selection Either a `Food` or a `Recipe`
+   */
+  public proceedWithSelection(selection: IPortion): void {
+    if (this.isRecipe(selection)) {
+      this.router.navigate(['../add-recipe'], {
+        relativeTo: this.route,
+        state: { recipe: selection }
+      });
+    } else {
+      this.router.navigate([selection.id], { relativeTo: this.route });
+    }
   }
 
   public mealName(mealNumber: number) {
     return Meal.mealNames[mealNumber];
+  }
+
+  public isRecipe(portion: IPortion): portion is Recipe {
+    return (portion as Recipe).ingredients !== undefined;
   }
 }

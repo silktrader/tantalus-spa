@@ -12,7 +12,8 @@ import { HttpClient } from '@angular/common/http';
 import { Food } from '../models/food.model';
 import { FoodDto } from '../models/food-dto.model';
 import { HubService } from './hub.service';
-import { RecipeFoodDto } from '../models/recipe-autocomplete.model';
+import { RecipeFoodDto, RecipeDto } from '../models/recipe-autocomplete.model';
+import { Recipe } from '../models/recipe.model';
 
 @Injectable({ providedIn: 'root' })
 export class FoodsService {
@@ -67,17 +68,34 @@ export class FoodsService {
       .toPromise();
   }
 
-  public getFilteredFoods(filter: BehaviorSubject<string>): Observable<Food[]> {
+  public getFilteredFoods(
+    filter: BehaviorSubject<string>
+  ): Observable<Array<Food | Recipe>> {
     return filter.pipe(
       switchMap(filterText => {
         const text = filterText.toLowerCase();
-        console.log('filtering');
-        return this.http.get<FoodDto[]>(`${this.baseUrl}/filter?name=${text}`);
+        return this.http.get<Array<FoodDto | RecipeDto>>(
+          `${this.baseUrl}/filter?name=${text}`
+        );
       }),
       debounceTime(300),
       distinctUntilChanged(),
-      map(foodsDtos => foodsDtos.map(dto => new Food(dto)))
+      map(data => {
+        const portions: Array<Food | Recipe> = [];
+        for (const dto of data) {
+          if (this.isRecipe(dto)) {
+            portions.push(new Recipe(dto));
+          } else {
+            portions.push(new Food(dto));
+          }
+        }
+        return portions;
+      })
     );
+  }
+
+  public isRecipe(portion: FoodDto | RecipeDto): portion is RecipeDto {
+    return (portion as RecipeDto).ingredients !== undefined;
   }
 
   public getAutocompleteFoods(filter: string): Observable<RecipeFoodDto[]> {

@@ -1,8 +1,9 @@
 import { RecipeDto } from './recipe-autocomplete.model';
 import { Food } from './food.model';
+import { IPortion } from './portion.interface';
 
-export class Recipe {
-  private ingredientsMap = new Map<Food, number>();
+export class Recipe implements IPortion {
+  public ingredientsMap = new Map<Food, number>();
   public get ingredients(): ReadonlyMap<Food, number> {
     return this.ingredientsMap;
   }

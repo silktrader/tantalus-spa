@@ -1,0 +1,50 @@
+<app-toolbar>
+  <a routerLink="../.." routerLinkActive="active">{{ds.date | date:'longDate'}}</a>
+  <a routerLink="../" routerLinkActive="active">Select Food</a>
+  <a>Edit Recipe Portions</a>
+</app-toolbar>
+
+<ng-container *ngIf="recipe !== undefined">
+  <mat-card>
+    <mat-card-header class="header">
+      <mat-card-title>
+        <section class="header">
+          <section class="header-left">
+            <button mat-icon-button>
+              <mat-icon>star_border</mat-icon>
+            </button>
+          </section>
+          <span class="header-title">{{recipe.name}}</span>
+          <section class="header-right">
+
+          </section>
+        </section>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="summary">
+      <form [formGroup]="editQuantities">
+        <section *ngFor="let ingredient of recipe.ingredientsMap | keyvalue">
+          <section class="ingredient-row">
+
+            <span>{{ingredient.key.name}}</span>
+            <mat-form-field class="ingredient-row-quantity" appearance="outline">
+              <mat-label>Quantity</mat-label>
+              <input matInput type="number" [formControlName]="ingredient.key.id" maxlength="5">
+            </mat-form-field>
+            <section class="ingredient-row-controls">
+              <button mat-flat-button color="warn" (click)="removeIngredient(ingredient.key.id)">
+                Remove
+              </button>
+            </section>
+          </section>
+        </section>
+      </form>
+
+    </mat-card-content>
+
+    <button class="save" mat-fab color="primary" (click)="save()" [disabled]="!saveable">
+      <mat-icon aria-label="Save changes">save</mat-icon>
+    </button>
+
+  </mat-card>
+</ng-container>

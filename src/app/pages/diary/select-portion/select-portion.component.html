@@ -29,11 +29,14 @@
 
 <ng-container *ngIf="filteredFoods$ | async as filteredFoods">
   <mat-nav-list *ngIf="filteredFoods.length > 0">
-    <a mat-list-item routerLink class="search-item" *ngFor="let food of filteredFoods"
-      (click)="proceedWithSelection(food)">
-      <mat-icon class="search-item-icon" matListIcon>label</mat-icon>
-      <span class="search-item-name">{{food.name}}</span>
-      <span class="search-item-calories">{{food.approximateCalories}}</span>
+    <a mat-list-item routerLink class="search-item" *ngFor="let portion of filteredFoods"
+      (click)="proceedWithSelection(portion)">
+      <mat-icon *ngIf="!isRecipe(portion); else recipeMarker" class="search-item-icon" matListIcon>label</mat-icon>
+      <ng-template #recipeMarker>
+        <mat-icon class="search-item-icon" matListIcon>list</mat-icon>
+      </ng-template>
+      <span class="search-item-name">{{portion.name}}</span>
+      <span class="search-item-calories">{{portion.calories | number:'1.0-0'}}</span>
     </a>
   </mat-nav-list>
 
