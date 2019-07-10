@@ -7,3 +7,5 @@
 * [ ] delete diary entry when last portion is remove and no comments remain
 * [ ] fill name when entering new food from "Create" button
 * [ ] attempt reconnection after losing SignalR connection
+* [ ] handle no router data in add-recipe-portions
+* [ ] impede last removal in add-recipe-portions

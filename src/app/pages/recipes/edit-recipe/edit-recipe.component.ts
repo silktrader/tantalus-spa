@@ -5,7 +5,6 @@ import { FoodsService } from 'src/app/services/foods.service';
 import { Observable, Subscription, of } from 'rxjs';
 import {
   RecipeFoodDto,
-  RecipeDto,
   SaveRecipeDto
 } from 'src/app/models/recipe-autocomplete.model';
 import { RecipesService } from 'src/app/services/recipes.service';
@@ -60,8 +59,11 @@ export class EditRecipeComponent implements OnInit {
 
         this.originalRecipe = recipe;
         this.editRecipeForm.get('name').setValue(recipe.name);
-        for (const item of recipe.ingredients) {
-          this.addIngredient({ id: item[0].id, name: item[0].name }, item[1]);
+        for (const ingredient of recipe.ingredients) {
+          this.addIngredient(
+            { id: ingredient.food.id, name: ingredient.food.name },
+            ingredient.quantity
+          );
         }
       });
   }

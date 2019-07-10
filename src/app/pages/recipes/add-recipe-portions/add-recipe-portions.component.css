@@ -1,3 +1,11 @@
+.ingredients-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 2rem;
+  margin-top: 3rem;
+}
+
 .ingredient-row {
   display: flex;
   align-items: baseline;
@@ -8,7 +16,7 @@
 .ingredient-row-name {
   width: 20rem;
   padding-right: 1rem;
-  flex-grow: 1;
+  flex-grow: 3;
 }
 
 .ingredient-row-quantity {
@@ -19,6 +27,12 @@
 }
 
 .ingredient-row-controls {
-  flex-grow: 1;
+  flex-grow: 2;
   margin-left: 2rem;
+}
+
+.save {
+  position: fixed;
+  right: 26px;
+  bottom: 26px;
 }
