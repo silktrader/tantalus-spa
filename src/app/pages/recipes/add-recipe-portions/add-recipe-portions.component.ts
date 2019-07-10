@@ -14,15 +14,12 @@ import { Ingredient } from 'src/app/models/ingredient.interface';
 export class AddRecipePortionsComponent implements OnInit {
   public readonly originalRecipe: Recipe;
   public ingredients: Array<Ingredient>;
-
   public ingredientsForm: FormGroup;
+  public mealSelector = new FormControl();
 
-  constructor(
-    public ds: DiaryService,
-    private fs: FoodsService,
-    private ui: UiService
-  ) {
+  constructor(public ds: DiaryService, private ui: UiService) {
     this.originalRecipe = history.state.recipe;
+    this.mealSelector.setValue(history.state.selectedMeal || 0); // tk replace with fetch last meal
   }
 
   ngOnInit() {
@@ -42,9 +39,7 @@ export class AddRecipePortionsComponent implements OnInit {
     return this.changed && this.ingredientsForm.valid;
   }
 
-  save(): void {
-    console.log(this.ingredients);
-  }
+  save(): void {}
 
   get changed(): boolean {
     const controls = this.ingredientsControls;
@@ -54,7 +49,9 @@ export class AddRecipePortionsComponent implements OnInit {
 
     for (let i = 0; i < this.originalRecipe.ingredients.length; i += 1) {
       const matchingControl = this.ingredientsControls.controls[i];
-      if (matchingControl === undefined) { return true; }
+      if (matchingControl === undefined) {
+        return true;
+      }
 
       if (
         matchingControl.value !== this.originalRecipe.ingredients[i].quantity

@@ -1,6 +1,6 @@
 <app-toolbar>
   <a routerLink="../.." routerLinkActive="active">{{ds.date | date:'longDate'}}</a>
-  <a routerLink="../" routerLinkActive="active">Select Food</a>
+  <a routerLink="../" routerLinkActive="active">Selection</a>
   <a>Add {{originalRecipe.name}}</a>
   <button mat-icon-button (click)="reset()" [disabled]="!changed">
     <mat-icon aria-label="Reset changes">undo</mat-icon>
@@ -8,7 +8,20 @@
 </app-toolbar>
 
 <ng-container *ngIf="originalRecipe !== undefined">
-  <form [formGroup]="ingredientsForm">
+  <form [formGroup]="ingredientsForm" class="main-form">
+
+    <mat-form-field class="meal-selector mat-body">
+      <mat-select [formControl]="mealSelector" required>
+        <mat-select-trigger>
+          <span>{{ds.getMealName(mealSelector.value)}}</span>
+        </mat-select-trigger>
+        <mat-option *ngFor="let availableMeal of ds.availableMealsIDs" [value]="availableMeal">
+          <span [matBadge]="ds.getRecordedPortions(availableMeal)" matBadgeOverlap="false"
+            matBadgeSize="small">{{ds.getMealName(availableMeal)}}</span>
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
     <section formArrayName="ingredients" class="ingredients-container">
       <section *ngFor="let ingredient of ingredientsControls.controls; let i = index" class="ingredient-row">
 

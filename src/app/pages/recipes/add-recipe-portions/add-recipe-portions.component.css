@@ -1,9 +1,19 @@
-.ingredients-container {
+.main-form {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin: 2rem;
   margin-top: 3rem;
+}
+
+.meal-selector {
+  margin-bottom: 2rem;
+  width: 12ch;
+}
+
+.ingredients-container {
+  display: flex;
+  flex-direction: column;
 }
 
 .ingredient-row {

@@ -153,6 +153,15 @@ export class DiaryService implements OnDestroy {
     return Meal.mealNumbers;
   }
 
+  getMealName(id: number): string {
+    return Meal.getName(id);
+  }
+
+  getRecordedPortions(mealId: number): number {
+    if (this.diarySubject$.value === undefined) { return 0; }
+    return this.diarySubject$.value.recordedMeals(mealId);
+  }
+
   ngOnDestroy(): void {
     this.hub.deregisterAll(this.constructor.name);
   }

@@ -111,7 +111,7 @@ export class SelectPortionComponent
     if (this.isRecipe(selection)) {
       this.router.navigate(['../add-recipe'], {
         relativeTo: this.route,
-        state: { recipe: selection }
+        state: { recipe: selection, selectedMeal: this.mealSelector.value }
       });
     } else {
       this.router.navigate([selection.id], { relativeTo: this.route });
