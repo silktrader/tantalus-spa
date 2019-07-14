@@ -109,7 +109,7 @@ export class SelectPortionComponent
    */
   public proceedWithSelection(selection: IPortion): void {
     if (this.isRecipe(selection)) {
-      this.router.navigate(['../add-recipe'], {
+      this.router.navigate(['../add-recipe', selection.id], {
         relativeTo: this.route,
         state: { recipe: selection, selectedMeal: this.mealSelector.value }
       });

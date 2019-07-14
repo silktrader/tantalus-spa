@@ -1,13 +1,13 @@
 <app-toolbar>
-  <a routerLink="../.." routerLinkActive="active">{{ds.date | date:'longDate'}}</a>
-  <a routerLink="../" routerLinkActive="active">Selection</a>
-  <a>Add {{originalRecipe.name}}</a>
-  <button mat-icon-button (click)="reset()" [disabled]="!changed">
+  <a routerLink="../..">{{ds.date | date:'longDate'}}</a>
+  <a routerLink="../../add-portion">Selection</a>
+  <a *ngIf="originalRecipe">Add {{originalRecipe.name}}</a>
+  <button *ngIf="originalRecipe" mat-icon-button (click)="reset()" [disabled]="!changed">
     <mat-icon aria-label="Reset changes">undo</mat-icon>
   </button>
 </app-toolbar>
 
-<ng-container *ngIf="originalRecipe !== undefined">
+<ng-container *ngIf="originalRecipe">
   <form [formGroup]="ingredientsForm" class="main-form">
 
     <mat-form-field class="meal-selector mat-body">

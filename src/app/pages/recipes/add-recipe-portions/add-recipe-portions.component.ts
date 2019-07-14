@@ -6,7 +6,8 @@ import { Recipe } from 'src/app/models/recipe.model';
 import { FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
 import { Ingredient } from 'src/app/models/ingredient.interface';
 import { PortionDto } from 'src/app/models/portion-dto-model';
-import { Observable, combineLatest, forkJoin } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-add-recipe-portions',
@@ -14,19 +15,34 @@ import { Observable, combineLatest, forkJoin } from 'rxjs';
   styleUrls: ['./add-recipe-portions.component.css']
 })
 export class AddRecipePortionsComponent implements OnInit {
-  public readonly originalRecipe: Recipe;
+  public originalRecipe: Recipe;
   public ingredients: Array<Ingredient>;
   public ingredientsForm: FormGroup;
   public mealSelector = new FormControl();
 
-  constructor(public ds: DiaryService, private ui: UiService) {
-    this.originalRecipe = history.state.recipe;
-    this.mealSelector.setValue(history.state.selectedMeal || 0); // tk replace with fetch last meal
+  constructor(
+    public ds: DiaryService,
+    private fs: FoodsService,
+    private ui: UiService,
+    private route: ActivatedRoute
+  ) {
+    // fill the recipe's details from the router supplied data or fetch them during reloads or manual URL entries
+    if (history.state && history.state.recipe) {
+      this.originalRecipe = history.state.recipe;
+      this.mealSelector.setValue(history.state.selectedMeal);
+      this.reset();
+    } else {
+      this.fs
+        .getRecipe(+this.route.snapshot.paramMap.get('recipeId'))
+        .subscribe(recipe => {
+          this.originalRecipe = recipe;
+          this.mealSelector.setValue(this.ds.focusedMeal);
+          this.reset();
+        });
+    }
   }
 
-  ngOnInit() {
-    this.reset();
-  }
+  ngOnInit() {}
 
   get ingredientsControls(): FormArray {
     return this.ingredientsForm.get('ingredients') as FormArray;
@@ -38,7 +54,7 @@ export class AddRecipePortionsComponent implements OnInit {
   }
 
   get saveable(): boolean {
-    return this.changed && this.ingredientsForm.valid;
+    return this.ingredients.length > 0 && this.ingredientsForm.valid;
   }
 
   public save(): void {

@@ -26,7 +26,7 @@ const routes: Routes = [
       { path: '', component: DiarySummaryComponent },
       { path: 'add-portion', component: SelectPortionComponent },
       { path: 'add-portion/:foodID', component: AddPortionComponent },
-      { path: 'add-recipe', component: AddRecipePortionsComponent },
+      { path: 'add-recipe/:recipeId', component: AddRecipePortionsComponent },
       { path: ':portionId', component: EditPortionComponent }
     ]
   },

@@ -68,6 +68,12 @@ export class FoodsService {
       .toPromise();
   }
 
+  public getRecipe(id: number): Observable<Recipe> {
+    return this.http
+      .get<RecipeDto>(`${this.baseUrl}/recipes/${id}`)
+      .pipe(map(dto => new Recipe(dto)));
+  }
+
   public getFilteredFoods(
     filter: BehaviorSubject<string>
   ): Observable<Array<Food | Recipe>> {
