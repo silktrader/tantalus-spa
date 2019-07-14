@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { switchMap, shareReplay } from 'rxjs/operators';
+import { switchMap, shareReplay, map } from 'rxjs/operators';
 import { Meal } from '../models/meal.model';
 import { HttpClient } from '@angular/common/http';
 import { PortionDto } from '../models/portion-dto-model';
@@ -71,11 +71,13 @@ export class DiaryService implements OnDestroy {
       )
       .subscribe(diaryDto => this.setDiaryData(diaryDto));
 
-    this.hub.register(this.constructor.name, 'EntryAdd', (date: Date) => {
-      this.getDiaryData()
-        .pipe(shareReplay(1))
-        .subscribe(diaryDto => this.setDiaryData(diaryDto));
-    });
+    this.hub.register(
+      this.constructor.name,
+      'EntryAdd',
+      (dto: DiaryEntryDto) => {
+        this.setDiaryData(dto);
+      }
+    );
 
     this.hub.register(
       this.constructor.name,
@@ -158,7 +160,9 @@ export class DiaryService implements OnDestroy {
   }
 
   getRecordedPortions(mealId: number): number {
-    if (this.diarySubject$.value === undefined) { return 0; }
+    if (this.diarySubject$.value === undefined) {
+      return 0;
+    }
     return this.diarySubject$.value.recordedMeals(mealId);
   }
 
@@ -186,6 +190,27 @@ export class DiaryService implements OnDestroy {
     );
   }
 
+  public addPortions(portionDtos: PortionAddDto[]): Observable<PortionDto[]> {
+    return this.http
+      .post<{ portions: PortionDto[]; foods: FoodDto[] }>(
+        `${this.baseUrl}${this.dateUrl}/portions`,
+        portionDtos
+      )
+      .pipe(
+        map(response => {
+          // tk check for errors in the response? BadRequest()
+          const newState =
+            this.diarySubject$.getValue() === undefined
+              ? new DiaryEntryDto()
+              : { ...this.diarySubject$.getValue().dto };
+          newState.portions.concat(response.portions);
+          newState.foods.concat(response.foods);
+          this.diarySubject$.next(new Diary(newState));
+          return response.portions;
+        })
+      );
+  }
+
   public changePortion(portionDto: PortionDto): Observable<PortionDto> {
     return this.http.put<PortionDto>(
       `${this.baseUrl}${this.dateUrl}/${portionDto.id}`,
@@ -193,8 +218,8 @@ export class DiaryService implements OnDestroy {
     );
   }
 
-  public removePortion(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}${this.dateUrl}/${id}`);
+  public removePortion(id: number): Observable<PortionDto> {
+    return this.http.delete<PortionDto>(`${this.baseUrl}${this.dateUrl}/${id}`);
   }
 
   public unregisterHandlers(): void {

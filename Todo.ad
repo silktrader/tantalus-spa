@@ -9,3 +9,4 @@
 * [ ] attempt reconnection after losing SignalR connection
 * [ ] handle no router data in add-recipe-portions
 * [ ] impede last removal in add-recipe-portions
+* [ ] handle diary without portions

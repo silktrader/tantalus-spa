@@ -5,6 +5,8 @@ import { UiService } from 'src/app/services/ui.service';
 import { Recipe } from 'src/app/models/recipe.model';
 import { FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
 import { Ingredient } from 'src/app/models/ingredient.interface';
+import { PortionDto } from 'src/app/models/portion-dto-model';
+import { Observable, combineLatest, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-add-recipe-portions',
@@ -39,7 +41,35 @@ export class AddRecipePortionsComponent implements OnInit {
     return this.changed && this.ingredientsForm.valid;
   }
 
-  save(): void {}
+  public save(): void {
+    this.ds
+      .addPortions(
+        this.ingredients.map(ingredient => ({
+          foodId: ingredient.food.id,
+          quantity: ingredient.quantity,
+          mealNumber: this.mealSelector.value
+        }))
+      )
+      .subscribe(dtos => {
+        this.ui.notify(
+          `Added ${dtos.length} portions from ${this.originalRecipe.name}`,
+          'Undo',
+          () => {
+            const portionsRemovals: Array<Observable<PortionDto>> = [];
+            for (const dto of dtos) {
+              portionsRemovals.push(this.ds.removePortion(dto.id));
+            }
+            forkJoin(portionsRemovals).subscribe(() =>
+              this.ui.notify(
+                `Removed ${portionsRemovals.length} portions from ${
+                  this.originalRecipe.name
+                }`
+              )
+            );
+          }
+        );
+      });
+  }
 
   get changed(): boolean {
     const controls = this.ingredientsControls;

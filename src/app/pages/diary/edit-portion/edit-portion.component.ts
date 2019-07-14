@@ -203,7 +203,7 @@ export class EditPortionComponent implements OnInit, OnDestroy {
   // can't send the portion object as it's being deleted
   private notifyDeletedPortion(portionDto: PortionAddDto, foodName: string) {
     this.ui.notify(`Removed ${foodName}`, 'Undo', () => {
-      this.ds.addPortion(portionDto);
+      this.ds.addPortion(portionDto); // tk missing subscription
     });
   }
 
