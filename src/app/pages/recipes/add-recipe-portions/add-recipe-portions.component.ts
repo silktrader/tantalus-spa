@@ -7,7 +7,7 @@ import { FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
 import { Ingredient } from 'src/app/models/ingredient.interface';
 import { PortionDto } from 'src/app/models/portion-dto-model';
 import { Observable, forkJoin } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-recipe-portions',
@@ -24,7 +24,8 @@ export class AddRecipePortionsComponent implements OnInit {
     public ds: DiaryService,
     private fs: FoodsService,
     private ui: UiService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {
     // fill the recipe's details from the router supplied data or fetch them during reloads or manual URL entries
     if (history.state && history.state.recipe) {
@@ -67,6 +68,7 @@ export class AddRecipePortionsComponent implements OnInit {
         }))
       )
       .subscribe(dtos => {
+        this.router.navigate(['../..'], { relativeTo: this.route });
         this.ui.notify(
           `Added ${dtos.length} portions from ${this.originalRecipe.name}`,
           'Undo',

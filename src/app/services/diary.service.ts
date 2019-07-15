@@ -199,13 +199,16 @@ export class DiaryService implements OnDestroy {
       .pipe(
         map(response => {
           // tk check for errors in the response? BadRequest()
-          const newState =
+          const oldState =
             this.diarySubject$.getValue() === undefined
               ? new DiaryEntryDto()
               : { ...this.diarySubject$.getValue().dto };
-          newState.portions.concat(response.portions);
-          newState.foods.concat(response.foods);
-          this.diarySubject$.next(new Diary(newState));
+          this.diarySubject$.next(
+            new Diary({
+              portions: [...oldState.portions, ...response.portions],
+              foods: [...oldState.foods, ...response.foods]
+            })
+          );
           return response.portions;
         })
       );
