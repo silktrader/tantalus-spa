@@ -131,14 +131,14 @@ export class EditPortionComponent implements OnInit, OnDestroy {
       quantity: this.originalPortion.quantity,
       mealNumber: this.originalPortion.mealNumber
     };
-    this.ds.removePortion(this.originalPortion.id).subscribe(
-      () => {
+    this.ds.removePortion(this.originalPortion.id).subscribe({
+      next: () => {
         this.notifyDeletedPortion(portionDto, foodName);
         this.back();
       },
-      error =>
+      error: () =>
         this.ui.warn(`Couldn't delete portion #${this.originalPortion.id}`)
-    );
+    });
   }
 
   private checkPreview(preview: string): string {

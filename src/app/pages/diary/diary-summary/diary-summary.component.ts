@@ -57,7 +57,7 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
     const date = this.ds.date;
     const cachedDto = this.diary.dto;
     this.ds.deleteDiary().subscribe({
-      next: response => {
+      next: () => {
         this.ui.notify(
           `Deleted ${date.toLocaleDateString()}'s entries`,
           `Undo`,

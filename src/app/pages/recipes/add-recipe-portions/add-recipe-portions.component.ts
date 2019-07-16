@@ -5,7 +5,6 @@ import { UiService } from 'src/app/services/ui.service';
 import { Recipe } from 'src/app/models/recipe.model';
 import { FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
 import { Ingredient } from 'src/app/models/ingredient.interface';
-import { PortionDto } from 'src/app/models/portion-dto-model';
 import { Observable, forkJoin } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -73,7 +72,9 @@ export class AddRecipePortionsComponent implements OnInit {
           `Added ${dtos.length} portions from ${this.originalRecipe.name}`,
           'Undo',
           () => {
-            const portionsRemovals: Array<Observable<PortionDto>> = [];
+            const portionsRemovals: Array<
+              Observable<{ id: number; foodId: number }>
+            > = [];
             for (const dto of dtos) {
               portionsRemovals.push(this.ds.removePortion(dto.id));
             }

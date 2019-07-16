@@ -107,7 +107,6 @@ export class AddPortionComponent implements OnInit, OnDestroy {
         });
       },
       error => {
-        console.log(error);
         this.ui.warn(`Couldn't record ${this.food.name}`);
       }
     );

@@ -1,18 +1,20 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { switchMap, shareReplay, map } from 'rxjs/operators';
+import { switchMap, map, tap } from 'rxjs/operators';
 import { Meal } from '../models/meal.model';
 import { HttpClient } from '@angular/common/http';
 import { PortionDto } from '../models/portion-dto-model';
-import { DiaryEntryDto } from '../models/diary-entry-dto.model';
+import {
+  DiaryEntryDto,
+  DiaryEntryPostDto
+} from '../models/diary-entry-dto.model';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Diary } from '../models/diary.model';
 import { PortionAddDto } from '../models/portion-add-dto.model';
 import { FoodDto } from '../models/food-dto.model';
-import { HubService } from './hub.service';
 
 @Injectable()
-export class DiaryService implements OnDestroy {
+export class DiaryService {
   private readonly baseUrl = 'https://localhost:5001/api/diary/';
 
   private readonly diarySubject$ = new BehaviorSubject<Diary>(undefined);
@@ -36,11 +38,7 @@ export class DiaryService implements OnDestroy {
     this.pDateUrl = this.pDate.toISOString().substring(0, 10);
   }
 
-  constructor(
-    private http: HttpClient,
-    private route: ActivatedRoute,
-    private hub: HubService
-  ) {
+  constructor(private http: HttpClient, private route: ActivatedRoute) {
     // tk unsubscribtion?
     this.route.params
       .pipe(
@@ -70,84 +68,6 @@ export class DiaryService implements OnDestroy {
         })
       )
       .subscribe(diaryDto => this.setDiaryData(diaryDto));
-
-    this.hub.register(
-      this.constructor.name,
-      'EntryAdd',
-      (dto: DiaryEntryDto) => {
-        this.setDiaryData(dto);
-      }
-    );
-
-    this.hub.register(
-      this.constructor.name,
-      'PortionEdit',
-      (portionDto: PortionDto) => {
-        const newState = { ...this.diarySubject$.getValue().dto };
-        // select the portion to be edited in the new state
-        for (const portion of newState.portions) {
-          if (portion.id === portionDto.id) {
-            portion.mealNumber = portionDto.mealNumber;
-            portion.quantity = portionDto.quantity;
-          }
-        }
-        this.diarySubject$.next(new Diary(newState));
-      }
-    );
-
-    this.hub.register(
-      this.constructor.name,
-      'PortionAdd',
-      (response: { portion: PortionDto; food: FoodDto }) => {
-        const newState = { ...this.diarySubject$.getValue().dto };
-        newState.portions.push(response.portion);
-        newState.foods.push(response.food); // the constructor handles duplicates
-        this.diarySubject$.next(new Diary(newState));
-      }
-    );
-
-    this.hub.register(
-      this.constructor.name,
-      'PortionRemove',
-      (response: { id: number; foodId: number }) => {
-        const newState = { ...this.diarySubject$.getValue().dto };
-
-        // check which portion and foods to delete from current state
-        let deleteFood = true;
-        let deletedPortionIndex: number;
-        for (let i = 0; i < newState.portions.length; i++) {
-          if (newState.portions[i].id === response.id) {
-            deletedPortionIndex = i;
-          } else if (newState.portions[i].foodId === response.foodId) {
-            deleteFood = false;
-          }
-        }
-
-        // delete portion
-        newState.portions.splice(deletedPortionIndex);
-
-        // delete food
-        if (deleteFood) {
-          for (let i = 0; i < newState.foods.length; i++) {
-            if (newState.foods[i].id === response.foodId) {
-              newState.foods.splice(i); // tk modifying collection while iterating
-              break;
-            }
-          }
-        }
-        this.diarySubject$.next(new Diary(newState));
-      }
-    );
-
-    this.hub.register(
-      this.constructor.name,
-      'DiaryDelete',
-      (response: { date: string }) => {
-        if (response.date.substring(0, 10) === this.dateUrl) {
-          this.diarySubject$.next(undefined);
-        }
-      }
-    );
   }
 
   // should this be configurable by users? tk
@@ -166,10 +86,6 @@ export class DiaryService implements OnDestroy {
     return this.diarySubject$.value.recordedMeals(mealId);
   }
 
-  ngOnDestroy(): void {
-    this.hub.deregisterAll(this.constructor.name);
-  }
-
   private getDiaryData(): Observable<DiaryEntryDto> {
     return this.http.get<DiaryEntryDto>(`${this.baseUrl}${this.dateUrl}`);
   }
@@ -183,13 +99,12 @@ export class DiaryService implements OnDestroy {
     }
   }
 
+  /** Adds one portion and returns the server provided DTO; acts as a proxy of `addPortions` */
   public addPortion(portionDto: PortionAddDto): Observable<PortionDto> {
-    return this.http.post<PortionDto>(
-      `${this.baseUrl}${this.dateUrl}/add-portion`,
-      portionDto
-    );
+    return this.addPortions([portionDto]).pipe(map(dtos => dtos[0]));
   }
 
+  /** Adds multiple portions when subscribed to and updates the diary with the new additions. */
   public addPortions(portionDtos: PortionAddDto[]): Observable<PortionDto[]> {
     return this.http
       .post<{ portions: PortionDto[]; foods: FoodDto[] }>(
@@ -215,25 +130,82 @@ export class DiaryService implements OnDestroy {
   }
 
   public changePortion(portionDto: PortionDto): Observable<PortionDto> {
-    return this.http.put<PortionDto>(
-      `${this.baseUrl}${this.dateUrl}/${portionDto.id}`,
-      portionDto
-    );
+    return this.http
+      .put<PortionDto>(
+        `${this.baseUrl}${this.dateUrl}/${portionDto.id}`,
+        portionDto
+      )
+      .pipe(
+        map(response => {
+          const newState = {
+            ...this.diarySubject$.getValue().dto
+          };
+          // select the portion to be edited in the new state
+          for (const portion of newState.portions) {
+            if (portion.id === portionDto.id) {
+              portion.mealNumber = portionDto.mealNumber;
+              portion.quantity = portionDto.quantity;
+            }
+          }
+          this.diarySubject$.next(new Diary(newState));
+          return response;
+        })
+      );
   }
 
-  public removePortion(id: number): Observable<PortionDto> {
-    return this.http.delete<PortionDto>(`${this.baseUrl}${this.dateUrl}/${id}`);
-  }
+  public removePortion(id: number): Observable<{ id: number; foodId: number }> {
+    return this.http
+      .delete<{ id: number; foodId: number }>(
+        `${this.baseUrl}${this.dateUrl}/${id}`
+      )
+      .pipe(
+        map(ids => {
+          const portions = [...this.diarySubject$.getValue().dto.portions];
 
-  public unregisterHandlers(): void {
-    this.hub.deregisterAll(this.constructor.name);
+          // check which portion to delete and marks foods to be deleted when unused by other portions
+          let deleteFood = true;
+          let deletedPortionIndex: number;
+          for (let i = 0; i < portions.length; i++) {
+            if (portions[i].id === ids.id) {
+              deletedPortionIndex = i;
+            } else if (portions[i].foodId === ids.foodId) {
+              // the food's being referred to by another portions; don't mark it for deletion
+              deleteFood = false;
+            }
+          }
+
+          // delete portion
+          portions.splice(deletedPortionIndex, 1);
+
+          // delete food when necessary
+          const foods = [...this.diarySubject$.getValue().dto.foods];
+          if (deleteFood) {
+            const deletedFoodIndex = foods.findIndex(
+              food => food.id === ids.foodId
+            );
+            foods.splice(deletedFoodIndex, 1);
+          }
+
+          this.diarySubject$.next(new Diary({ portions, foods }));
+          return ids;
+        })
+      );
   }
 
   public deleteDiary(): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}${this.dateUrl}`);
+    return this.http
+      .delete<void>(`${this.baseUrl}${this.dateUrl}`)
+      .pipe(tap(() => this.diarySubject$.next(undefined)));
   }
 
-  public restoreDiary(dto: { portions: PortionDto[] }): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}${this.dateUrl}`, dto);
+  public restoreDiary(dto: DiaryEntryPostDto): Observable<DiaryEntryDto> {
+    return this.http
+      .post<DiaryEntryDto>(`${this.baseUrl}${this.dateUrl}`, dto)
+      .pipe(
+        map(responseDto => {
+          this.diarySubject$.next(new Diary(responseDto));
+          return responseDto;
+        })
+      );
   }
 }

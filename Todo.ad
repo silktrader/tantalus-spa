@@ -10,3 +10,4 @@
 * [ ] handle no router data in add-recipe-portions
 * [ ] impede last removal in add-recipe-portions
 * [ ] handle diary without portions
+* [ ] improve handling of food table when removing, adding or editing foods (reload)
