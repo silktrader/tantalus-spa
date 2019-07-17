@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { RecipesDataSource } from '../recipes-data-source';
 import { RecipesService } from 'src/app/services/recipes.service';
 import { UiService } from 'src/app/services/ui.service';
-import { MatPaginator } from '@angular/material';
+import { MatPaginator } from '@angular/material/paginator';
 import { RecipeDto } from 'src/app/models/recipe-autocomplete.model';
 
 @Component({

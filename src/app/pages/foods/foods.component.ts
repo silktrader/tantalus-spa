@@ -7,12 +7,10 @@ import {
   ElementRef,
   ChangeDetectorRef
 } from '@angular/core';
-import {
-  MatTableDataSource,
-  MatSort,
-  MatPaginator,
-  MatButtonToggleGroup
-} from '@angular/material';
+import { MatButtonToggleGroup } from '@angular/material/button-toggle';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import { Food } from '../../models/food.model';
 import { FoodProp } from '../../models/food-prop.model';
 import { Subscription, of, fromEvent } from 'rxjs';

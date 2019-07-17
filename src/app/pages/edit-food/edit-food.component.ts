@@ -9,7 +9,7 @@ import {
   NavigationEnd,
   Event
 } from '@angular/router';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 // import { DeleteFoodDialogComponent } from '../delete-food-dialog/delete-food-dialog.component';
 import { FoodsService } from 'src/app/services/foods.service';
 import { Food } from 'src/app/models/food.model';

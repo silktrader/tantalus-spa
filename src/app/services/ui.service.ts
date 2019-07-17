@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { MatSnackBar, MatSidenav } from '@angular/material';
+import { MatSidenav } from '@angular/material/sidenav';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { ReplaySubject, BehaviorSubject } from 'rxjs';
