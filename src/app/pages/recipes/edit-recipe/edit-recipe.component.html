@@ -35,9 +35,7 @@
             <input matInput type="number" formControlName="quantity" maxlength="5">
           </mat-form-field>
           <section class="ingredient-row-controls">
-            <button mat-flat-button color="warn" (click)="removeIngredient(i)">
-              Remove
-            </button>
+            <button mat-flat-button color="warn" (click)="removeIngredient(i)" [disabled]="!removable">Remove</button>
           </section>
         </section>
       </section>

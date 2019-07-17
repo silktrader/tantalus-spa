@@ -109,7 +109,12 @@ export class EditRecipeComponent implements OnInit {
 
   public removeIngredient(index: number): void {
     this.ingredients.removeAt(index);
-    this.foodsFilters.splice(index);
+    this.foodsFilters.splice(index, 1);
+  }
+
+  /** Determines whether ingredients can be removed; one must always remain */
+  public get removable(): boolean {
+    return this.ingredients.length > 1;
   }
 
   public save(): void {
