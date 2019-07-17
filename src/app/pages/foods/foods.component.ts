@@ -110,16 +110,16 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
   ]);
 
   public columnSelector = new FormControl();
-  @ViewChild(MatButtonToggleGroup) public columnToggle: MatButtonToggleGroup;
+  @ViewChild(MatButtonToggleGroup, { static: false }) public columnToggle: MatButtonToggleGroup;
 
   public dataSource: MatTableDataSource<Food> = new MatTableDataSource<Food>();
   private subscription = new Subscription();
 
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: false }) sort: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
-  @ViewChild('tableControls') tableControls: ElementRef;
-  @ViewChild(ToolbarComponent) toolbar: ToolbarComponent;
+  @ViewChild('tableControls', { static: true }) tableControls: ElementRef;
+  @ViewChild(ToolbarComponent, { static: true }) toolbar: ToolbarComponent;
 
   private readonly integerProperties = new Set([
     FoodProp.calories,

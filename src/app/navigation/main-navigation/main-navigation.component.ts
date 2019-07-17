@@ -20,7 +20,7 @@ import { User } from 'src/app/models/user';
 })
 export class MainNavigationComponent
   implements OnInit, OnDestroy, AfterViewInit {
-  @ViewChild('mainSidenav') public sidenav: MatSidenav;
+  @ViewChild('mainSidenav', { static: false }) public sidenav: MatSidenav;
 
   isHandset$: Observable<boolean> = this.breakpointObserver
     .observe(Breakpoints.Handset)

@@ -39,7 +39,7 @@ export class SelectPortionComponent
 
   private subscription = new Subscription();
 
-  @ViewChild('searchBoxInput') searchBoxInputRef: ElementRef;
+  @ViewChild('searchBoxInput', { static: true }) searchBoxInputRef: ElementRef;
 
   constructor(
     private fs: FoodsService,

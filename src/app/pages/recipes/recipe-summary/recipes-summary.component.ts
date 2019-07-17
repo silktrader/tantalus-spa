@@ -17,7 +17,7 @@ export class RecipesSummaryComponent implements OnInit, AfterViewInit {
 
   pageSizeOptions = [3, 20, 30];
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   constructor(
     private router: Router,
