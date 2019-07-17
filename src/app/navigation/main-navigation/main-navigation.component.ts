@@ -3,11 +3,10 @@ import {
   OnInit,
   ViewChild,
   OnDestroy,
-  AfterViewInit
+  AfterViewInit,
+  ChangeDetectorRef
 } from '@angular/core';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { UiService } from 'src/app/services/ui.service';
 import { MatSidenav } from '@angular/material/sidenav';
@@ -22,17 +21,17 @@ export class MainNavigationComponent
   implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('mainSidenav', { static: false }) public sidenav: MatSidenav;
 
-  isHandset$: Observable<boolean> = this.breakpointObserver
-    .observe(Breakpoints.Handset)
-    .pipe(map(result => result.matches));
-
   constructor(
-    private breakpointObserver: BreakpointObserver,
     private auth: AuthenticationService,
-    private ui: UiService
+    private ui: UiService,
+    private cd: ChangeDetectorRef
   ) {}
 
-  ngOnInit(): void {
+  ngOnInit(): void {}
+
+  ngAfterViewInit(): void {
+    this.ui.sidenav = this.sidenav;
+
     this.ui.mobile.subscribe(isMobile => {
       if (!isMobile || !this.sidenav) {
         return;
@@ -50,11 +49,9 @@ export class MainNavigationComponent
       this.sidenav.open();
       this.sidenav.mode = 'side';
     });
-  }
 
-  ngAfterViewInit(): void {
     // must happen at this stage else the conditional ngIf* will impede the assignment
-    this.ui.sidenav = this.sidenav;
+    this.cd.detectChanges();
   }
 
   ngOnDestroy(): void {

@@ -2,9 +2,15 @@ import { Injectable } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { ReplaySubject, BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
+import { startWith } from 'rxjs/operators';
+
+export enum Breakpoints {
+  mobile = '(max-width: 959px)',
+  desktop = '(min-width: 960px)'
+}
 
 @Injectable({ providedIn: 'root' })
 export class UiService {
@@ -22,15 +28,13 @@ export class UiService {
     private breakpointObserver: BreakpointObserver
   ) {
     this.breakpointObserver
-      .observe(['(max-width: 959px', '(min-width: 960px)'])
+      .observe([Breakpoints.mobile, Breakpoints.desktop])
       .subscribe(result => {
-        if (!result.matches) {
-          return;
-        }
+        if (!result.matches) { return; }
 
         // update both breakpoints
-        this.mobile.next(result.breakpoints['(max-width: 959px']);
-        this.desktop.next(result.breakpoints['(min-width: 960px)']);
+        this.mobile.next(result.breakpoints[Breakpoints.mobile]);
+        this.desktop.next(result.breakpoints[Breakpoints.desktop]);
       });
   }
 
@@ -56,19 +60,15 @@ export class UiService {
   }
 
   public toggleSidenav() {
-    console.log(this.sidenav);
     this.sidenav.toggle();
-    // this.sidenavOpenedSubject.next(!this.sidenavOpenedSubject.value);
   }
 
   public openSidenav() {
     this.sidenav.open();
-    // this.sidenavOpenedSubject.next(true);
   }
 
   public closeSidenav() {
     this.sidenav.close();
-    // this.sidenavOpenedSubject.next(false);
   }
 
   public goLogin() {

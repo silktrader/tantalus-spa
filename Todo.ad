@@ -7,3 +7,4 @@
 * [ ] fill name when entering new food from "Create" button
 * [ ] handle diary without portions
 * [ ] improve handling of food table when removing, adding or editing foods (reload)
+* fix successful missing login redirection
