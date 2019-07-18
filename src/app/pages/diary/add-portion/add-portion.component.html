@@ -48,7 +48,7 @@
           <section>
             <input class="quantity-editor" matInput type="number" autocomplete="off" formControlName="quantity" />
             <span matSuffix class="quantity-unit">grams</span>
-            <mat-error *ngIf="quantitiesControl.invalid">{{getQuantitiesControlError()}}</mat-error>
+            <mat-error>{{quantityError}}</mat-error>
           </section>
 
         </mat-form-field>

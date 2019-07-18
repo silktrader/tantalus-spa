@@ -78,7 +78,7 @@ export class SelectPortionComponent
   }
 
   public get availableMeals(): ReadonlyArray<number> {
-    return Meal.mealNumbers;
+    return Meal.numbers;
   }
 
   public back(): void {

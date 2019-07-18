@@ -26,7 +26,7 @@ export class Diary {
 
     // create a collection that will hosts portions according to their ordered meal number
     const orderedMeals = new Map<number, Array<Portion>>();
-    for (const mealNumber of Meal.mealNumbers) {
+    for (const mealNumber of Meal.numbers) {
       orderedMeals.set(mealNumber, []);
     }
 
@@ -75,7 +75,7 @@ export class Diary {
 
   /** Which meals can be recorded [0-5] */
   public get availableMeals(): ReadonlyArray<number> {
-    return Meal.mealNumbers;
+    return Meal.numbers;
   }
 
   public getMealName(mealNumber: number): string {

@@ -1,0 +1,28 @@
+.dialog {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  min-width: 20rem;
+  max-width: 35rem;
+}
+
+.food-name {
+  flex-grow: 5;
+}
+
+.quantity {
+  width: 4rem;
+  flex-grow: 0;
+  margin-left: 2rem;
+  margin-right: 2rem;
+}
+
+.meal-selector {
+  flex-grow: 0;
+  width: 6rem;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-evenly;
+}

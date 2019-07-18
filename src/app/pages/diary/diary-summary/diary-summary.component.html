@@ -65,7 +65,8 @@
       </mat-expansion-panel-header>
       <mat-nav-list>
         <mat-list-item class="portion" *ngFor="let portion of meal.Portions">
-          <a [routerLink]="[portion.id]" routerLinkActive="active">
+          <!-- <a [routerLink]="[portion.id]" (click)="editPortion(portion)" routerLinkActive="active"> -->
+          <a (click)="editPortion(portion)">
             <span class="portion-header">
               <span class="mat-body-2">{{portion.food.name}}</span>
               <span class="portion-header-quantity mat-caption">{{portion.quantity | number:'1.0-0'}} g.</span>

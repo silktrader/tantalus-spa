@@ -8,7 +8,7 @@ export class Meal {
     'Snacks'
   ];
 
-  public static mealNumbers: ReadonlyArray<number> = Array.from(
+  public static numbers: ReadonlyArray<number> = Array.from(
     Meal.mealNames.keys()
   );
 

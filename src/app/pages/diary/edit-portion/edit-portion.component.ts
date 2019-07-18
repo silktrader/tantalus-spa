@@ -5,10 +5,10 @@ import { FormControl, Validators } from '@angular/forms';
 import { Portion } from 'src/app/models/portion.model';
 import { DiaryService } from 'src/app/services/diary.service';
 import { UiService } from 'src/app/services/ui.service';
-import { PortionQuantityValidator } from 'src/app/validators/portion-quantity.validator';
 import { Meal } from 'src/app/models/meal.model';
 import { Diary } from 'src/app/models/diary.model';
 import { PortionAddDto } from 'src/app/models/portion-add-dto.model';
+import { PortionValidators } from 'src/app/validators/portion-quantity.validator';
 
 @Component({
   selector: 'app-edit-portion',
@@ -23,10 +23,7 @@ export class EditPortionComponent implements OnInit, OnDestroy {
   public originalPortion: Portion;
   public previewedPortion: Portion;
 
-  public quantitiesControl = new FormControl('', [
-    Validators.required,
-    PortionQuantityValidator
-  ]);
+  public quantitiesControl = new FormControl('', [Validators.required, PortionValidators.quantity]);
   public mealSelector = new FormControl();
 
   public diary: Diary;
@@ -105,8 +102,7 @@ export class EditPortionComponent implements OnInit, OnDestroy {
 
   get portionUnchanged(): boolean {
     return (
-      !this.quantitiesControl.dirty &&
-      this.mealSelector.value === this.originalPortion.mealNumber
+      !this.quantitiesControl.dirty && this.mealSelector.value === this.originalPortion.mealNumber
     );
   }
 
@@ -136,8 +132,7 @@ export class EditPortionComponent implements OnInit, OnDestroy {
         this.notifyDeletedPortion(portionDto, foodName);
         this.back();
       },
-      error: () =>
-        this.ui.warn(`Couldn't delete portion #${this.originalPortion.id}`)
+      error: () => this.ui.warn(`Couldn't delete portion #${this.originalPortion.id}`)
     });
   }
 
@@ -146,9 +141,7 @@ export class EditPortionComponent implements OnInit, OnDestroy {
   }
 
   public get previewCalories(): string {
-    return this.checkPreview(
-      this.previewedPortion.calories.toFixed(0) + ' kcal'
-    );
+    return this.checkPreview(this.previewedPortion.calories.toFixed(0) + ' kcal');
   }
 
   public get previewProteins(): string {
@@ -208,16 +201,7 @@ export class EditPortionComponent implements OnInit, OnDestroy {
     });
   }
 
-  getQuantitiesControlError() {
-    if (this.quantitiesControl.hasError('required')) {
-      return 'Required';
-    }
-    if (this.quantitiesControl.hasError('integer')) {
-      return 'No decimals';
-    }
-    if (this.quantitiesControl.hasError('range')) {
-      return 'Must be within [0, 5,000] grams';
-    }
-    return '';
+  public get quantityError(): string {
+    return PortionValidators.getQuantityError(this.quantitiesControl);
   }
 }

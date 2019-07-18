@@ -8,10 +8,10 @@ import { Portion } from 'src/app/models/portion.model';
 import { DiaryService } from 'src/app/services/diary.service';
 import { FoodsService } from 'src/app/services/foods.service';
 import { UiService } from 'src/app/services/ui.service';
-import { PortionQuantityValidator } from 'src/app/validators/portion-quantity.validator';
 import { Diary } from 'src/app/models/diary.model';
 import { PortionAddDto } from 'src/app/models/portion-add-dto.model';
 import { Meal } from 'src/app/models/meal.model';
+import { PortionValidators } from 'src/app/validators/portion-quantity.validator';
 
 @Component({
   selector: 'app-add-portion',
@@ -24,10 +24,7 @@ export class AddPortionComponent implements OnInit, OnDestroy {
   public food: Food;
   public previewedPortion: Portion;
 
-  public quantitiesControl = new FormControl('', [
-    Validators.required,
-    PortionQuantityValidator
-  ]);
+  public quantitiesControl = new FormControl('', [Validators.required, PortionValidators.quantity]);
   public mealSelector = new FormControl('');
 
   public portionForm: FormGroup = new FormGroup({
@@ -59,9 +56,7 @@ export class AddPortionComponent implements OnInit, OnDestroy {
         this.food = food;
       });
 
-    this.subscription.add(
-      this.ds.diary$.subscribe(diary => (this.diary = diary))
-    );
+    this.subscription.add(this.ds.diary$.subscribe(diary => (this.diary = diary)));
 
     this.mealSelector.setValue(this.ds.focusedMeal);
     this.quantitiesControl.setValue(100);
@@ -69,19 +64,6 @@ export class AddPortionComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
-  }
-
-  getQuantitiesControlError() {
-    if (this.quantitiesControl.hasError('required')) {
-      return 'Required';
-    }
-    if (this.quantitiesControl.hasError('integer')) {
-      return 'No decimals';
-    }
-    if (this.quantitiesControl.hasError('range')) {
-      return 'Must be within [0, 5,000] grams';
-    }
-    return '';
   }
 
   public back(): void {
@@ -117,6 +99,10 @@ export class AddPortionComponent implements OnInit, OnDestroy {
   }
 
   public get availableMeals() {
-    return Meal.mealNumbers;
+    return Meal.numbers;
+  }
+
+  public get quantityError(): string {
+    return PortionValidators.getQuantityError(this.quantitiesControl);
   }
 }

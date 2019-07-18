@@ -22,6 +22,7 @@ import { EditPortionComponent } from './pages/diary/edit-portion/edit-portion.co
 import { RecipesSummaryComponent } from './pages/recipes/recipe-summary/recipes-summary.component';
 import { EditRecipeComponent } from './pages/recipes/edit-recipe/edit-recipe.component';
 import { AddRecipePortionsComponent } from './pages/recipes/add-recipe-portions/add-recipe-portions.component';
+import { EditPortionDialogComponent } from './pages/diary/edit-portion-dialog/edit-portion-dialog.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { AddRecipePortionsComponent } from './pages/recipes/add-recipe-portions/
     RecipesSummaryComponent,
     EditRecipeComponent,
     AddRecipePortionsComponent,
+    EditPortionDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -56,6 +58,7 @@ import { AddRecipePortionsComponent } from './pages/recipes/add-recipe-portions/
       multi: true
     }
   ],
+  entryComponents: [EditPortionDialogComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

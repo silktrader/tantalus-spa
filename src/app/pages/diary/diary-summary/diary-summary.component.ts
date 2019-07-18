@@ -5,6 +5,10 @@ import { FormControl } from '@angular/forms';
 import { UiService } from 'src/app/services/ui.service';
 import { Diary } from 'src/app/models/diary.model';
 import { DiaryService } from 'src/app/services/diary.service';
+import { PortionDto } from 'src/app/models/portion-dto-model';
+import { EditPortionDialogComponent } from '../edit-portion-dialog/edit-portion-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { Portion } from 'src/app/models/portion.model';
 
 @Component({
   selector: 'app-diary-summary',
@@ -24,7 +28,8 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
     private ds: DiaryService,
     public ui: UiService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -51,6 +56,13 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
 
   public addMeal() {
     this.router.navigate(['add-portion'], { relativeTo: this.route });
+  }
+
+  public editPortion(portion: Portion) {
+    const dialogRef = this.dialog.open(EditPortionDialogComponent, {
+      data: { portion }
+    });
+    dialogRef.afterClosed().subscribe(value => console.log(value));
   }
 
   public deleteAll(): void {

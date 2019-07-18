@@ -1,0 +1,18 @@
+<section class="dialog" mat-dialog-content>
+    <span class="food-name">{{data.portion.food.name}}</span>
+    <mat-form-field class="quantity">
+        <input class="quantity-editor" matInput type="number" autocomplete="off" [formControl]="quantityInput" />
+        <span matSuffix class="quantity-unit">g.</span>
+        <mat-error>{{quantityError}}</mat-error>
+    </mat-form-field>
+    <mat-select [formControl]="mealSelector" class="meal-selector">
+        <mat-option *ngFor="let mealNumber of mealNumbers" [value]="mealNumber">
+            {{getMealName(mealNumber)}}
+        </mat-option>
+    </mat-select>
+
+</section>
+<section mat-dialog-actions class="actions">
+    <button mat-button (click)="dismiss()">Dismiss</button>
+    <button mat-button [mat-dialog-close]="data.portion" cdkFocusInitial>Save</button>
+</section>

@@ -72,7 +72,7 @@ export class DiaryService {
 
   // should this be configurable by users? tk
   public get availableMealsIDs(): ReadonlyArray<number> {
-    return Meal.mealNumbers;
+    return Meal.numbers;
   }
 
   getMealName(id: number): string {

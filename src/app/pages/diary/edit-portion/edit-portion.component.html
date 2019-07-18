@@ -55,7 +55,7 @@
           <input class="quantity-editor" matInput type="number" autocomplete="off" [formControl]="quantitiesControl"
             required floatLabel="in grams" />
           <span matSuffix class="quantity-unit">grams</span>
-          <mat-error *ngIf="quantitiesControl.invalid">{{getQuantitiesControlError()}}</mat-error>
+          <mat-error>{{quantityError}}</mat-error>
         </mat-form-field>
 
         <mat-button-toggle-group class="meal-toggle-group" [value]="ds.focusedMeal" [formControl]="mealSelector"
