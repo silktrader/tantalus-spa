@@ -3,10 +3,8 @@ import { MatSidenav } from '@angular/material/sidenav';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { ReplaySubject } from 'rxjs';
+import { ReplaySubject, Observable } from 'rxjs';
 import { Router } from '@angular/router';
-import { PortionDto } from '../models/portion-dto.model';
-import { Portion } from '../models/portion.model';
 import { Meal } from '../models/meal.model';
 
 export enum Breakpoints {
@@ -28,16 +26,23 @@ export class UiService {
       }
 
       // update both breakpoints
-      this.mobile.next(result.breakpoints[Breakpoints.mobile]);
-      this.desktop.next(result.breakpoints[Breakpoints.desktop]);
+      this.mobileSubject.next(result.breakpoints[Breakpoints.mobile]);
+      this.desktopSubject.next(result.breakpoints[Breakpoints.desktop]);
     });
   }
 
   get sidenavOpened(): boolean {
     return this.sidenav && this.sidenav.opened;
   }
-  public mobile = new ReplaySubject<boolean>(1);
-  public desktop = new ReplaySubject<boolean>(1);
+  private readonly mobileSubject = new ReplaySubject<boolean>(1);
+  public get mobile(): Observable<boolean> {
+    return this.mobileSubject.asObservable();
+  }
+
+  private readonly desktopSubject = new ReplaySubject<boolean>(1);
+  public get desktop(): Observable<boolean> {
+    return this.desktopSubject.asObservable();
+  }
 
   public sidenav: MatSidenav;
 
