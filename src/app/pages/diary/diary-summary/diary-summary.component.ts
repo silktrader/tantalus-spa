@@ -57,10 +57,21 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
     this.router.navigate(['add-portion'], { relativeTo: this.route });
   }
 
+  /**
+   * Choose how to edit a portion; either with a modal or full screen dialogues.
+   * @param portion The exiting portion that will be replaced
+   */
   public editPortion(portion: Portion) {
-    this.dialog.open(EditPortionDialogComponent, {
-      data: { portion, ds: this.ds, ui: this.ui }
+    const subscription = this.ui.desktop.subscribe(isDesktop => {
+      if (isDesktop) {
+        this.dialog.open(EditPortionDialogComponent, {
+          data: { portion, ds: this.ds, ui: this.ui }
+        });
+      } else {
+        this.router.navigate([portion.id], { relativeTo: this.route });
+      }
     });
+    subscription.unsubscribe();
   }
 
   public deleteAll(): void {
