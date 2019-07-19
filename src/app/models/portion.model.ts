@@ -1,17 +1,12 @@
 import { Food } from './food.model';
-import { PortionDto } from './portion-dto-model';
 
-export class Portion implements PortionDto {
+export class Portion {
   constructor(
-    public id: number,
+    public readonly id: number,
     public quantity: number,
-    public food: Food,
-    public mealNumber: number
+    public readonly food: Food,
+    public meal: number
   ) {}
-
-  get foodId(): number {
-    return this.food.id;
-  }
 
   get proteins(): number {
     return (this.food.proteins * this.quantity) / 100;

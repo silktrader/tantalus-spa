@@ -4,9 +4,15 @@ import { Portion } from 'src/app/models/portion.model';
 import { FormControl, Validators } from '@angular/forms';
 import { PortionValidators } from 'src/app/validators/portion-quantity.validator';
 import { Meal } from 'src/app/models/meal.model';
+import { DiaryService } from 'src/app/services/diary.service';
+import { UiService } from 'src/app/services/ui.service';
+import { MapperService as Mapper } from 'src/app/services/mapper.service';
+import { PortionDto } from 'src/app/models/portion-dto.model';
 
 export interface EditPortionDialogData {
-  portion: Portion;
+  readonly portion: Portion;
+  readonly ds: DiaryService;
+  readonly ui: UiService;
 }
 
 @Component({
@@ -26,13 +32,42 @@ export class EditPortionDialogComponent implements OnInit {
       Validators.required,
       PortionValidators.quantity
     ]);
-    this.mealSelector = new FormControl(data.portion.mealNumber);
+    this.mealSelector = new FormControl(data.portion.meal);
   }
 
   ngOnInit() {}
 
+  private changePortion(oldPortion: PortionDto, newPortion: PortionDto): void {
+    this.data.ds.changePortion(newPortion).subscribe(
+      () => {
+        this.data.ui.notifyChangePortion(
+          {
+            quantity: oldPortion.quantity,
+            meal: oldPortion.meal,
+            foodName: this.data.portion.food.name
+          },
+          newPortion,
+          () => {
+            this.changePortion(newPortion, oldPortion);
+          }
+        );
+        this.dialogRef.close();
+      },
+      () => this.data.ui.warn(`Couldn't change portion #${oldPortion.id}`)
+    );
+  }
+
+  public save(): void {
+    this.changePortion(Mapper.toDto(this.data.portion), {
+      id: this.data.portion.id,
+      foodId: this.data.portion.food.id,
+      quantity: this.quantityInput.value,
+      meal: this.mealSelector.value
+    });
+  }
+
   public dismiss(): void {
-    this.dialogRef.close();
+    this.dialogRef.close(undefined);
   }
 
   public getMealName(index: number) {

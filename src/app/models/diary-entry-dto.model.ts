@@ -1,4 +1,4 @@
-import { PortionDto } from './portion-dto-model';
+import { PortionDto } from './portion-dto.model';
 import { FoodDto } from './food-dto.model';
 
 export class DiaryEntryDto {

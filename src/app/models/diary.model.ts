@@ -4,6 +4,7 @@ import { DiaryEntryDto } from './diary-entry-dto.model';
 import { Food } from './food.model';
 
 export class Diary {
+  // tk use mapper
   public get dto() {
     return this.diaryDto;
   }
@@ -36,10 +37,10 @@ export class Diary {
         portionDto.id,
         portionDto.quantity,
         this.foodsMap.get(portionDto.foodId),
-        portionDto.mealNumber
+        portionDto.meal
       );
 
-      orderedMeals.get(portion.mealNumber).push(portion);
+      orderedMeals.get(portion.meal).push(portion);
     }
 
     // set the final meals map
@@ -53,9 +54,7 @@ export class Diary {
 
   public getTotalProperty(propertyName: string) {
     let total = 0;
-    this.mealsMap.forEach(
-      meal => (total += meal.getTotalProperty(propertyName))
-    );
+    this.mealsMap.forEach(meal => (total += meal.getTotalProperty(propertyName)));
     return total;
   }
 

@@ -3,11 +3,8 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { Meal } from '../models/meal.model';
 import { HttpClient } from '@angular/common/http';
-import { PortionDto } from '../models/portion-dto-model';
-import {
-  DiaryEntryDto,
-  DiaryEntryPostDto
-} from '../models/diary-entry-dto.model';
+import { PortionDto } from '../models/portion-dto.model';
+import { DiaryEntryDto, DiaryEntryPostDto } from '../models/diary-entry-dto.model';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Diary } from '../models/diary.model';
 import { PortionAddDto } from '../models/portion-add-dto.model';
@@ -131,10 +128,7 @@ export class DiaryService {
 
   public changePortion(portionDto: PortionDto): Observable<PortionDto> {
     return this.http
-      .put<PortionDto>(
-        `${this.baseUrl}${this.dateUrl}/${portionDto.id}`,
-        portionDto
-      )
+      .put<PortionDto>(`${this.baseUrl}${this.dateUrl}/${portionDto.id}`, portionDto)
       .pipe(
         map(response => {
           const newState = {
@@ -143,7 +137,7 @@ export class DiaryService {
           // select the portion to be edited in the new state
           for (const portion of newState.portions) {
             if (portion.id === portionDto.id) {
-              portion.mealNumber = portionDto.mealNumber;
+              portion.meal = portionDto.meal;
               portion.quantity = portionDto.quantity;
             }
           }
@@ -155,9 +149,7 @@ export class DiaryService {
 
   public removePortion(id: number): Observable<{ id: number; foodId: number }> {
     return this.http
-      .delete<{ id: number; foodId: number }>(
-        `${this.baseUrl}${this.dateUrl}/${id}`
-      )
+      .delete<{ id: number; foodId: number }>(`${this.baseUrl}${this.dateUrl}/${id}`)
       .pipe(
         map(ids => {
           const portions = [...this.diarySubject$.getValue().dto.portions];
@@ -180,9 +172,7 @@ export class DiaryService {
           // delete food when necessary
           const foods = [...this.diarySubject$.getValue().dto.foods];
           if (deleteFood) {
-            const deletedFoodIndex = foods.findIndex(
-              food => food.id === ids.foodId
-            );
+            const deletedFoodIndex = foods.findIndex(food => food.id === ids.foodId);
             foods.splice(deletedFoodIndex, 1);
           }
 
@@ -199,13 +189,11 @@ export class DiaryService {
   }
 
   public restoreDiary(dto: DiaryEntryPostDto): Observable<DiaryEntryDto> {
-    return this.http
-      .post<DiaryEntryDto>(`${this.baseUrl}${this.dateUrl}`, dto)
-      .pipe(
-        map(responseDto => {
-          this.diarySubject$.next(new Diary(responseDto));
-          return responseDto;
-        })
-      );
+    return this.http.post<DiaryEntryDto>(`${this.baseUrl}${this.dateUrl}`, dto).pipe(
+      map(responseDto => {
+        this.diarySubject$.next(new Diary(responseDto));
+        return responseDto;
+      })
+    );
   }
 }

@@ -5,7 +5,6 @@ import { FormControl } from '@angular/forms';
 import { UiService } from 'src/app/services/ui.service';
 import { Diary } from 'src/app/models/diary.model';
 import { DiaryService } from 'src/app/services/diary.service';
-import { PortionDto } from 'src/app/models/portion-dto-model';
 import { EditPortionDialogComponent } from '../edit-portion-dialog/edit-portion-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Portion } from 'src/app/models/portion.model';
@@ -59,10 +58,9 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
   }
 
   public editPortion(portion: Portion) {
-    const dialogRef = this.dialog.open(EditPortionDialogComponent, {
-      data: { portion }
+    this.dialog.open(EditPortionDialogComponent, {
+      data: { portion, ds: this.ds, ui: this.ui }
     });
-    dialogRef.afterClosed().subscribe(value => console.log(value));
   }
 
   public deleteAll(): void {
@@ -70,29 +68,17 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
     const cachedDto = this.diary.dto;
     this.ds.deleteDiary().subscribe({
       next: () => {
-        this.ui.notify(
-          `Deleted ${date.toLocaleDateString()}'s entries`,
-          `Undo`,
-          () => {
-            this.ds
-              .restoreDiary(cachedDto)
-              .subscribe(
-                () =>
-                  this.ui.notify(
-                    `Restored ${date.toLocaleDateString()}'s entries`
-                  ),
-                error =>
-                  this.ui.warn(
-                    `Couldn't restore ${date.toLocaleDateString()}'s entries`
-                  )
-              );
-          }
-        );
+        this.ui.notify(`Deleted ${date.toLocaleDateString()}'s entries`, `Undo`, () => {
+          this.ds
+            .restoreDiary(cachedDto)
+            .subscribe(
+              () => this.ui.notify(`Restored ${date.toLocaleDateString()}'s entries`),
+              error => this.ui.warn(`Couldn't restore ${date.toLocaleDateString()}'s entries`)
+            );
+        });
       },
       error: message => {
-        this.ui.warn(
-          `Couldn't delete ${this.date.toLocaleDateString()}'s entries`
-        );
+        this.ui.warn(`Couldn't delete ${this.date.toLocaleDateString()}'s entries`);
         console.log(message);
       }
     });

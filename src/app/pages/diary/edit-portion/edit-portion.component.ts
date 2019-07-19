@@ -58,11 +58,11 @@ export class EditPortionComponent implements OnInit, OnDestroy {
         this.originalPortion.id,
         this.originalPortion.quantity,
         this.originalPortion.food,
-        this.originalPortion.mealNumber
+        this.originalPortion.meal
       );
 
       this.quantitiesControl.setValue(this.originalPortion.quantity);
-      this.mealSelector.setValue(this.originalPortion.mealNumber);
+      this.mealSelector.setValue(this.originalPortion.meal);
     });
 
     this.subscription.add(
@@ -71,7 +71,7 @@ export class EditPortionComponent implements OnInit, OnDestroy {
           this.id,
           newQuantity,
           this.previewedPortion.food,
-          this.previewedPortion.mealNumber
+          this.previewedPortion.meal
         );
       })
     );
@@ -96,14 +96,12 @@ export class EditPortionComponent implements OnInit, OnDestroy {
     return (
       (!this.quantitiesControl.valid && !this.mealSelector.valid) ||
       (this.quantitiesControl.value === this.originalPortion.quantity &&
-        this.mealSelector.value === this.originalPortion.mealNumber)
+        this.mealSelector.value === this.originalPortion.meal)
     );
   }
 
   get portionUnchanged(): boolean {
-    return (
-      !this.quantitiesControl.dirty && this.mealSelector.value === this.originalPortion.mealNumber
-    );
+    return !this.quantitiesControl.dirty && this.mealSelector.value === this.originalPortion.meal;
   }
 
   public back(): void {
@@ -112,7 +110,7 @@ export class EditPortionComponent implements OnInit, OnDestroy {
 
   public reset(): void {
     this.quantitiesControl.reset(this.originalPortion.quantity);
-    this.mealSelector.reset(this.originalPortion.mealNumber);
+    this.mealSelector.reset(this.originalPortion.meal);
     this.previewedPortion = this.originalPortion;
   }
 
@@ -123,9 +121,9 @@ export class EditPortionComponent implements OnInit, OnDestroy {
   public delete(): void {
     const foodName = this.originalPortion.food.name;
     const portionDto = {
-      foodId: this.originalPortion.foodId,
+      foodId: this.originalPortion.food.id,
       quantity: this.originalPortion.quantity,
-      mealNumber: this.originalPortion.mealNumber
+      mealNumber: this.originalPortion.meal
     };
     this.ds.removePortion(this.originalPortion.id).subscribe({
       next: () => {
@@ -160,8 +158,8 @@ export class EditPortionComponent implements OnInit, OnDestroy {
     this.ds
       .changePortion({
         id: final.id,
-        foodId: final.foodId,
-        mealNumber: final.mealNumber,
+        foodId: final.food.id,
+        meal: final.meal,
         quantity: final.quantity
       })
       .subscribe(
@@ -177,8 +175,8 @@ export class EditPortionComponent implements OnInit, OnDestroy {
     const quantityDifference = final.quantity - initial.quantity;
     let message = `${initial.food.name}`;
 
-    if (initial.mealNumber !== final.mealNumber) {
-      message += ` moved to ${Meal.getName(final.mealNumber)}`;
+    if (initial.meal !== final.meal) {
+      message += ` moved to ${Meal.getName(final.meal)}`;
       if (quantityDifference !== 0) {
         message += `, `;
       }

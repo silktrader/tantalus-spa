@@ -3,9 +3,11 @@ import { MatSidenav } from '@angular/material/sidenav';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { ReplaySubject, BehaviorSubject } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
 import { Router } from '@angular/router';
-import { startWith } from 'rxjs/operators';
+import { PortionDto } from '../models/portion-dto.model';
+import { Portion } from '../models/portion.model';
+import { Meal } from '../models/meal.model';
 
 export enum Breakpoints {
   mobile = '(max-width: 959px)',
@@ -14,6 +16,26 @@ export enum Breakpoints {
 
 @Injectable({ providedIn: 'root' })
 export class UiService {
+  constructor(
+    private router: Router,
+    private snackBar: MatSnackBar,
+    private location: Location,
+    private breakpointObserver: BreakpointObserver
+  ) {
+    this.breakpointObserver.observe([Breakpoints.mobile, Breakpoints.desktop]).subscribe(result => {
+      if (!result.matches) {
+        return;
+      }
+
+      // update both breakpoints
+      this.mobile.next(result.breakpoints[Breakpoints.mobile]);
+      this.desktop.next(result.breakpoints[Breakpoints.desktop]);
+    });
+  }
+
+  get sidenavOpened(): boolean {
+    return this.sidenav && this.sidenav.opened;
+  }
   public mobile = new ReplaySubject<boolean>(1);
   public desktop = new ReplaySubject<boolean>(1);
 
@@ -21,28 +43,31 @@ export class UiService {
 
   private notificationsDuration = 3000;
 
-  constructor(
-    private router: Router,
-    private snackBar: MatSnackBar,
-    private location: Location,
-    private breakpointObserver: BreakpointObserver
-  ) {
-    this.breakpointObserver
-      .observe([Breakpoints.mobile, Breakpoints.desktop])
-      .subscribe(result => {
-        if (!result.matches) { return; }
+  public notifyChangePortion(
+    initial: { quantity: number; meal: number; foodName: string },
+    final: { quantity: number; meal: number },
+    undoAction: () => void
+  ): void {
+    const quantityDifference = final.quantity - initial.quantity;
+    let message = `${initial.foodName}`;
 
-        // update both breakpoints
-        this.mobile.next(result.breakpoints[Breakpoints.mobile]);
-        this.desktop.next(result.breakpoints[Breakpoints.desktop]);
-      });
+    if (initial.meal !== final.meal) {
+      message += ` moved to ${Meal.getName(final.meal)}`;
+      if (quantityDifference !== 0) {
+        message += `, `;
+      }
+    }
+
+    if (quantityDifference > 0) {
+      message += ` increased by ${quantityDifference}g.`;
+    } else if (quantityDifference < 0) {
+      message += ` decreased by ${-quantityDifference}g.`;
+    }
+
+    this.notify(message, 'Undo', undoAction);
   }
 
-  public notify(
-    message: string,
-    actionName?: string,
-    actionFunction?: () => void
-  ): void {
+  public notify(message: string, actionName?: string, actionFunction?: () => void): void {
     const snackbarRef = this.snackBar.open(message, actionName || '', {
       duration: this.notificationsDuration
     });
@@ -53,10 +78,6 @@ export class UiService {
 
   public warn(message: string) {
     this.snackBar.open(message, '', { duration: this.notificationsDuration });
-  }
-
-  get sidenavOpened(): boolean {
-    return this.sidenav && this.sidenav.opened;
   }
 
   public toggleSidenav() {
