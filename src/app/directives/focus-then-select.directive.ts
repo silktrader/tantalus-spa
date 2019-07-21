@@ -15,11 +15,11 @@ export class FocusThenSelectDirective implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    const input: HTMLInputElement = this.el.nativeElement as HTMLInputElement;
+    const element: HTMLInputElement = this.el.nativeElement as HTMLInputElement;
     // other elements, set to gain focus at a later stage, will lose focus
     setTimeout(() => {
-      input.focus();
-      input.select();
+      element.focus();
+      element.select();
     }, 10);
   }
 }

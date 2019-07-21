@@ -48,6 +48,19 @@ export class UiService {
 
   private notificationsDuration = 3000;
 
+  public notify(message: string, actionName?: string, actionFunction?: () => void): void {
+    const snackbarRef = this.snackBar.open(message, actionName || '', {
+      duration: this.notificationsDuration
+    });
+    if (actionFunction) {
+      snackbarRef.onAction().subscribe(actionFunction);
+    }
+  }
+
+  public warn(message: string) {
+    this.snackBar.open(message, '', { duration: this.notificationsDuration });
+  }
+
   public notifyChangePortion(
     initial: { quantity: number; meal: number; foodName: string },
     final: { quantity: number; meal: number },
@@ -72,17 +85,20 @@ export class UiService {
     this.notify(message, 'Undo', undoAction);
   }
 
-  public notify(message: string, actionName?: string, actionFunction?: () => void): void {
-    const snackbarRef = this.snackBar.open(message, actionName || '', {
-      duration: this.notificationsDuration
-    });
-    if (actionFunction) {
-      snackbarRef.onAction().subscribe(actionFunction);
-    }
+  public warnFailedChangePortion(id: number) {
+    this.warn(`Couldn't change portion #${id}`);
   }
 
-  public warn(message: string) {
-    this.snackBar.open(message, '', { duration: this.notificationsDuration });
+  public notifyRemovePortion(foodName: string, undoAction: () => void): void {
+    this.notify(`Removed ${foodName}'s portion`, 'Undo', undoAction);
+  }
+
+  public notifyRestorePortion(foodName: string): void {
+    this.notify(`Restored ${foodName}'s portion`);
+  }
+
+  public warnFailedRemoval(id: number) {
+    this.warn(`Couldn't delete portion #${id}`);
   }
 
   public toggleSidenav() {

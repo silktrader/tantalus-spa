@@ -9,6 +9,7 @@ import { Meal } from 'src/app/models/meal.model';
 import { Diary } from 'src/app/models/diary.model';
 import { PortionAddDto } from 'src/app/models/portion-add-dto.model';
 import { PortionValidators } from 'src/app/validators/portion-quantity.validator';
+import { MapperService } from 'src/app/services/mapper.service';
 
 @Component({
   selector: 'app-edit-portion',
@@ -119,18 +120,18 @@ export class EditPortionComponent implements OnInit, OnDestroy {
   }
 
   public delete(): void {
-    const foodName = this.originalPortion.food.name;
-    const portionDto = {
-      foodId: this.originalPortion.food.id,
-      quantity: this.originalPortion.quantity,
-      mealNumber: this.originalPortion.meal
-    };
+    // cache the portion to avoid missing references when updating the diary
+    const deletedPortion = this.originalPortion;
     this.ds.removePortion(this.originalPortion.id).subscribe({
       next: () => {
-        this.notifyDeletedPortion(portionDto, foodName);
+        this.ui.notifyRemovePortion(deletedPortion.food.name, () => {
+          this.ds.addPortion(MapperService.toDto(deletedPortion)).subscribe(() => {
+            this.ui.notifyRestorePortion(deletedPortion.food.name);
+          });
+        });
         this.back();
       },
-      error: () => this.ui.warn(`Couldn't delete portion #${this.originalPortion.id}`)
+      error: () => this.ui.warnFailedRemoval(deletedPortion.id)
     });
   }
 
@@ -155,48 +156,26 @@ export class EditPortionComponent implements OnInit, OnDestroy {
   }
 
   private changePortion(initial: Portion, final: Portion): void {
-    this.ds
-      .changePortion({
-        id: final.id,
-        foodId: final.food.id,
-        meal: final.meal,
-        quantity: final.quantity
-      })
-      .subscribe(
-        () => {
-          this.notifyChangePortion(initial, final);
-          this.back();
-        },
-        () => this.ui.warn(`Couldn't change portion #${final.id}`)
-      );
-  }
-
-  private notifyChangePortion(initial: Portion, final: Portion) {
-    const quantityDifference = final.quantity - initial.quantity;
-    let message = `${initial.food.name}`;
-
-    if (initial.meal !== final.meal) {
-      message += ` moved to ${Meal.getName(final.meal)}`;
-      if (quantityDifference !== 0) {
-        message += `, `;
-      }
-    }
-
-    if (quantityDifference > 0) {
-      message += ` increased by ${quantityDifference}g.`;
-    } else if (quantityDifference < 0) {
-      message += ` decreased by ${-quantityDifference}g.`;
-    }
-
-    this.ui.notify(message, 'Undo', () => this.changePortion(final, initial));
-  }
-
-  private notifyDeletedPortion(portionDto: PortionAddDto, foodName: string) {
-    this.ui.notify(`Removed ${foodName}`, 'Undo', () => {
-      this.ds.addPortion(portionDto).subscribe(dto => {
-        this.ui.notify(`Restored ${foodName}'s portion`);
-      });
-    });
+    this.ds.changePortion(MapperService.toDto(final)).subscribe(
+      () => {
+        this.ui.notifyChangePortion(
+          {
+            quantity: initial.quantity,
+            meal: initial.meal,
+            foodName: initial.food.name
+          },
+          {
+            quantity: final.quantity,
+            meal: initial.meal
+          },
+          () => {
+            this.changePortion(final, initial);
+          }
+        );
+        this.back();
+      },
+      () => this.ui.warnFailedChangePortion(initial.id)
+    );
   }
 
   public get quantityError(): string {

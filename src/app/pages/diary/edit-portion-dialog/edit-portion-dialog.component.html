@@ -1,5 +1,6 @@
 <section class="dialog" mat-dialog-content>
-    <span class="food-name">{{data.portion.food.name}}</span>
+    <a class="food-name" tabindex="-1" [routerLink]="['../foods/', data.portion.food.id]" (click)="dismiss()">
+        {{data.portion.food.name}}</a>
     <app-quantity-editor [initialValue]="data.portion.quantity"></app-quantity-editor>
     <mat-select [formControl]="mealSelector" class="meal-selector">
         <mat-option *ngFor="let mealNumber of mealNumbers" [value]="mealNumber">
@@ -9,6 +10,7 @@
 
 </section>
 <section mat-dialog-actions class="actions">
-    <button mat-button (click)="dismiss()">Dismiss</button>
-    <button mat-button (click)="save()" [disabled]="!saveable">Save</button>
+    <button mat-flat-button color="warn" (click)="deletePortion()">Delete</button>
+    <button mat-flat-button mat-dialog-close>Dismiss</button>
+    <button mat-flat-button color="primary" (click)="save()" [disabled]="!saveable">Save</button>
 </section>

@@ -76,7 +76,7 @@ export class AddPortionComponent implements OnInit, OnDestroy {
 
   public save(): void {
     const portionData: PortionAddDto = {
-      mealNumber: this.mealSelector.value,
+      meal: this.mealSelector.value,
       foodId: this.food.id,
       quantity: this.quantitiesControl.value
     };

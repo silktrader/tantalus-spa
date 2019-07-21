@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, Directive, ElementRef, Input } from '@angular/core';
+import { Component, AfterViewInit, Input } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { PortionValidators } from 'src/app/validators/portion-quantity.validator';
 
