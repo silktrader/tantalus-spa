@@ -23,6 +23,8 @@ import { RecipesSummaryComponent } from './pages/recipes/recipe-summary/recipes-
 import { EditRecipeComponent } from './pages/recipes/edit-recipe/edit-recipe.component';
 import { AddRecipePortionsComponent } from './pages/recipes/add-recipe-portions/add-recipe-portions.component';
 import { EditPortionDialogComponent } from './pages/diary/edit-portion-dialog/edit-portion-dialog.component';
+import { QuantityEditorComponent } from './ui/quantity-editor/quantity-editor.component';
+import { FocusThenSelectDirective } from './directives/focus-then-select.directive';
 
 @NgModule({
   declarations: [
@@ -41,7 +43,9 @@ import { EditPortionDialogComponent } from './pages/diary/edit-portion-dialog/ed
     RecipesSummaryComponent,
     EditRecipeComponent,
     AddRecipePortionsComponent,
-    EditPortionDialogComponent
+    EditPortionDialogComponent,
+    QuantityEditorComponent,
+    FocusThenSelectDirective
   ],
   imports: [
     BrowserModule,

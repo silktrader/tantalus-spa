@@ -1,13 +1,13 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Portion } from 'src/app/models/portion.model';
-import { FormControl, Validators } from '@angular/forms';
-import { PortionValidators } from 'src/app/validators/portion-quantity.validator';
+import { FormControl } from '@angular/forms';
 import { Meal } from 'src/app/models/meal.model';
 import { DiaryService } from 'src/app/services/diary.service';
 import { UiService } from 'src/app/services/ui.service';
 import { MapperService as Mapper } from 'src/app/services/mapper.service';
 import { PortionDto } from 'src/app/models/portion-dto.model';
+import { QuantityEditorComponent } from 'src/app/ui/quantity-editor/quantity-editor.component';
 
 export interface EditPortionDialogData {
   readonly portion: Portion;
@@ -21,17 +21,15 @@ export interface EditPortionDialogData {
   styleUrls: ['./edit-portion-dialog.component.css']
 })
 export class EditPortionDialogComponent implements OnInit {
-  public readonly quantityInput: FormControl;
+  @ViewChild(QuantityEditorComponent, { static: false })
+  private quantityEditor: QuantityEditorComponent;
+
   public readonly mealSelector: FormControl;
 
   constructor(
     public dialogRef: MatDialogRef<EditPortionDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: EditPortionDialogData
   ) {
-    this.quantityInput = new FormControl(data.portion.quantity, [
-      Validators.required,
-      PortionValidators.quantity
-    ]);
     this.mealSelector = new FormControl(data.portion.meal);
   }
 
@@ -57,11 +55,15 @@ export class EditPortionDialogComponent implements OnInit {
     );
   }
 
+  public get saveable(): boolean {
+    return this.quantityEditor && this.quantityEditor.valid && this.quantityEditor.changed;
+  }
+
   public save(): void {
     this.changePortion(Mapper.toDto(this.data.portion), {
       id: this.data.portion.id,
       foodId: this.data.portion.food.id,
-      quantity: this.quantityInput.value,
+      quantity: this.quantityEditor.value,
       meal: this.mealSelector.value
     });
   }
@@ -72,10 +74,6 @@ export class EditPortionDialogComponent implements OnInit {
 
   public getMealName(index: number) {
     return Meal.mealNames[index];
-  }
-
-  public get quantityError(): string {
-    return PortionValidators.getQuantityError(this.quantityInput);
   }
 
   public get mealNumbers(): ReadonlyArray<number> {

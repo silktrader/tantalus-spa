@@ -1,0 +1,5 @@
+<mat-form-field appearance="outline">
+    <mat-label>grams</mat-label>
+    <input appFocusThenSelect matInput type="number" [formControl]="input" maxlength="5" autocomplete="off">
+    <mat-error>{{quantityError}}</mat-error>
+</mat-form-field>

@@ -1,0 +1,30 @@
+mat-form-field {
+  width: 5rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  flex-grow: 0;
+}
+
+input {
+  text-align: center;
+}
+
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+/* nasty hack to fix the vertical alignment of the mat-label */
+::ng-deep mat-form-field .mat-form-field-infix {
+  bottom: 0.25em !important;
+}
+
+/* another nasty hack to fix cropping of letters */
+::ng-deep mat-form-field .mat-form-field-label {
+  font-style: italic;
+  height: 133.33%;
+}

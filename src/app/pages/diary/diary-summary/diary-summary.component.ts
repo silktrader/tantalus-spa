@@ -90,7 +90,6 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
       },
       error: message => {
         this.ui.warn(`Couldn't delete ${this.date.toLocaleDateString()}'s entries`);
-        console.log(message);
       }
     });
   }
