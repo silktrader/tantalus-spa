@@ -7,11 +7,7 @@
 
 </app-toolbar>
 
-<ng-container *ngIf="!originalPortion">
-  <mat-card class="no-meals"><span>Missing portion</span></mat-card>
-</ng-container>
-
-<ng-container *ngIf="originalPortion">
+<ng-container *ngIf="originalPortion; else noMeals">
   <mat-card>
     <mat-card-header class="header">
       <mat-card-title>
@@ -51,13 +47,7 @@
       </section>
 
       <section class="inputs">
-        <mat-form-field class="quantity">
-          <input class="quantity-editor" matInput type="number" autocomplete="off" [formControl]="quantitiesControl"
-            required floatLabel="in grams" />
-          <span matSuffix class="quantity-unit">grams</span>
-          <mat-error>{{quantityError}}</mat-error>
-        </mat-form-field>
-
+        <app-quantity-editor [initialValue]="originalPortion.quantity"></app-quantity-editor>
         <mat-button-toggle-group class="meal-toggle-group" [value]="ds.focusedMeal" [formControl]="mealSelector"
           required>
           <mat-button-toggle class="meal-toggle" *ngFor="let availableMeal of ds.availableMealsIDs"
@@ -69,7 +59,6 @@
       </section>
 
       <section class="buttons">
-        <!-- <button type="button" (click)="delete()" color="warn" mat-stroked-button>Delete</button> -->
         <button type="button" (click)="reset()" color="primary" mat-raised-button
           [disabled]="portionUnchanged">Reset</button>
         <button type="submit" (click)="save()" color="primary" mat-raised-button
@@ -80,3 +69,7 @@
 
   </mat-card>
 </ng-container>
+
+<ng-template #noMeals>
+  <mat-card class="no-meals"><span>Missing portion</span></mat-card>
+</ng-template>

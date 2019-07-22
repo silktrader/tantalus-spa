@@ -1,6 +1,7 @@
 import { Component, AfterViewInit, Input } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { PortionValidators } from 'src/app/validators/portion-quantity.validator';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-quantity-editor',
@@ -35,10 +36,22 @@ export class QuantityEditorComponent implements AfterViewInit {
     return this.input.valid;
   }
 
+  public get dirty(): boolean {
+    return this.input.dirty;
+  }
+
   public get changed(): boolean {
     if (this.initialValue === undefined) {
       throw new Error('No initial state was set'); // tk handle it later
     }
     return this.initialValue !== this.value;
+  }
+
+  public get valueChanges(): Observable<number> {
+    return this.input.valueChanges;
+  }
+
+  public reset(newValue: number): void {
+    return this.input.reset(newValue);
   }
 }

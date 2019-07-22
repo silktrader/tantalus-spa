@@ -1,32 +1,49 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router, Params } from '@angular/router';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  AfterViewInit,
+  ViewChildren,
+  QueryList
+} from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { Portion } from 'src/app/models/portion.model';
 import { DiaryService } from 'src/app/services/diary.service';
 import { UiService } from 'src/app/services/ui.service';
-import { Meal } from 'src/app/models/meal.model';
 import { Diary } from 'src/app/models/diary.model';
-import { PortionAddDto } from 'src/app/models/portion-add-dto.model';
-import { PortionValidators } from 'src/app/validators/portion-quantity.validator';
 import { MapperService } from 'src/app/services/mapper.service';
+import { QuantityEditorComponent } from 'src/app/ui/quantity-editor/quantity-editor.component';
 
 @Component({
   selector: 'app-edit-portion',
   templateUrl: './edit-portion.component.html',
   styleUrls: ['./edit-portion.component.css']
 })
-export class EditPortionComponent implements OnInit, OnDestroy {
-  private id: number;
-
+export class EditPortionComponent implements OnInit, AfterViewInit, OnDestroy {
   private subscription: Subscription;
 
   public originalPortion: Portion;
-  public previewedPortion: Portion;
 
-  public quantitiesControl = new FormControl('', [Validators.required, PortionValidators.quantity]);
+  private _previewedPortion: Portion;
+
+  public set previewedPortion(value) {
+    this._previewedPortion = value;
+  }
+
+  public get previewedPortion(): Portion {
+    return this._previewedPortion;
+  }
+
+  @ViewChildren(QuantityEditorComponent)
+  private quantityEditorsList: QueryList<QuantityEditorComponent>;
+
+  private quantityEditor: QuantityEditorComponent;
+
   public mealSelector = new FormControl();
 
+  // tk public accessor only
   public diary: Diary;
 
   constructor(
@@ -42,51 +59,66 @@ export class EditPortionComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.id = +this.route.snapshot.paramMap.get('portionId');
+    const id = +this.route.snapshot.paramMap.get('portionId');
 
     this.subscription = this.ds.diary$.subscribe(diary => {
       if (diary === undefined) {
         return;
       }
-      this.originalPortion = diary.getPortion(this.id);
+      this.originalPortion = diary.getPortion(id);
       if (this.originalPortion === undefined) {
         return;
       }
 
       this.diary = diary;
 
-      this.previewedPortion = new Portion(
-        this.originalPortion.id,
-        this.originalPortion.quantity,
-        this.originalPortion.food,
-        this.originalPortion.meal
-      );
+      this.previewedPortion = this.originalPortion;
 
-      this.quantitiesControl.setValue(this.originalPortion.quantity);
       this.mealSelector.setValue(this.originalPortion.meal);
     });
+  }
+
+  ngAfterViewInit(): void {
+    if (this.quantityEditorsList && this.quantityEditorsList.first) {
+      this.setupQuantityEditor(this.quantityEditorsList.first);
+    } else {
+      // the quantity editor isn't loaded so wait until it is
+      this.quantityEditorsList.changes.subscribe(list => {
+        if (list.length) {
+          this.setupQuantityEditor(list.first);
+        }
+      });
+    }
 
     this.subscription.add(
-      this.quantitiesControl.valueChanges.subscribe((newQuantity: number) => {
-        this.previewedPortion = new Portion(
-          this.id,
-          newQuantity,
-          this.previewedPortion.food,
-          this.previewedPortion.meal
-        );
+      this.mealSelector.valueChanges.subscribe((value: number) => {
+        if (value !== this.previewedPortion.meal) {
+          this.previewedPortion = new Portion(
+            this.previewedPortion.id,
+            this.previewedPortion.quantity,
+            this.previewedPortion.food,
+            value
+          );
+        }
       })
     );
+  }
 
-    this.subscription.add(
-      this.mealSelector.valueChanges.subscribe((newMealNumber: number) => {
-        this.previewedPortion = new Portion(
-          this.id,
-          this.previewedPortion.quantity,
-          this.previewedPortion.food,
-          newMealNumber
-        );
-      })
-    );
+  private setupQuantityEditor(editor: QuantityEditorComponent): void {
+    // prevents the action buttons throwing an `expression changed after it was checked`
+    setTimeout(() => {
+      this.quantityEditor = editor;
+      this.quantityEditor.valueChanges.subscribe((value: number) => {
+        if (value !== this.previewedPortion.quantity) {
+          this.previewedPortion = new Portion(
+            this.previewedPortion.id,
+            value,
+            this.previewedPortion.food,
+            this.previewedPortion.meal
+          );
+        }
+      });
+    });
   }
 
   ngOnDestroy() {
@@ -94,15 +126,17 @@ export class EditPortionComponent implements OnInit, OnDestroy {
   }
 
   get saveDisabled(): boolean {
-    return (
-      (!this.quantitiesControl.valid && !this.mealSelector.valid) ||
-      (this.quantitiesControl.value === this.originalPortion.quantity &&
-        this.mealSelector.value === this.originalPortion.meal)
-    );
+    if (!this.quantityEditor) {
+      return false;
+    }
+    return !this.quantityEditor.valid || !this.mealSelector.valid || this.portionUnchanged;
   }
 
   get portionUnchanged(): boolean {
-    return !this.quantitiesControl.dirty && this.mealSelector.value === this.originalPortion.meal;
+    return (
+      this.originalPortion.quantity === this.previewedPortion.quantity &&
+      this.originalPortion.meal === this.previewedPortion.meal
+    );
   }
 
   public back(): void {
@@ -110,7 +144,7 @@ export class EditPortionComponent implements OnInit, OnDestroy {
   }
 
   public reset(): void {
-    this.quantitiesControl.reset(this.originalPortion.quantity);
+    this.quantityEditor.reset(this.originalPortion.quantity);
     this.mealSelector.reset(this.originalPortion.meal);
     this.previewedPortion = this.originalPortion;
   }
@@ -135,8 +169,12 @@ export class EditPortionComponent implements OnInit, OnDestroy {
     });
   }
 
+  // tk bad; shouldn't check for quantity edit
   private checkPreview(preview: string): string {
-    return this.quantitiesControl.valid ? preview : '…';
+    if (this.quantityEditor && this.quantityEditor.valid) {
+      return preview;
+    }
+    return '…';
   }
 
   public get previewCalories(): string {
@@ -176,9 +214,5 @@ export class EditPortionComponent implements OnInit, OnDestroy {
       },
       () => this.ui.warnFailedChangePortion(initial.id)
     );
-  }
-
-  public get quantityError(): string {
-    return PortionValidators.getQuantityError(this.quantitiesControl);
   }
 }

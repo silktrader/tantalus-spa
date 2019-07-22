@@ -63,7 +63,7 @@ export class AddRecipePortionsComponent implements OnInit {
         this.ingredients.map(ingredient => ({
           foodId: ingredient.food.id,
           quantity: ingredient.quantity,
-          mealNumber: this.mealSelector.value
+          meal: this.mealSelector.value
         }))
       )
       .subscribe(dtos => {
