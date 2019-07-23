@@ -25,6 +25,7 @@ import { AddRecipePortionsComponent } from './pages/recipes/add-recipe-portions/
 import { EditPortionDialogComponent } from './pages/diary/edit-portion-dialog/edit-portion-dialog.component';
 import { QuantityEditorComponent } from './ui/quantity-editor/quantity-editor.component';
 import { FocusThenSelectDirective } from './directives/focus-then-select.directive';
+import { ChartsModule } from 'ng2-charts';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import { FocusThenSelectDirective } from './directives/focus-then-select.directi
     BrowserAnimationsModule,
     HttpClientModule,
     MaterialModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ChartsModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

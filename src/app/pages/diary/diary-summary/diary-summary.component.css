@@ -3,6 +3,24 @@ mat-expansion-panel {
   margin-top: 5%;
 }
 
+.container {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+
+.portions-table {
+  flex-grow: 5;
+  height: 100%;
+}
+
+.table-desktop {
+  width: 50rem;
+}
+
+.table-mobile {
+}
+
 .header {
   display: flex;
   /* matches the padding of the cards below  */
@@ -137,7 +155,7 @@ mat-card.no-meals {
   font-weight: 500;
 }
 
-.add-meal {
+.add-portion {
   position: fixed;
   right: 20px;
   bottom: 20px;
@@ -145,4 +163,21 @@ mat-card.no-meals {
 
 ::ng-deep mat-list-item > div.mat-list-item-content {
   padding: 0px !important;
+}
+
+.charts {
+  display: flex;
+  flex-direction: column;
+  /* flex-grow: 1; */
+}
+
+.macro-chart {
+  display: flex;
+  flex-direction: column;
+  width: 20rem;
+  height: 20rem;
+}
+
+.macro-chart h3 {
+  text-align: center;
 }

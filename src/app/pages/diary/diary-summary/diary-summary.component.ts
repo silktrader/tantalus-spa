@@ -8,6 +8,7 @@ import { DiaryService } from 'src/app/services/diary.service';
 import { EditPortionDialogComponent } from '../edit-portion-dialog/edit-portion-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Portion } from 'src/app/models/portion.model';
+import { ChartOptions } from 'chart.js';
 
 @Component({
   selector: 'app-diary-summary',
@@ -21,7 +22,40 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
   public columns: ReadonlyArray<string> = ['Calories', 'Macronutrients'];
   public columnSelector = new FormControl();
 
+  private isDesktopField: boolean;
+  public get isDesktop(): boolean {
+    return this.isDesktopField;
+  }
+
+  private isMobileField: boolean;
+  public get isMobile(): boolean {
+    return this.isMobileField;
+  }
+
   private subscription: Subscription = new Subscription();
+
+  public readonly macroChartsOptions: ChartOptions = {
+    responsive: false,
+    legend: {
+      display: true,
+      position: 'bottom',
+      labels: {
+        fontFamily: '\'Roboto\', \'sans-serif\'',
+        usePointStyle: true
+      }
+    },
+    plugins: {
+      datalabels: {
+        formatter: (value, ctx) => {
+          const label = ctx.chart.data.labels[ctx.dataIndex];
+          return label;
+        }
+      }
+    }
+  };
+
+  public macroChartsData: Array<number> = [];
+  public macroChartsLabels: Array<string> = ['Proteins', 'Carbs', 'Fats'];
 
   constructor(
     private ds: DiaryService,
@@ -35,8 +69,18 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.ds.diary$.subscribe(diary => {
         this.diary = diary;
+
+        if (diary === undefined) {
+          return;
+        }
+
+        // populate chart data, tk here? what about mobile?
+        this.macroChartsData = this.fetchMacroChartData();
       })
     );
+
+    this.subscription.add(this.ui.mobile.subscribe(value => (this.isMobileField = value)));
+    this.subscription.add(this.ui.desktop.subscribe(value => (this.isDesktopField = value)));
 
     // sets up the colums selector and specify a default value
     this.subscription.add(
@@ -49,11 +93,21 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
+  private fetchMacroChartData(): Array<number> {
+    const data = [0, 0, 0];
+    for (const meal of this.diary.meals) {
+      data[0] = meal.getTotalProperty('proteins');
+      data[1] = meal.getTotalProperty('carbs');
+      data[2] = meal.getTotalProperty('fats');
+    }
+    return data;
+  }
+
   public get date(): Date {
     return this.ds.date;
   }
 
-  public addMeal() {
+  public addPortion() {
     this.router.navigate(['add-portion'], { relativeTo: this.route });
   }
 

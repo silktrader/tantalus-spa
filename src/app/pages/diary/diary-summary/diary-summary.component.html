@@ -8,83 +8,100 @@
 
 <ng-container *ngIf="diary; else noMeals">
 
-  <!-- Header -->
+  <section class="container">
 
-  <section class="header">
-    <section class="header-notes">
-      <mat-form-field class="columns-selector">
-        <mat-select [formControl]="columnSelector" required>
-          <mat-option *ngFor="let column of columns" [value]="column">{{column}}</mat-option>
-        </mat-select>
-      </mat-form-field>
+    <section class="portions-table"
+      [ngClass]="{'table-desktop': (ui.desktop | async), 'table-mobile': (ui.mobile | async)}">
+
+      <!-- Header -->
+
+      <section class="header">
+        <section class="header-notes">
+          <mat-form-field class="columns-selector">
+            <mat-select [formControl]="columnSelector" required>
+              <mat-option *ngFor="let column of columns" [value]="column">{{column}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </section>
+
+        <!-- Macronutrients header -->
+        <ng-container *ngIf="focus == 'Macronutrients'">
+
+          <section class="header-columns">
+            <section class="header-macro-column">
+              <span class="mat-caption header-macro-label">Prot.</span>
+              <span class="proteins">{{diary.getTotalProperty('proteins') | number:'1.0-0'}}</span>
+            </section>
+            <section class="header-macro-column">
+              <span class="mat-caption header-macro-label">Carb.</span>
+              <span class="carbs">{{diary.getTotalProperty('carbs') | number:'1.0-0'}}</span>
+            </section>
+            <section class="header-macro-column">
+              <span class="mat-caption header-macro-label">Fats</span>
+              <span class="fats">{{diary.getTotalProperty('fats') | number:'1.0-0'}}</span>
+            </section>
+          </section>
+        </ng-container>
+
+        <!-- Calories header -->
+        <ng-container *ngIf="focus == 'Calories'">
+          <section class="header-columns">
+            <span class="meal-header-aggregate calories">{{diary.getTotalProperty('calories') | number:'1.0-0'}}</span>
+          </section>
+        </ng-container>
+      </section>
+
+      <!-- Portions and columns -->
+      <mat-accordion class="meals-container" multi="true">
+        <mat-expansion-panel [expanded]="true" hideToggle *ngFor="let meal of diary.meals">
+          <mat-expansion-panel-header>
+            <span class="meal-header mat-subheading-2">
+              <span class="meal-header-title">{{meal.name}}</span>
+              <span *ngIf="focus == 'Macronutrients'" class="meal-header-aggregate">
+                <span class="meal-header-macro proteins">{{meal.getTotalProperty('proteins') | number:'1.0-0'}}</span>
+                <span class="meal-header-macro carbs">{{meal.getTotalProperty('carbs') | number:'1.0-0'}}</span>
+                <span class="meal-header-macro fats">{{meal.getTotalProperty('fats') | number:'1.0-0'}}</span>
+              </span>
+              <span *ngIf="focus == 'Calories'" class="meal-header-aggregate calories">{{meal.getTotalProperty('calories') |
+            number:'1.0-0'}}</span>
+            </span>
+          </mat-expansion-panel-header>
+          <mat-nav-list>
+            <mat-list-item class="portion" *ngFor="let portion of meal.Portions">
+              <!-- <a [routerLink]="[portion.id]" (click)="editPortion(portion)" routerLinkActive="active"> -->
+              <a (click)="editPortion(portion)">
+                <span class="portion-header">
+                  <span class="mat-body-2">{{portion.food.name}}</span>
+                  <span class="portion-header-quantity mat-caption">{{portion.quantity | number:'1.0-0'}} g.</span>
+                </span>
+                <span *ngIf="focus == 'Macronutrients'" class="portion-column mat-body-1">
+                  <span class="portion-macro">{{portion.proteins | number:'1.0-0'}}</span>
+                  <span class="portion-macro">{{portion.carbs | number:'1.0-0'}}</span>
+                  <span class="portion-macro">{{portion.fats | number:'1.0-0'}}</span>
+                </span>
+                <span *ngIf="focus == 'Calories'" class="portion-column calories">{{portion.calories |
+              number:'1.0-0'}}</span>
+              </a>
+            </mat-list-item>
+          </mat-nav-list>
+
+        </mat-expansion-panel>
+
+      </mat-accordion>
+
     </section>
 
-    <!-- Macronutrients header -->
-    <ng-container *ngIf="focus == 'Macronutrients'">
+    <section class="charts" *ngIf="ui.desktop | async">
 
-      <section class="header-columns">
-        <section class="header-macro-column">
-          <span class="mat-caption header-macro-label">Prot.</span>
-          <span class="proteins">{{diary.getTotalProperty('proteins') | number:'1.0-0'}}</span>
-        </section>
-        <section class="header-macro-column">
-          <span class="mat-caption header-macro-label">Carb.</span>
-          <span class="carbs">{{diary.getTotalProperty('carbs') | number:'1.0-0'}}</span>
-        </section>
-        <section class="header-macro-column">
-          <span class="mat-caption header-macro-label">Fats</span>
-          <span class="fats">{{diary.getTotalProperty('fats') | number:'1.0-0'}}</span>
-        </section>
+      <section class="macro-chart">
+        <h3>Macronutrients</h3>
+        <canvas baseChart [data]="macroChartsData" [labels]="macroChartsLabels" chartType="pie"
+          [options]="macroChartsOptions">
+        </canvas>
       </section>
-    </ng-container>
+    </section>
 
-    <!-- Calories header -->
-    <ng-container *ngIf="focus == 'Calories'">
-      <section class="header-columns">
-        <span class="meal-header-aggregate calories">{{diary.getTotalProperty('calories') | number:'1.0-0'}}</span>
-      </section>
-    </ng-container>
   </section>
-
-  <mat-divider></mat-divider>
-
-  <!-- Portions and columns -->
-  <mat-accordion class="meals-container" multi="true">
-    <mat-expansion-panel [expanded]="true" hideToggle *ngFor="let meal of diary.meals">
-      <mat-expansion-panel-header>
-        <span class="meal-header mat-subheading-2">
-          <span class="meal-header-title">{{meal.name}}</span>
-          <span *ngIf="focus == 'Macronutrients'" class="meal-header-aggregate">
-            <span class="meal-header-macro proteins">{{meal.getTotalProperty('proteins') | number:'1.0-0'}}</span>
-            <span class="meal-header-macro carbs">{{meal.getTotalProperty('carbs') | number:'1.0-0'}}</span>
-            <span class="meal-header-macro fats">{{meal.getTotalProperty('fats') | number:'1.0-0'}}</span>
-          </span>
-          <span *ngIf="focus == 'Calories'" class="meal-header-aggregate calories">{{meal.getTotalProperty('calories') |
-            number:'1.0-0'}}</span>
-        </span>
-      </mat-expansion-panel-header>
-      <mat-nav-list>
-        <mat-list-item class="portion" *ngFor="let portion of meal.Portions">
-          <!-- <a [routerLink]="[portion.id]" (click)="editPortion(portion)" routerLinkActive="active"> -->
-          <a (click)="editPortion(portion)">
-            <span class="portion-header">
-              <span class="mat-body-2">{{portion.food.name}}</span>
-              <span class="portion-header-quantity mat-caption">{{portion.quantity | number:'1.0-0'}} g.</span>
-            </span>
-            <span *ngIf="focus == 'Macronutrients'" class="portion-column mat-body-1">
-              <span class="portion-macro">{{portion.proteins | number:'1.0-0'}}</span>
-              <span class="portion-macro">{{portion.carbs | number:'1.0-0'}}</span>
-              <span class="portion-macro">{{portion.fats | number:'1.0-0'}}</span>
-            </span>
-            <span *ngIf="focus == 'Calories'" class="portion-column calories">{{portion.calories |
-              number:'1.0-0'}}</span>
-          </a>
-        </mat-list-item>
-      </mat-nav-list>
-
-    </mat-expansion-panel>
-
-  </mat-accordion>
 </ng-container>
 
 <ng-template #noMeals>
@@ -92,6 +109,6 @@
 </ng-template>
 
 
-<button class="add-meal" mat-fab (click)="addMeal()">
+<button class="add-meal" mat-fab (click)="addPortion()">
   <mat-icon>add</mat-icon>
 </button>
