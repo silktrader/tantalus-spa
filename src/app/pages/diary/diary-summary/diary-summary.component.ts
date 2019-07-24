@@ -21,6 +21,7 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
 
   public columns: ReadonlyArray<string> = ['Calories', 'Macronutrients'];
   public columnSelector = new FormControl();
+  public readonly commentTextarea = new FormControl();
 
   private isDesktopField: boolean;
   public get isDesktop(): boolean {
@@ -32,9 +33,10 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
     return this.isMobileField;
   }
 
-  private subscription: Subscription = new Subscription();
+  private readonly subscription: Subscription = new Subscription();
 
-  public readonly macroChartsOptions: ChartOptions = {
+  // tk create chart details class
+  public readonly macroChartsOptions: Readonly<ChartOptions> = {
     responsive: false,
     legend: {
       display: true,
@@ -73,6 +75,8 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
         if (diary === undefined) {
           return;
         }
+
+        this.commentTextarea.reset(diary.comment);
 
         // populate chart data, tk here? what about mobile?
         this.macroChartsData = this.fetchMacroChartData();
@@ -144,6 +148,17 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
       },
       error: message => {
         this.ui.warn(`Couldn't delete ${this.date.toLocaleDateString()}'s entries`);
+      }
+    });
+  }
+
+  public editComment() {
+    this.ds.editComment(this.commentTextarea.value).subscribe({
+      next: () => {
+        this.ui.notify(`Edited comment`);
+      },
+      error: error => {
+        this.ui.notify(`Couldn't edit comment ${error}`);
       }
     });
   }

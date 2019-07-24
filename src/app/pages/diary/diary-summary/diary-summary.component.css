@@ -1,6 +1,7 @@
 mat-expansion-panel {
   margin: 3%;
-  margin-top: 5%;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .container {
@@ -155,29 +156,30 @@ mat-card.no-meals {
   font-weight: 500;
 }
 
-.add-portion {
-  position: fixed;
-  right: 20px;
-  bottom: 20px;
-}
-
 ::ng-deep mat-list-item > div.mat-list-item-content {
   padding: 0px !important;
 }
 
-.charts {
+.sidebar {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 90vh;
   /* flex-grow: 1; */
 }
 
 .macro-chart {
   display: flex;
   flex-direction: column;
+  justify-self: start;
   width: 20rem;
   height: 20rem;
 }
 
 .macro-chart h3 {
   text-align: center;
+}
+
+.add-portion {
 }

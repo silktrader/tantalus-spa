@@ -182,6 +182,24 @@ export class DiaryService {
       );
   }
 
+  public editComment(comment: string): Observable<string> {
+    return this.http
+      .post<{ comment: string }>(`${this.baseUrl}${this.dateUrl}/comment`, { comment })
+      .pipe(
+        map(response => {
+          const state = { ...this.diarySubject$.value.dto };
+          this.diarySubject$.next(
+            new Diary({
+              comment: response.comment,
+              portions: state.portions,
+              foods: state.foods
+            })
+          );
+          return response.comment;
+        })
+      );
+  }
+
   public deleteDiary(): Observable<void> {
     return this.http
       .delete<void>(`${this.baseUrl}${this.dateUrl}`)

@@ -9,6 +9,8 @@ export class Diary {
     return this.diaryDto;
   }
 
+  public readonly comment: Readonly<string>;
+
   private foodsMap: Map<number, Food> = new Map<number, Food>();
   public get foods() {
     return this.foodsMap.values;
@@ -20,6 +22,8 @@ export class Diary {
   }
 
   constructor(private readonly diaryDto: DiaryEntryDto) {
+    this.comment = diaryDto.comment || undefined;
+
     // populate foods map for quick lookup and to avoid multiple identical objects
     for (const foodDto of diaryDto.foods) {
       this.foodsMap.set(foodDto.id, new Food(foodDto));

@@ -91,7 +91,7 @@
 
     </section>
 
-    <section class="charts" *ngIf="ui.desktop | async">
+    <section class="sidebar" *ngIf="ui.desktop | async">
 
       <section class="macro-chart">
         <h3>Macronutrients</h3>
@@ -99,6 +99,20 @@
           [options]="macroChartsOptions">
         </canvas>
       </section>
+
+      <section class="comment">
+        <!-- <span *ngIf="editingComment; else commentEdit">{{diary.comments}}</span> -->
+        <!-- <ng-template #commentEdit> -->
+        <mat-form-field appearance="outline">
+          <mat-label>Comment</mat-label>
+          <textarea matInput autocomplete="off" [formControl]="commentTextarea" (change)="editComment()"></textarea>
+        </mat-form-field>
+        <!-- </ng-template> -->
+      </section>
+
+      <button class="add-portion" mat-fab (click)="addPortion()">
+        <mat-icon>add</mat-icon>
+      </button>
     </section>
 
   </section>
@@ -106,9 +120,7 @@
 
 <ng-template #noMeals>
   <mat-card class="no-meals"><span>No recorded meals</span></mat-card>
+  <button class="add-portion" mat-fab (click)="addPortion()">
+    <mat-icon>add</mat-icon>
+  </button>
 </ng-template>
-
-
-<button class="add-meal" mat-fab (click)="addPortion()">
-  <mat-icon>add</mat-icon>
-</button>

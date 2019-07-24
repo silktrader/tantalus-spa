@@ -8,3 +8,4 @@
 * [ ] handle diary without portions
 * [ ] improve handling of food table when removing, adding or editing foods (reload)
 * fix successful missing login redirection
+* standardise new diary dto creation (without rewriting comments, foods and portions each time) in diary.service
