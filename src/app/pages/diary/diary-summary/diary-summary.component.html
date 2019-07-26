@@ -6,10 +6,10 @@
 
 </app-toolbar>
 
-<ng-container *ngIf="diary; else noMeals">
 
-  <section class="container">
+<section class="container">
 
+  <ng-container *ngIf="diary; else noMeals">
     <section class="portions-table"
       [ngClass]="{'table-desktop': (ui.desktop | async), 'table-mobile': (ui.mobile | async)}">
 
@@ -91,36 +91,32 @@
 
     </section>
 
-    <section class="sidebar" *ngIf="ui.desktop | async">
+  </ng-container>
 
-      <section class="macro-chart">
+  <section class="sidebar" *ngIf="ui.desktop | async">
+
+    <section class="macro-chart">
+      <ng-container *ngIf="diary">
         <h3>Macronutrients</h3>
         <canvas baseChart [data]="macroChartsData" [labels]="macroChartsLabels" chartType="pie"
           [options]="macroChartsOptions">
         </canvas>
-      </section>
-
-      <section class="comment">
-        <!-- <span *ngIf="editingComment; else commentEdit">{{diary.comments}}</span> -->
-        <!-- <ng-template #commentEdit> -->
-        <mat-form-field appearance="outline">
-          <mat-label>Comment</mat-label>
-          <textarea matInput autocomplete="off" [formControl]="commentTextarea" (change)="editComment()"></textarea>
-        </mat-form-field>
-        <!-- </ng-template> -->
-      </section>
-
-      <button class="add-portion" mat-fab (click)="addPortion()">
-        <mat-icon>add</mat-icon>
-      </button>
+      </ng-container>
     </section>
 
-  </section>
-</ng-container>
+    <section class="comment">
+      <mat-form-field appearance="outline">
+        <mat-label>Comment</mat-label>
+        <textarea matInput autocomplete="off" [formControl]="commentTextarea" (change)="editComment()"></textarea>
+      </mat-form-field>
+    </section>
 
-<ng-template #noMeals>
-  <mat-card class="no-meals"><span>No recorded meals</span></mat-card>
-  <button class="add-portion" mat-fab (click)="addPortion()">
-    <mat-icon>add</mat-icon>
-  </button>
-</ng-template>
+    <button class="add-portion" mat-fab (click)="addPortion()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </section>
+
+  <ng-template #noMeals>
+    <mat-card class="no-meals"><span>No recorded meals</span></mat-card>
+  </ng-template>
+</section>

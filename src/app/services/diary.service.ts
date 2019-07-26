@@ -187,12 +187,14 @@ export class DiaryService {
       .post<{ comment: string }>(`${this.baseUrl}${this.dateUrl}/comment`, { comment })
       .pipe(
         map(response => {
-          const state = { ...this.diarySubject$.value.dto };
+          const previousState = this.diarySubject$.value
+            ? { ...this.diarySubject$.value.dto }
+            : { portions: [], foods: [] };
           this.diarySubject$.next(
             new Diary({
               comment: response.comment,
-              portions: state.portions,
-              foods: state.foods
+              portions: previousState.portions,
+              foods: previousState.foods
             })
           );
           return response.comment;

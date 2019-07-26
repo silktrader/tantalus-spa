@@ -73,6 +73,7 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
         this.diary = diary;
 
         if (diary === undefined) {
+          this.commentTextarea.reset();
           return;
         }
 
@@ -158,6 +159,7 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
         this.ui.notify(`Edited comment`);
       },
       error: error => {
+        console.log(error);
         this.ui.notify(`Couldn't edit comment ${error}`);
       }
     });
