@@ -7,7 +7,7 @@ export class PortionValidators {
       return { integer: true };
     }
 
-    if (control.value <= 0 || control.value >= 5000) {
+    if (control.value <= 0 || control.value >= 3000) {
       return { range: true };
     }
 
@@ -22,7 +22,7 @@ export class PortionValidators {
       return 'No decimals allowed';
     }
     if (control.hasError('range')) {
-      return 'Must be within [0, 5,000] grams';
+      return 'Invalid quantity';
     }
     return 'Invalid input';
   }

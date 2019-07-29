@@ -1,0 +1,21 @@
+<section class="dialog" mat-dialog-content>
+    <mat-form-field class="ingredient-row-name" appearance="outline">
+        <mat-label>Food Name</mat-label>
+        <input matInput [matAutocomplete]="auto" type="text" [formControl]="foodInput">
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFood">
+            <mat-option *ngFor="let foodData of (filteredFoods$ | async)" [value]="foodData">{{foodData.name}}
+            </mat-option>
+        </mat-autocomplete>
+    </mat-form-field>
+    <app-quantity-editor [disabled]="addingRecipe" [initialValue]="0"></app-quantity-editor>
+    <mat-select [formControl]="mealSelector" class="meal-selector">
+        <mat-option *ngFor="let mealNumber of data.ds.availableMealsIDs" [value]="mealNumber">
+            {{data.ds.getMealName(mealNumber)}}
+        </mat-option>
+    </mat-select>
+
+</section>
+<section mat-dialog-actions class="actions">
+    <button mat-flat-button mat-dialog-close>Dismiss</button>
+    <button mat-flat-button color="primary" (click)="save()" [disabled]="!saveable">Save</button>
+</section>

@@ -1,7 +1,8 @@
 import { Component, AfterViewInit, Input } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { PortionValidators } from 'src/app/validators/portion-quantity.validator';
-import { Observable } from 'rxjs';
+import { Observable, Subject, of, BehaviorSubject } from 'rxjs';
+import { shareReplay, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-quantity-editor',
@@ -9,15 +10,43 @@ import { Observable } from 'rxjs';
   styleUrls: ['./quantity-editor.component.css']
 })
 export class QuantityEditorComponent implements AfterViewInit {
-  private input = new FormControl(undefined, [Validators.required, PortionValidators.quantity]);
+  public input = new FormControl({
+    value: undefined,
+    validators: [Validators.required, PortionValidators.quantity]
+  });
 
   @Input() readonly initialValue: number;
+
+  private disabledState: boolean;
+  @Input() set disabled(value: boolean) {
+    this.disabledState = value;
+    this.disabledSubject.next(value);
+  }
+
+  get disabled(): boolean {
+    return this.disabledState;
+  }
+
+  private disabledSubject = new BehaviorSubject(false);
 
   constructor() {}
 
   ngAfterViewInit(): void {
     // necessary to avoid change detection issues within mat dialogs
-    setTimeout(() => this.input.setValue(this.initialValue), 0);
+    setTimeout(() => {
+      if (this.initialValue) {
+        this.input.setValue(this.initialValue);
+      }
+
+      this.disabledSubject.subscribe(disabled => {
+        if (disabled) {
+          this.input.reset();
+          this.input.disable();
+        } else {
+          this.input.enable();
+        }
+      });
+    }, 0);
   }
 
   public get value(): number {

@@ -12,6 +12,10 @@ export enum Breakpoints {
   desktop = '(min-width: 960px)'
 }
 
+export enum ActionNames {
+  undo = 'Undo'
+}
+
 @Injectable({ providedIn: 'root' })
 export class UiService {
   constructor(
@@ -59,6 +63,22 @@ export class UiService {
 
   public warn(message: string) {
     this.snackBar.open(message, '', { duration: this.notificationsDuration });
+  }
+
+  public notifyAddedPortions(portionsNumber: number, undoAction: () => void) {
+    this.notify(`Added ${portionsNumber} portions`, ActionNames.undo, undoAction);
+  }
+
+  public warnFailedAddedPortions() {
+    this.warn(`Couldn't add portions`);
+  }
+
+  public notifyAddedPortion(quantity: number, foodName: string, undoAction: () => void) {
+    this.notify(`Added ${quantity} g. of ${foodName}`, ActionNames.undo, undoAction);
+  }
+
+  public warnFailedAddedPortion(foodName: string): void {
+    this.warn(`Couldn't add ${foodName} portion`);
   }
 
   public notifyChangePortion(

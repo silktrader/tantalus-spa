@@ -1,12 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
-import {
-  map,
-  switchMap,
-  debounceTime,
-  distinctUntilChanged,
-  tap
-} from 'rxjs/operators';
+import { map, switchMap, debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Food } from '../models/food.model';
 import { FoodDto } from '../models/food-dto.model';
@@ -15,11 +9,6 @@ import { Recipe } from '../models/recipe.model';
 
 @Injectable({ providedIn: 'root' })
 export class FoodsService {
-  private baseUrl = 'https://localhost:5001/api/foods';
-
-  private readonly foods$ = new BehaviorSubject<Food[]>([]);
-  public readonly foods = this.foods$.asObservable();
-
   constructor(private readonly http: HttpClient) {
     // populate the initial foods store
     this.http.get(this.baseUrl).subscribe(
@@ -28,6 +17,19 @@ export class FoodsService {
       },
       error => console.log(error)
     );
+  }
+  private baseUrl = 'https://localhost:5001/api/foods';
+
+  private readonly foods$ = new BehaviorSubject<Food[]>([]);
+  public readonly foods = this.foods$.asObservable();
+
+  public static isRecipeDto(dto: any): dto is RecipeDto {
+    return (dto as RecipeDto).ingredients !== undefined;
+  }
+
+  // tk not very solid since source is nullable
+  public static isFoodDto(dto: any): dto is FoodDto {
+    return (dto as FoodDto).source !== undefined;
   }
 
   public addFood(food: FoodDto): Observable<FoodDto> {
@@ -55,34 +57,26 @@ export class FoodsService {
       .pipe(map(dto => new Recipe(dto)));
   }
 
-  public getFilteredFoods(
-    filter: BehaviorSubject<string>
-  ): Observable<Array<Food | Recipe>> {
+  public getFilteredFoods(filter: Observable<string>): Observable<Array<Food | Recipe>> {
     return filter.pipe(
       switchMap(filterText => {
         const text = filterText.toLowerCase();
-        return this.http.get<Array<FoodDto | RecipeDto>>(
-          `${this.baseUrl}/filter?name=${text}`
-        );
+        return this.http.get<Array<FoodDto | RecipeDto>>(`${this.baseUrl}/filter?name=${text}`);
       }),
       debounceTime(300),
       distinctUntilChanged(),
       map(data => {
         const portions: Array<Food | Recipe> = [];
         for (const dto of data) {
-          if (this.isRecipe(dto)) {
+          if (FoodsService.isRecipeDto(dto)) {
             portions.push(new Recipe(dto));
-          } else {
+          } else if (FoodsService.isFoodDto(dto)) {
             portions.push(new Food(dto));
           }
         }
         return portions;
       })
     );
-  }
-
-  public isRecipe(portion: FoodDto | RecipeDto): portion is RecipeDto {
-    return (portion as RecipeDto).ingredients !== undefined;
   }
 
   public getAutocompleteFoods(filter: string): Observable<RecipeFoodDto[]> {

@@ -9,6 +9,8 @@ import { EditPortionDialogComponent } from '../edit-portion-dialog/edit-portion-
 import { MatDialog } from '@angular/material/dialog';
 import { Portion } from 'src/app/models/portion.model';
 import { ChartOptions } from 'chart.js';
+import { AddPortionDialogComponent } from '../add-portion-dialog/add-portion-dialog.component';
+import { FoodsService } from 'src/app/services/foods.service';
 
 @Component({
   selector: 'app-diary-summary',
@@ -61,6 +63,7 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
 
   constructor(
     private ds: DiaryService,
+    private fs: FoodsService,
     public ui: UiService,
     private router: Router,
     private route: ActivatedRoute,
@@ -113,7 +116,10 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
   }
 
   public addPortion() {
-    this.router.navigate(['add-portion'], { relativeTo: this.route });
+    // this.router.navigate(['add-portion'], { relativeTo: this.route });
+    this.dialog.open(AddPortionDialogComponent, {
+      data: { ds: this.ds, ui: this.ui, fs: this.fs }
+    });
   }
 
   /**
