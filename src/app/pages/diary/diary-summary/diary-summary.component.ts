@@ -104,9 +104,9 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
   private fetchMacroChartData(): Array<number> {
     const data = [0, 0, 0];
     for (const meal of this.diary.meals) {
-      data[0] = meal.getTotalProperty('proteins');
-      data[1] = meal.getTotalProperty('carbs');
-      data[2] = meal.getTotalProperty('fats');
+      data[0] += meal.getTotalProperty('proteins');
+      data[1] += meal.getTotalProperty('carbs');
+      data[2] += meal.getTotalProperty('fats');
     }
     return data;
   }
