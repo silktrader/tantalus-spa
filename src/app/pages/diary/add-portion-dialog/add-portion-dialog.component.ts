@@ -2,7 +2,7 @@ import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DiaryService } from 'src/app/services/diary.service';
 import { UiService } from 'src/app/services/ui.service';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { QuantityEditorComponent } from 'src/app/ui/quantity-editor/quantity-editor.component';
 import { FoodDto } from 'src/app/models/food-dto.model';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -24,23 +24,13 @@ export interface AddPortionDialogData {
   styleUrls: ['./add-portion-dialog.component.css']
 })
 export class AddPortionDialogComponent {
-  @ViewChild(QuantityEditorComponent, { static: false })
-  private quantityEditor: QuantityEditorComponent;
-
-  public readonly mealSelector: FormControl;
-  public readonly foodInput: FormControl;
-
-  public readonly filteredFoods$: Observable<ReadonlyArray<IPortion>>;
-  private readonly filterText$ = new Subject<string>();
-
-  private selectedFood: FoodDto;
-  private selectedRecipe: RecipeDto;
-
   constructor(
     public dialogRef: MatDialogRef<AddPortionDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: AddPortionDialogData
   ) {
-    this.foodInput = new FormControl();
+    this.foodInput = new FormControl(undefined, {
+      validators: Validators.required
+    });
     this.mealSelector = new FormControl(data.ds.focusedMeal);
 
     this.filteredFoods$ = data.fs.getFilteredFoods(this.filterText$);
@@ -63,17 +53,6 @@ export class AddPortionDialogComponent {
       });
   }
 
-  public displayFood(foodDto: FoodDto): string | undefined {
-    if (foodDto) {
-      return foodDto.name;
-    }
-    return undefined;
-  }
-
-  public get quantityEditable(): boolean {
-    return true;
-  }
-
   public get saveable(): boolean {
     if (this.selectedFood) {
       return this.quantityEditor && this.quantityEditor.valid;
@@ -84,8 +63,42 @@ export class AddPortionDialogComponent {
     }
   }
 
+  public get hasQuantityError(): boolean {
+    if (this.quantityEditor && this.quantityEditor.dirty && !this.quantityEditor.valid) {
+      return true;
+    }
+    return false;
+  }
+
   public get addingRecipe(): boolean {
     return this.selectedRecipe !== undefined;
+  }
+  @ViewChild(QuantityEditorComponent, { static: false })
+  public quantityEditor: QuantityEditorComponent;
+
+  public readonly mealSelector: FormControl;
+  public readonly foodInput: FormControl;
+
+  public readonly filteredFoods$: Observable<ReadonlyArray<IPortion>>;
+  private readonly filterText$ = new Subject<string>();
+
+  private selectedFood: FoodDto;
+  private selectedRecipe: RecipeDto;
+
+  public isMissingPortion = false;
+
+  public displayFood(foodDto: FoodDto): string | undefined {
+    if (foodDto) {
+      return foodDto.name;
+    }
+    return undefined;
+  }
+
+  public checkMissingPortion(): void {
+    // nasty hack to allows the quantity editor to steal focus and trigger the `blur` event
+    setTimeout(() => {
+      this.isMissingPortion = !this.selectedFood && !this.selectedRecipe;
+    }, 500);
   }
 
   public save(): void {

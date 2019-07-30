@@ -24,7 +24,15 @@
   width: 6rem;
 }
 
+.errors {
+  height: 1.5rem;
+  width: 100%;
+  text-align: center;
+  font-style: italic;
+}
+
 .actions {
   display: flex;
   justify-content: space-evenly;
+  margin-top: 1rem;
 }

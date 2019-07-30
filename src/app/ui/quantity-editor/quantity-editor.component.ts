@@ -1,8 +1,8 @@
-import { Component, AfterViewInit, Input } from '@angular/core';
+import { Component, AfterViewInit, Input, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { PortionValidators } from 'src/app/validators/portion-quantity.validator';
-import { Observable, Subject, of, BehaviorSubject } from 'rxjs';
-import { shareReplay, tap } from 'rxjs/operators';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { MatInput } from '@angular/material/input';
 
 @Component({
   selector: 'app-quantity-editor',
@@ -10,11 +10,9 @@ import { shareReplay, tap } from 'rxjs/operators';
   styleUrls: ['./quantity-editor.component.css']
 })
 export class QuantityEditorComponent implements AfterViewInit {
-  public input = new FormControl({
-    value: undefined,
-    validators: [Validators.required, PortionValidators.quantity]
-  });
+  public input = new FormControl(undefined, [Validators.required, PortionValidators.quantity]);
 
+  @ViewChild(MatInput, { static: false }) matInput: MatInput;
   @Input() readonly initialValue: number;
 
   private disabledState: boolean;
@@ -28,6 +26,11 @@ export class QuantityEditorComponent implements AfterViewInit {
   }
 
   private disabledSubject = new BehaviorSubject(false);
+
+  private readyField = false;
+  public get ready() {
+    return this.readyField;
+  }
 
   constructor() {}
 
@@ -46,6 +49,8 @@ export class QuantityEditorComponent implements AfterViewInit {
           this.input.enable();
         }
       });
+
+      this.readyField = true;
     }, 0);
   }
 
@@ -57,7 +62,7 @@ export class QuantityEditorComponent implements AfterViewInit {
     this.input.setValue(value);
   }
 
-  public get quantityError(): string {
+  public get error(): string {
     return PortionValidators.getQuantityError(this.input);
   }
 
@@ -82,5 +87,9 @@ export class QuantityEditorComponent implements AfterViewInit {
 
   public reset(newValue: number): void {
     return this.input.reset(newValue);
+  }
+
+  public focus(): void {
+    this.matInput.focus();
   }
 }

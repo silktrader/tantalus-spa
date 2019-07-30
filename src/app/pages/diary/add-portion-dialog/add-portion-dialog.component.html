@@ -1,8 +1,8 @@
 <section class="dialog" mat-dialog-content>
     <mat-form-field class="ingredient-row-name" appearance="outline">
         <mat-label>Food Name</mat-label>
-        <input matInput [matAutocomplete]="auto" type="text" [formControl]="foodInput">
-        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFood">
+        <input matInput [matAutocomplete]="auto" type="text" [formControl]="foodInput" (blur)="checkMissingPortion()">
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFood" (optionSelected)="quantityEditor.focus()">
             <mat-option *ngFor="let foodData of (filteredFoods$ | async)" [value]="foodData">{{foodData.name}}
             </mat-option>
         </mat-autocomplete>
@@ -13,8 +13,13 @@
             {{data.ds.getMealName(mealNumber)}}
         </mat-option>
     </mat-select>
-
 </section>
+<section class="errors">
+    <mat-error *ngIf="hasQuantityError">{{quantityEditor.error}}</mat-error>
+    <mat-error *ngIf="isMissingPortion">Missing Food, create <a [routerLink]="['/foods/add-food']"
+            (click)="dialogRef.close()">{{foodInput.value}}</a></mat-error>
+</section>
+
 <section mat-dialog-actions class="actions">
     <button mat-flat-button mat-dialog-close>Dismiss</button>
     <button mat-flat-button color="primary" (click)="save()" [disabled]="!saveable">Save</button>
