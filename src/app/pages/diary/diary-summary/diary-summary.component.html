@@ -3,6 +3,9 @@
   <button *ngIf="diary" mat-icon-button (click)="deleteAll()">
     <mat-icon>delete_sweep</mat-icon>
   </button>
+  <button *ngIf="ui.isMobile" mat-icon-button (click)="addPortion()">
+    <mat-icon>add</mat-icon>
+  </button>
 
 </app-toolbar>
 
@@ -10,8 +13,7 @@
 <section class="container">
 
   <ng-container *ngIf="diary; else noMeals">
-    <section class="portions-table"
-      [ngClass]="{'table-desktop': (ui.desktop | async), 'table-mobile': (ui.mobile | async)}">
+    <section class="portions-table" [ngClass]="{'table-desktop': ui.isDesktop, 'table-mobile': ui.isMobile}">
 
       <!-- Header -->
 
@@ -93,7 +95,7 @@
 
   </ng-container>
 
-  <section class="sidebar" *ngIf="ui.desktop | async">
+  <section class="sidebar" *ngIf="ui.isDesktop">
 
     <section class="macro-chart">
       <ng-container *ngIf="diary">

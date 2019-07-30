@@ -25,16 +25,6 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
   public columnSelector = new FormControl();
   public readonly commentTextarea = new FormControl();
 
-  private isDesktopField: boolean;
-  public get isDesktop(): boolean {
-    return this.isDesktopField;
-  }
-
-  private isMobileField: boolean;
-  public get isMobile(): boolean {
-    return this.isMobileField;
-  }
-
   private readonly subscription: Subscription = new Subscription();
 
   // tk create chart details class
@@ -87,9 +77,6 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
       })
     );
 
-    this.subscription.add(this.ui.mobile.subscribe(value => (this.isMobileField = value)));
-    this.subscription.add(this.ui.desktop.subscribe(value => (this.isDesktopField = value)));
-
     // sets up the colums selector and specify a default value
     this.subscription.add(
       this.columnSelector.valueChanges.subscribe(value => (this.focus = value))
@@ -116,10 +103,13 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
   }
 
   public addPortion() {
-    // this.router.navigate(['add-portion'], { relativeTo: this.route });
-    this.dialog.open(AddPortionDialogComponent, {
-      data: { ds: this.ds, ui: this.ui, fs: this.fs }
-    });
+    if (this.ui.isMobile) {
+      this.router.navigate(['add-portion'], { relativeTo: this.route });
+    } else {
+      this.dialog.open(AddPortionDialogComponent, {
+        data: { ds: this.ds, ui: this.ui, fs: this.fs }
+      });
+    }
   }
 
   /**
@@ -127,16 +117,13 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
    * @param portion The exiting portion that will be replaced
    */
   public editPortion(portion: Portion) {
-    const subscription = this.ui.desktop.subscribe(isDesktop => {
-      if (isDesktop) {
-        this.dialog.open(EditPortionDialogComponent, {
-          data: { portion, ds: this.ds, ui: this.ui }
-        });
-      } else {
-        this.router.navigate([portion.id], { relativeTo: this.route });
-      }
-    });
-    subscription.unsubscribe();
+    if (this.ui.isMobile) {
+      this.router.navigate([portion.id], { relativeTo: this.route });
+    } else {
+      this.dialog.open(EditPortionDialogComponent, {
+        data: { portion, ds: this.ds, ui: this.ui }
+      });
+    }
   }
 
   public deleteAll(): void {

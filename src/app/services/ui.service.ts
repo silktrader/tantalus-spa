@@ -3,7 +3,7 @@ import { MatSidenav } from '@angular/material/sidenav';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { ReplaySubject, Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
 import { Meal } from '../models/meal.model';
 
@@ -38,14 +38,20 @@ export class UiService {
   get sidenavOpened(): boolean {
     return this.sidenav && this.sidenav.opened;
   }
-  private readonly mobileSubject = new ReplaySubject<boolean>(1);
+  private readonly mobileSubject = new BehaviorSubject<boolean>(false);
   public get mobile(): Observable<boolean> {
     return this.mobileSubject.asObservable();
   }
+  public get isMobile(): boolean {
+    return this.mobileSubject.value;
+  }
 
-  private readonly desktopSubject = new ReplaySubject<boolean>(1);
+  private readonly desktopSubject = new BehaviorSubject<boolean>(true);
   public get desktop(): Observable<boolean> {
     return this.desktopSubject.asObservable();
+  }
+  public get isDesktop(): boolean {
+    return this.desktopSubject.value;
   }
 
   public sidenav: MatSidenav;
