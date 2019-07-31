@@ -1,7 +1,7 @@
 import { PortionDto } from './portion-dto.model';
 import { FoodDto } from './food-dto.model';
 
-export class DiaryEntryDto {
+export interface DiaryEntryDto {
   readonly comment?: string;
   readonly portions: ReadonlyArray<PortionDto>;
   readonly foods: ReadonlyArray<FoodDto>;

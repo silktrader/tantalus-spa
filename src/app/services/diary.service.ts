@@ -113,7 +113,7 @@ export class DiaryService {
           // tk check for errors in the response? BadRequest()
           const oldState =
             this.diarySubject$.getValue() === undefined
-              ? new DiaryEntryDto()
+              ? { portions: [], foods: [] }
               : { ...this.diarySubject$.getValue().dto };
           this.diarySubject$.next(
             new Diary({
