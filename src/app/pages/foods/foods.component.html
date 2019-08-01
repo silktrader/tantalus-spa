@@ -29,7 +29,7 @@
 
   <mat-divider></mat-divider>
 
-  <mat-table [dataSource]="dataSource" matSort class="mat-elevation-z6">
+  <mat-table [dataSource]="datasource" matSort class="mat-elevation-z6">
     <ng-container [matColumnDef]="column" *ngFor="let column of selectedColumns">
       <mat-header-cell mat-header-cell mat-sort-header *matHeaderCellDef class="cell" [ngClass]="column">
         {{ columnNames.get(column) || column }}</mat-header-cell>
@@ -42,6 +42,7 @@
     <mat-row *matRowDef="let food; columns: selectedColumns" (click)="edit(food)" matRipple></mat-row>
   </mat-table>
 
-  <mat-paginator class="mat-elevation-z6" showFirstLastButtons hidePageSize>
+  <mat-paginator class="mat-elevation-z6" showFirstLastButtons [length]="datasource?.foodsCount"
+    [pageSize]="pageSizeOptions[1]" [pageSizeOptions]="pageSizeOptions">
   </mat-paginator>
 </section>

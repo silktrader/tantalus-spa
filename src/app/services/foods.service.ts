@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import {
   map,
   switchMap,
@@ -8,7 +8,7 @@ import {
   tap,
   catchError
 } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Food } from '../models/food.model';
 import { FoodDto } from '../models/food-dto.model';
 import { RecipeFoodDto, RecipeDto } from '../models/recipe-autocomplete.model';
@@ -17,19 +17,8 @@ import { UiService } from './ui.service';
 
 @Injectable({ providedIn: 'root' })
 export class FoodsService {
-  constructor(private readonly http: HttpClient, private ui: UiService) {
-    // populate the initial foods store
-    this.http.get(this.baseUrl).subscribe(
-      (foods: FoodDto[]) => {
-        this.foods$.next(foods.map(dto => new Food(dto)));
-      },
-      error => console.log(error)
-    );
-  }
+  constructor(private readonly http: HttpClient, private ui: UiService) {}
   private baseUrl = 'https://localhost:5001/api/foods';
-
-  private readonly foods$ = new BehaviorSubject<Food[]>([]);
-  public readonly foods = this.foods$.asObservable();
 
   public static isRecipeDto(dto: any): dto is RecipeDto {
     return (dto as RecipeDto).ingredients !== undefined;
@@ -62,10 +51,22 @@ export class FoodsService {
     );
   }
 
-  public getRecipe(id: number): Observable<Recipe> {
+  public getPaginatedFoods(
+    pageNumber: number,
+    pageSize: number
+  ): Observable<{ foods: FoodDto[]; count: number }> {
     return this.http
-      .get<RecipeDto>(`${this.baseUrl}/recipes/${id}`)
-      .pipe(map(dto => new Recipe(dto)));
+      .get<{ foods: FoodDto[]; count: number }>(this.baseUrl, {
+        params: new HttpParams()
+          .set('pageIndex', pageNumber.toString())
+          .set('pageSize', pageSize.toString())
+      })
+      .pipe(
+        catchError(error => {
+          this.ui.warn(error);
+          return of({ foods: [], count: 0 });
+        })
+      );
   }
 
   public getFilteredFoods(filter: Observable<string>): Observable<Array<Food | Recipe>> {
@@ -90,6 +91,7 @@ export class FoodsService {
     );
   }
 
+  // tk check whether this belongs here
   public getAutocompleteFoods(filter: string): Observable<RecipeFoodDto[]> {
     return this.http
       .get<RecipeFoodDto[]>(`${this.baseUrl}/autocomplete?filter=${filter}`)

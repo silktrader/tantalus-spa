@@ -1,5 +1,4 @@
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
-import { RecipeDto } from 'src/app/models/recipe-autocomplete.model';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { RecipesService } from 'src/app/services/recipes.service';
 import { catchError, finalize } from 'rxjs/operators';
@@ -29,7 +28,7 @@ export class RecipesDataSource implements DataSource<Recipe> {
     this.loadingSubject.complete();
   }
 
-  loadRecipes(pageIndex: number, pageSize: number) {
+  public loadRecipes(pageIndex: number, pageSize: number) {
     this.loadingSubject.next(true);
 
     this.rs

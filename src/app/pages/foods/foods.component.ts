@@ -10,7 +10,6 @@ import {
 import { MatButtonToggleGroup } from '@angular/material/button-toggle';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
 import { Food } from '../../models/food.model';
 import { FoodProp } from '../../models/food-prop.model';
 import { Subscription, of, fromEvent } from 'rxjs';
@@ -20,6 +19,7 @@ import { UiService } from '../../services/ui.service';
 import { FormControl } from '@angular/forms';
 import { FoodsService } from 'src/app/services/foods.service';
 import { ToolbarComponent } from 'src/app/ui/toolbar/toolbar.component';
+import { FoodsDataSource } from './foods-data-source';
 
 @Component({
   selector: 'app-foods',
@@ -28,7 +28,7 @@ import { ToolbarComponent } from 'src/app/ui/toolbar/toolbar.component';
 })
 export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
-    private foodsService: FoodsService,
+    private fs: FoodsService,
     public ui: UiService,
     private router: Router,
     private changeDetector: ChangeDetectorRef
@@ -106,7 +106,6 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
   public columnSelector = new FormControl();
   @ViewChild(MatButtonToggleGroup, { static: false }) public columnToggle: MatButtonToggleGroup;
 
-  public dataSource: MatTableDataSource<Food> = new MatTableDataSource<Food>();
   private subscription = new Subscription();
 
   @ViewChild(MatSort, { static: false }) sort: MatSort;
@@ -131,13 +130,19 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public desktop = false;
 
+  // tk use dep injection?
+  public readonly datasource = new FoodsDataSource(this.fs);
+
+  public pageSizeOptions = [10, 15, 30];
+
   // might have to use AfterViewInit
   ngOnInit(): void {
-    this.subscription.add(
-      this.foodsService.foods.subscribe((foods: Food[]) => {
-        this.dataSource.data = foods;
-      })
-    );
+    this.datasource.loadFoods(0, 15);
+    // this.subscription.add(
+    //   this.fs.foods.subscribe((foods: Food[]) => {
+    //     this.dataSource.data = foods;
+    //   })
+    // );
 
     this.subscription.add(
       this.ui.mobile
@@ -178,8 +183,9 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
+    this.paginator.page.subscribe(() => {
+      this.datasource.loadFoods(this.paginator.pageIndex, this.paginator.pageSize);
+    });
 
     // listen to height changes
     const $resizeEvent = fromEvent(window, 'resize').pipe(
@@ -210,7 +216,7 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   doFilter(filterValue: string): void {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    // this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   edit(food: Food): void {

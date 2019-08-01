@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { DiaryService } from 'src/app/services/diary.service';
-import { FoodsService } from 'src/app/services/foods.service';
 import { UiService } from 'src/app/services/ui.service';
 import { Recipe } from 'src/app/models/recipe.model';
 import { FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
 import { Ingredient } from 'src/app/models/ingredient.interface';
 import { Observable, forkJoin } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
+import { RecipesService } from 'src/app/services/recipes.service';
 
 @Component({
   selector: 'app-add-recipe-portions',
@@ -21,7 +21,7 @@ export class AddRecipePortionsComponent implements OnInit {
 
   constructor(
     public ds: DiaryService,
-    private fs: FoodsService,
+    private rs: RecipesService,
     private ui: UiService,
     private route: ActivatedRoute,
     private router: Router
@@ -32,13 +32,11 @@ export class AddRecipePortionsComponent implements OnInit {
       this.mealSelector.setValue(history.state.selectedMeal);
       this.reset();
     } else {
-      this.fs
-        .getRecipe(+this.route.snapshot.paramMap.get('recipeId'))
-        .subscribe(recipe => {
-          this.originalRecipe = recipe;
-          this.mealSelector.setValue(this.ds.focusedMeal);
-          this.reset();
-        });
+      this.rs.findRecipe(+this.route.snapshot.paramMap.get('recipeId')).subscribe(recipe => {
+        this.originalRecipe = recipe;
+        this.mealSelector.setValue(this.ds.focusedMeal);
+        this.reset();
+      });
     }
   }
 
@@ -72,17 +70,13 @@ export class AddRecipePortionsComponent implements OnInit {
           `Added ${dtos.length} portions from ${this.originalRecipe.name}`,
           'Undo',
           () => {
-            const portionsRemovals: Array<
-              Observable<{ id: number; foodId: number }>
-            > = [];
+            const portionsRemovals: Array<Observable<{ id: number; foodId: number }>> = [];
             for (const dto of dtos) {
               portionsRemovals.push(this.ds.removePortion(dto.id));
             }
             forkJoin(portionsRemovals).subscribe(() =>
               this.ui.notify(
-                `Removed ${portionsRemovals.length} portions from ${
-                  this.originalRecipe.name
-                }`
+                `Removed ${portionsRemovals.length} portions from ${this.originalRecipe.name}`
               )
             );
           }
@@ -102,9 +96,7 @@ export class AddRecipePortionsComponent implements OnInit {
         return true;
       }
 
-      if (
-        matchingControl.value !== this.originalRecipe.ingredients[i].quantity
-      ) {
+      if (matchingControl.value !== this.originalRecipe.ingredients[i].quantity) {
         return true;
       }
     }
@@ -116,8 +108,7 @@ export class AddRecipePortionsComponent implements OnInit {
     this.ingredientsForm = new FormGroup({
       ingredients: new FormArray(
         this.ingredients.map(
-          ingredient =>
-            new FormControl(ingredient.quantity, Validators.required)
+          ingredient => new FormControl(ingredient.quantity, Validators.required)
         )
       )
     });
