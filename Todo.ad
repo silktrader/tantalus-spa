@@ -1,11 +1,9 @@
 == Todo
 
-* [ ] design summary view so that it allows for an infographic bar
 * [ ] focus on last meal when others are present in new portions addition form
 * [ ] update nutrients data in preview when editing portions
 * [ ] delete diary entry when last portion is remove and no comments remain
 * [ ] fill name when entering new food from "Create" button
-* [ ] handle diary without portions
 * [ ] improve handling of food table when removing, adding or editing foods (reload)
 * fix successful missing login redirection
 * standardise new diary dto creation (without rewriting comments, foods and portions each time) in diary.service

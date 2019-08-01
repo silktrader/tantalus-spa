@@ -40,7 +40,7 @@ const routes: Routes = [
     component: FoodsComponent,
     canActivate: [AuthGuard]
   },
-  { path: 'add-food', component: EditFoodComponent, canActivate: [AuthGuard] },
+  { path: 'foods/add', component: EditFoodComponent, canActivate: [AuthGuard] },
   {
     path: 'foods/:id',
     component: EditFoodComponent,

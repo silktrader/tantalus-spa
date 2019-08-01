@@ -1,20 +1,17 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
-import { Subscription, of } from 'rxjs';
-import { switchMap, map, tap } from 'rxjs/operators';
-import {
-  ActivatedRoute,
-  ParamMap,
-  Router,
-  NavigationEnd,
-  Event
-} from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
-// import { DeleteFoodDialogComponent } from '../delete-food-dialog/delete-food-dialog.component';
+import { FormGroup, FormBuilder } from '@angular/forms';
+import { Subscription } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 import { FoodsService } from 'src/app/services/foods.service';
 import { Food } from 'src/app/models/food.model';
 import { UiService } from 'src/app/services/ui.service';
 import { FoodDto } from 'src/app/models/food-dto.model';
+
+enum EditFoodStatus {
+  Editing,
+  InvalidID,
+  NotFound
+}
 
 @Component({
   selector: 'app-edit-food',
@@ -26,34 +23,11 @@ export class EditFoodComponent implements OnInit, OnDestroy {
     private foodsService: FoodsService,
     public ui: UiService,
     private fb: FormBuilder,
-    private route: ActivatedRoute,
-    public dialog: MatDialog
+    private route: ActivatedRoute
   ) {}
 
-  // onDelete() {
-
-  //   const dialogRef = this.dialog.open(DeleteFoodDialogComponent, {
-  //     data: { food: this.food },
-  //   });
-
-  //   dialogRef.afterClosed().subscribe(
-  // (result: { documents: Array<IDiaryEntryData>, portions: Array<{ date: string, portion: Portion }> }) => {
-  //     if (result && this.food) {
-  //       const food = this.food;     // undefined scoped check
-  //       this.foodsService.deleteFood(food, result.documents).then(() => {
-  //         this.ui.warn(`Deleted ${food.name} and its ${result.portions.length} portions`);
-  //       });
-  //     }
-  //   });
-  // }
-
-  public get editable() {
-    return this.food !== undefined;
-  }
-
-  public get deletable() {
-    return this.editable;
-  }
+  public editFoodStatus = EditFoodStatus;
+  public status: EditFoodStatus = undefined;
 
   private isSaveableFlag = false;
   public get isSaveable() {
@@ -69,74 +43,93 @@ export class EditFoodComponent implements OnInit, OnDestroy {
   private unmodifiedState;
 
   // undefined when the food is being added
-  private food: Food | undefined;
+  public food: Food | undefined;
 
-  private subscription: Subscription;
+  private subscription = new Subscription();
+
+  public get IdString(): string {
+    return this.route.snapshot.params.id;
+  }
+
+  public get isAddingFood(): boolean {
+    return this.food === undefined && this.status === EditFoodStatus.Editing;
+  }
+
+  public get isChangingFood(): boolean {
+    return this.food !== undefined && this.status === EditFoodStatus.Editing;
+  }
 
   ngOnInit() {
-    this.addFoodForm = this.fb.group(
-      {
-        name: '',
-        proteins: 0,
-        carbs: 0,
-        fats: 0,
+    // adding a new food; there's no ID
+    if (this.IdString === undefined) {
+      this.setupForm();
+      this.status = EditFoodStatus.Editing;
+    } else {
+      const id = Number(this.IdString);
 
-        fibres: undefined,
-        sugar: undefined,
-        starch: undefined,
-
-        saturated: undefined,
-        monounsaturated: undefined,
-        polyunsaturated: undefined,
-        trans: undefined,
-        cholesterol: undefined,
-        omega3: undefined,
-        omega6: undefined,
-
-        sodium: undefined,
-        potassium: undefined,
-        calcium: undefined,
-        magnesium: undefined,
-        zinc: undefined,
-        iron: undefined,
-        alcohol: undefined,
-        notes: undefined,
-        source: undefined
-      }
-      // {
-      //   hideRequired: false
-      // }
-    );
-
-    this.subscription = this.route.paramMap
-      .pipe(
-        switchMap((params: ParamMap) => {
-          const id = params.get('id');
-          if (id === null) {
-            return of(undefined);
+      // attempting to edit a food with an invalid ID
+      if (isNaN(id) || id <= 0) {
+        this.status = EditFoodStatus.InvalidID;
+      } else {
+        // finally attempt to fetch the food
+        this.foodsService.getFood(id).subscribe(food => {
+          // handles the not found result
+          if (food === undefined) {
+            this.status = EditFoodStatus.NotFound;
+            return;
           }
-          return this.foodsService.getFood(+id);
-        })
-      )
-      .subscribe(food => {
-        this.food = food;
-        if (food === undefined) {
-          return;
-        }
 
-        this.addFoodForm.patchValue(food);
-        this.unmodifiedState = JSON.stringify(this.addFoodForm.value);
-      });
+          this.food = food;
+          this.setupForm();
+
+          // the status triggers the form's presence
+          this.status = EditFoodStatus.Editing;
+          this.addFoodForm.patchValue(food);
+          this.unmodifiedState = JSON.stringify(this.addFoodForm.value);
+        });
+      }
+    }
+  }
+
+  private setupForm() {
+    this.addFoodForm = this.fb.group({
+      name: undefined,
+      proteins: 0,
+      carbs: 0,
+      fats: 0,
+
+      fibres: undefined,
+      sugar: undefined,
+      starch: undefined,
+
+      saturated: undefined,
+      monounsaturated: undefined,
+      polyunsaturated: undefined,
+      trans: undefined,
+      cholesterol: undefined,
+      omega3: undefined,
+      omega6: undefined,
+
+      sodium: undefined,
+      potassium: undefined,
+      calcium: undefined,
+      magnesium: undefined,
+      zinc: undefined,
+      iron: undefined,
+      alcohol: undefined,
+      notes: undefined,
+      source: undefined
+    });
 
     this.subscription.add(
       this.addFoodForm.valueChanges.subscribe(newValue => {
-        // store the form's saveable state to avoid unnecessary calls from multiple elements
-        const jsonValue = JSON.stringify(newValue);
-
         // the form can be reset when no food's being edited or when there the food's values and the fields contents differ
-        this.isResettableFlag =
-          (this.unmodifiedState && jsonValue !== this.unmodifiedState) ||
-          (this.unmodifiedState === undefined && this.addFoodForm.dirty);
+        if (this.unmodifiedState === undefined && this.addFoodForm.dirty) {
+          this.isResettableFlag = true;
+        } else if (this.unmodifiedState !== JSON.stringify(newValue)) {
+          // store the form's saveable state to avoid unnecessary calls from multiple elements
+          this.isResettableFlag = true;
+        }
         this.isSaveableFlag = this.addFoodForm.valid && this.isResettableFlag;
       })
     );
@@ -193,19 +186,6 @@ export class EditFoodComponent implements OnInit, OnDestroy {
       this.ui.warn(`Deleted ${this.food.name}`);
       this.ui.goToFoods();
     });
-    // const dialogRef = this.dialog.open(DeleteFoodDialogComponent, {
-    //   data: { food: this.food },
-    // });
-
-    // dialogRef.afterClosed().subscribe(
-    // (result: { documents: Array<IDiaryEntryData>, portions: Array<{ date: string, portion: Portion }> }) => {
-    //   if (result && this.food) {
-    //     const food = this.food;     // undefined scoped check
-    //     this.foodsService.deleteFood(food, result.documents).then(() => {
-    //       this.ui.warn(`Deleted ${food.name} and its ${result.portions.length} portions`);
-    //     });
-    //   }
-    // });
   }
 
   public undoChanges() {

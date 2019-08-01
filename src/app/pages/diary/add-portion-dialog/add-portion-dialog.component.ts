@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, ViewChild } from '@angular/core';
+import { Component, Inject, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DiaryService } from 'src/app/services/diary.service';
 import { UiService } from 'src/app/services/ui.service';
@@ -21,7 +21,8 @@ export interface AddPortionDialogData {
 @Component({
   selector: 'app-add-portion-dialog',
   templateUrl: './add-portion-dialog.component.html',
-  styleUrls: ['./add-portion-dialog.component.css']
+  styleUrls: ['./add-portion-dialog.component.css'],
+  providers: [DiaryService]
 })
 export class AddPortionDialogComponent {
   constructor(

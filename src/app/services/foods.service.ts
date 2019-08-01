@@ -1,15 +1,23 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { map, switchMap, debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
+import { Observable, BehaviorSubject, of } from 'rxjs';
+import {
+  map,
+  switchMap,
+  debounceTime,
+  distinctUntilChanged,
+  tap,
+  catchError
+} from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Food } from '../models/food.model';
 import { FoodDto } from '../models/food-dto.model';
 import { RecipeFoodDto, RecipeDto } from '../models/recipe-autocomplete.model';
 import { Recipe } from '../models/recipe.model';
+import { UiService } from './ui.service';
 
 @Injectable({ providedIn: 'root' })
 export class FoodsService {
-  constructor(private readonly http: HttpClient) {
+  constructor(private readonly http: HttpClient, private ui: UiService) {
     // populate the initial foods store
     this.http.get(this.baseUrl).subscribe(
       (foods: FoodDto[]) => {
@@ -44,11 +52,14 @@ export class FoodsService {
     return this.http.delete<FoodDto>(`${this.baseUrl}/${id}`);
   }
 
-  public getFood(id: number): Promise<Food> {
-    return this.http
-      .get<FoodDto>(`${this.baseUrl}/${id}`)
-      .pipe(map((data: FoodDto) => new Food(data)))
-      .toPromise();
+  public getFood(id: number): Observable<Food | undefined> {
+    return this.http.get<FoodDto>(`${this.baseUrl}/${id}`).pipe(
+      map(data => new Food(data)),
+      catchError(error => {
+        this.ui.warn(error);
+        return of(undefined);
+      })
+    );
   }
 
   public getRecipe(id: number): Observable<Recipe> {

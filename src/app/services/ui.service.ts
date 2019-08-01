@@ -154,4 +154,8 @@ export class UiService {
   public goToFood(id: number) {
     this.router.navigate([`/foods/${id}`]);
   }
+
+  public goToAddFood() {
+    this.router.navigate(['/foods/add']);
+  }
 }

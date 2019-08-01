@@ -15,7 +15,7 @@ import { Food } from '../../models/food.model';
 import { FoodProp } from '../../models/food-prop.model';
 import { Subscription, of, fromEvent } from 'rxjs';
 import { map, debounceTime, switchMap } from 'rxjs/operators';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router } from '@angular/router';
 import { UiService } from '../../services/ui.service';
 import { FormControl } from '@angular/forms';
 import { FoodsService } from 'src/app/services/foods.service';
@@ -54,13 +54,7 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
     ],
     [
       'Carbohydrates',
-      [
-        FoodProp.carbs,
-        FoodProp.starch,
-        FoodProp.fibres,
-        FoodProp.sugar,
-        FoodProp.carbsPercentage
-      ]
+      [FoodProp.carbs, FoodProp.starch, FoodProp.fibres, FoodProp.sugar, FoodProp.carbsPercentage]
     ],
     [
       'Fats',
@@ -127,10 +121,7 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
     FoodProp.carbs,
     FoodProp.fats
   ]);
-  private readonly oneDecimalProperties: Set<FoodProp> = new Set([
-    FoodProp.fibres,
-    FoodProp.sugar
-  ]);
+  private readonly oneDecimalProperties: Set<FoodProp> = new Set([FoodProp.fibres, FoodProp.sugar]);
   private readonly percentageProperties = new Set([
     FoodProp.proteinsPercentage,
     FoodProp.carbsPercentage,
@@ -150,11 +141,7 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.subscription.add(
       this.ui.mobile
-        .pipe(
-          switchMap(isMobile =>
-            isMobile ? this.columnSelector.valueChanges : of(undefined)
-          )
-        )
+        .pipe(switchMap(isMobile => (isMobile ? this.columnSelector.valueChanges : of(undefined))))
         .subscribe(value => {
           if (value === undefined) {
             return;
@@ -175,9 +162,7 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
             this.desktop = true;
             this.changeDetector.detectChanges();
             this.columnToggle.value = 'Overview';
-            this.selectedColumns = this.selectDesktopColumns(
-              this.columnToggle.value
-            );
+            this.selectedColumns = this.selectDesktopColumns(this.columnToggle.value);
             return this.columnToggle.valueChange.asObservable();
           })
         )
@@ -216,9 +201,7 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     // set the initial page size
     if (document && document.documentElement) {
-      this.paginator.pageSize = this.calculateRowsNumber(
-        document.documentElement.clientHeight
-      );
+      this.paginator.pageSize = this.calculateRowsNumber(document.documentElement.clientHeight);
     }
   }
 
@@ -232,10 +215,6 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   edit(food: Food): void {
     this.router.navigate(['/foods', food.id]);
-  }
-
-  addNewFood(): void {
-    this.router.navigate(['/add-food']);
   }
 
   public format(prop: FoodProp, item: any): string {
@@ -270,18 +249,13 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private calculateRowsNumber(availableHeight: number): number {
     // less than ideal calculations due to tight coupling with rendering layer
-    const tableControlsHeight = (this.tableControls
-      .nativeElement as HTMLElement).offsetHeight;
+    const tableControlsHeight = (this.tableControls.nativeElement as HTMLElement).offsetHeight;
     const toolbarHeight = 50;
     const headerHeight = 56;
     const rowHeight = 50;
     const paginatorHeight = 56;
     return Math.floor(
-      (availableHeight -
-        tableControlsHeight -
-        toolbarHeight -
-        headerHeight -
-        paginatorHeight) /
+      (availableHeight - tableControlsHeight - toolbarHeight - headerHeight - paginatorHeight) /
         rowHeight
     );
   }
