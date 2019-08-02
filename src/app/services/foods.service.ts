@@ -14,7 +14,6 @@ import { FoodDto } from '../models/food-dto.model';
 import { RecipeFoodDto, RecipeDto } from '../models/recipe-autocomplete.model';
 import { Recipe } from '../models/recipe.model';
 import { UiService } from './ui.service';
-import { FoodProp } from '../models/food-prop.model';
 
 @Injectable({ providedIn: 'root' })
 export class FoodsService {
@@ -56,22 +55,26 @@ export class FoodsService {
     pageNumber: number,
     pageSize: number,
     sortProperty: string,
-    sortOrder: 'asc' | 'desc'
+    sortOrder: 'asc' | 'desc',
+    nameFilter: string
   ): Observable<{ foods: FoodDto[]; count: number }> {
-    return this.http
-      .get<{ foods: FoodDto[]; count: number }>(this.baseUrl, {
-        params: new HttpParams()
-          .set('pageIndex', pageNumber.toString())
-          .set('pageSize', pageSize.toString())
-          .set('sortProperty', sortProperty)
-          .set('sortOrder', sortOrder)
+    // draft a list of parameters
+    let params = new HttpParams()
+      .set('pageIndex', pageNumber.toString())
+      .set('pageSize', pageSize.toString())
+      .set('sortProperty', sortProperty)
+      .set('sortOrder', sortOrder);
+
+    if (nameFilter) {
+      params = params.set('nameFilter', nameFilter);
+    }
+
+    return this.http.get<{ foods: FoodDto[]; count: number }>(this.baseUrl, { params }).pipe(
+      catchError(error => {
+        this.ui.warn(error);
+        return of({ foods: [], count: 0 });
       })
-      .pipe(
-        catchError(error => {
-          this.ui.warn(error);
-          return of({ foods: [], count: 0 });
-        })
-      );
+    );
   }
 
   public getFilteredFoods(filter: Observable<string>): Observable<Array<Food | Recipe>> {

@@ -8,7 +8,7 @@
 <section class="container">
   <section #tableControls class="table-controls">
     <mat-form-field class="table-filter">
-      <input matInput type="text" (keyup)="doFilter($event.target.value)" placeholder="Filter" />
+      <input [formControl]="nameFilter" matInput type="text" placeholder="Filter" />
     </mat-form-field>
 
     <mat-form-field *ngIf="ui.mobile | async" class="table-selector">
@@ -29,7 +29,7 @@
 
   <mat-divider></mat-divider>
 
-  <mat-table class="mat-elevation-z6" [dataSource]="datasource" matSort matSortActive="Name" matSortDirection="asc"
+  <mat-table class="mat-elevation-z6" [dataSource]="datasource" matSort matSortActive="name" matSortDirection="asc"
     matSortDisableClear>
 
     <ng-container [matColumnDef]="column" *ngFor="let column of selectedColumns">

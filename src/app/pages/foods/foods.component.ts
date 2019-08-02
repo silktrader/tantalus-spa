@@ -13,7 +13,7 @@ import { MatSort } from '@angular/material/sort';
 import { Food } from '../../models/food.model';
 import { FoodProp } from '../../models/food-prop.model';
 import { Subscription, of, fromEvent, merge } from 'rxjs';
-import { map, debounceTime, switchMap, tap } from 'rxjs/operators';
+import { map, debounceTime, switchMap, tap, distinctUntilChanged } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { UiService } from '../../services/ui.service';
 import { FormControl } from '@angular/forms';
@@ -104,6 +104,8 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
   ]);
 
   public columnSelector = new FormControl();
+  public nameFilter = new FormControl();
+
   @ViewChild(MatButtonToggleGroup, { static: false }) public columnToggle: MatButtonToggleGroup;
 
   private subscription = new Subscription();
@@ -135,15 +137,7 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public pageSizeOptions = [10, 15, 30];
 
-  // might have to use AfterViewInit
   ngOnInit(): void {
-    // this.datasource.loadFoods(0, 15);
-    // this.subscription.add(
-    //   this.fs.foods.subscribe((foods: Food[]) => {
-    //     this.dataSource.data = foods;
-    //   })
-    // );
-
     this.subscription.add(
       this.ui.mobile
         .pipe(switchMap(isMobile => (isMobile ? this.columnSelector.valueChanges : of(undefined))))
@@ -180,9 +174,23 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
     );
 
     this.columnSelector.setValue('Calories');
+
+    // final call to populate the table and set the loading state
+    this.datasource.loadFoods(0, this.pageSizeOptions[1], 'Name', 'asc', undefined);
   }
 
   ngAfterViewInit(): void {
+    this.nameFilter.valueChanges
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        tap(value => {
+          this.paginator.pageIndex = 0;
+          this.loadFoods();
+        })
+      )
+      .subscribe();
+
     merge(this.paginator.page, this.sort.sortChange)
       .pipe(
         tap(() => {
@@ -229,12 +237,9 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.paginator.pageIndex,
       this.paginator.pageSize,
       this.columnNames.get(this.sort.active),
-      sortOrder
+      sortOrder,
+      this.nameFilter.value
     );
-  }
-
-  doFilter(filterValue: string): void {
-    // this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   edit(food: Food): void {
