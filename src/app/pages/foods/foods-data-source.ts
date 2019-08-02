@@ -1,8 +1,9 @@
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { finalize, delay } from 'rxjs/operators';
 import { FoodsService } from 'src/app/services/foods.service';
 import { Food } from 'src/app/models/food.model';
+import { FoodProp } from 'src/app/models/food-prop.model';
 
 export class FoodsDataSource implements DataSource<Food> {
   private foodsSubject = new BehaviorSubject<Food[]>([]);
@@ -26,14 +27,18 @@ export class FoodsDataSource implements DataSource<Food> {
     this.loadingSubject.complete();
   }
 
-  public loadFoods(pageIndex: number, pageSize: number) {
+  public loadFoods(
+    pageIndex: number,
+    pageSize: number,
+    sortProperty: string,
+    sortDirection: 'asc' | 'desc'
+  ) {
     this.loadingSubject.next(true);
 
     this.fs
-      .getPaginatedFoods(pageIndex, pageSize)
+      .getPaginatedFoods(pageIndex, pageSize, sortProperty, sortDirection)
       .pipe(finalize(() => this.loadingSubject.next(false)))
       .subscribe(response => {
-        console.log(response);
         this.foodsSubject.next(response.foods.map(dto => new Food(dto)));
         this.count = response.count;
       });

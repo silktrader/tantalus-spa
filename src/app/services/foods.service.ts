@@ -14,6 +14,7 @@ import { FoodDto } from '../models/food-dto.model';
 import { RecipeFoodDto, RecipeDto } from '../models/recipe-autocomplete.model';
 import { Recipe } from '../models/recipe.model';
 import { UiService } from './ui.service';
+import { FoodProp } from '../models/food-prop.model';
 
 @Injectable({ providedIn: 'root' })
 export class FoodsService {
@@ -53,13 +54,17 @@ export class FoodsService {
 
   public getPaginatedFoods(
     pageNumber: number,
-    pageSize: number
+    pageSize: number,
+    sortProperty: string,
+    sortOrder: 'asc' | 'desc'
   ): Observable<{ foods: FoodDto[]; count: number }> {
     return this.http
       .get<{ foods: FoodDto[]; count: number }>(this.baseUrl, {
         params: new HttpParams()
           .set('pageIndex', pageNumber.toString())
           .set('pageSize', pageSize.toString())
+          .set('sortProperty', sortProperty)
+          .set('sortOrder', sortOrder)
       })
       .pipe(
         catchError(error => {

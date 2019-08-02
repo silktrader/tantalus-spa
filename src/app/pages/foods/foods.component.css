@@ -1,3 +1,7 @@
+.container {
+  height: 90vh;
+}
+
 mat-row {
   cursor: pointer;
 }
@@ -51,6 +55,11 @@ mat-row:active {
 .detailsPercentage {
   flex-basis: 10%;
   justify-content: flex-end;
+}
+
+.spinner {
+  margin: auto;
+  margin-top: 10%;
 }
 
 @media only screen and (min-width: 960px) {

@@ -12,8 +12,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { Food } from '../../models/food.model';
 import { FoodProp } from '../../models/food-prop.model';
-import { Subscription, of, fromEvent } from 'rxjs';
-import { map, debounceTime, switchMap } from 'rxjs/operators';
+import { Subscription, of, fromEvent, merge } from 'rxjs';
+import { map, debounceTime, switchMap, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { UiService } from '../../services/ui.service';
 import { FormControl } from '@angular/forms';
@@ -79,7 +79,7 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
     ]
   ]);
 
-  public readonly columnNames = new Map<FoodProp, string>([
+  public readonly columnNames = new Map<string, string>([
     [FoodProp.name, 'Name'],
     [FoodProp.calories, 'Calories'],
     [FoodProp.proteins, 'Proteins'],
@@ -109,7 +109,7 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
   private subscription = new Subscription();
 
   @ViewChild(MatSort, { static: false }) sort: MatSort;
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
 
   @ViewChild('tableControls', { static: true }) tableControls: ElementRef;
   @ViewChild(ToolbarComponent, { static: true }) toolbar: ToolbarComponent;
@@ -137,7 +137,7 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // might have to use AfterViewInit
   ngOnInit(): void {
-    this.datasource.loadFoods(0, 15);
+    // this.datasource.loadFoods(0, 15);
     // this.subscription.add(
     //   this.fs.foods.subscribe((foods: Food[]) => {
     //     this.dataSource.data = foods;
@@ -183,9 +183,16 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.paginator.page.subscribe(() => {
-      this.datasource.loadFoods(this.paginator.pageIndex, this.paginator.pageSize);
-    });
+    merge(this.paginator.page, this.sort.sortChange)
+      .pipe(
+        tap(() => {
+          this.loadFoods();
+        })
+      )
+      .subscribe();
+
+    // reset the paginator after sorting
+    this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
 
     // listen to height changes
     const $resizeEvent = fromEvent(window, 'resize').pipe(
@@ -213,6 +220,17 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+  }
+
+  private loadFoods(): void {
+    const sortOrder = this.sort.direction === 'asc' ? 'asc' : 'desc';
+
+    this.datasource.loadFoods(
+      this.paginator.pageIndex,
+      this.paginator.pageSize,
+      this.columnNames.get(this.sort.active),
+      sortOrder
+    );
   }
 
   doFilter(filterValue: string): void {

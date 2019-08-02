@@ -5,7 +5,7 @@
   </button>
 </app-toolbar>
 
-<section>
+<section class="container">
   <section #tableControls class="table-controls">
     <mat-form-field class="table-filter">
       <input matInput type="text" (keyup)="doFilter($event.target.value)" placeholder="Filter" />
@@ -29,20 +29,24 @@
 
   <mat-divider></mat-divider>
 
-  <mat-table [dataSource]="datasource" matSort class="mat-elevation-z6">
+  <mat-table class="mat-elevation-z6" [dataSource]="datasource" matSort matSortActive="Name" matSortDirection="asc"
+    matSortDisableClear>
+
     <ng-container [matColumnDef]="column" *ngFor="let column of selectedColumns">
-      <mat-header-cell mat-header-cell mat-sort-header *matHeaderCellDef class="cell" [ngClass]="column">
+      <mat-header-cell mat-sort-header *matHeaderCellDef class="cell" [ngClass]="column">
         {{ columnNames.get(column) || column }}</mat-header-cell>
       <mat-cell class="cell" [ngClass]="column" *matCellDef="let element">{{
-        format(column, element[column])
-      }}</mat-cell>
+          format(column, element[column])
+        }}</mat-cell>
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="selectedColumns"></mat-header-row>
     <mat-row *matRowDef="let food; columns: selectedColumns" (click)="edit(food)" matRipple></mat-row>
   </mat-table>
 
-  <mat-paginator class="mat-elevation-z6" showFirstLastButtons [length]="datasource?.foodsCount"
-    [pageSize]="pageSizeOptions[1]" [pageSizeOptions]="pageSizeOptions">
+  <mat-spinner class="spinner" *ngIf="datasource.loading$ | async"></mat-spinner>
+
+  <mat-paginator class="mat-elevation-z6" showFirstLastButtons [hidden]="datasource.loading$ | async"
+    [length]="datasource?.foodsCount" [pageSize]="pageSizeOptions[1]" [pageSizeOptions]="pageSizeOptions">
   </mat-paginator>
 </section>
