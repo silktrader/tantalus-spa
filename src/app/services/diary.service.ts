@@ -9,10 +9,11 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { Diary } from '../models/diary.model';
 import { PortionAddDto } from '../models/portion-add-dto.model';
 import { FoodDto } from '../models/food-dto.model';
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class DiaryService {
-  private readonly baseUrl = 'https://localhost:5001/api/diary/';
+  private readonly url = environment.baseUrl + 'diary/';
 
   private readonly diarySubject$ = new BehaviorSubject<Diary>(undefined);
   public readonly diary$ = this.diarySubject$.asObservable();
@@ -84,7 +85,7 @@ export class DiaryService {
   }
 
   private getDiaryData(): Observable<DiaryEntryDto> {
-    return this.http.get<DiaryEntryDto>(`${this.baseUrl}${this.dateUrl}`);
+    return this.http.get<DiaryEntryDto>(`${this.url}${this.dateUrl}`);
   }
 
   private setDiaryData(diaryDto: DiaryEntryDto): void {
@@ -105,7 +106,7 @@ export class DiaryService {
   public addPortions(portionDtos: PortionAddDto[]): Observable<PortionDto[]> {
     return this.http
       .post<{ portions: PortionDto[]; foods: FoodDto[] }>(
-        `${this.baseUrl}${this.dateUrl}/portions`,
+        `${this.url}${this.dateUrl}/portions`,
         portionDtos
       )
       .pipe(
@@ -128,7 +129,7 @@ export class DiaryService {
 
   public changePortion(portionDto: PortionDto): Observable<PortionDto> {
     return this.http
-      .put<PortionDto>(`${this.baseUrl}${this.dateUrl}/${portionDto.id}`, portionDto)
+      .put<PortionDto>(`${this.url}${this.dateUrl}/${portionDto.id}`, portionDto)
       .pipe(
         map(response => {
           const newState = {
@@ -149,7 +150,7 @@ export class DiaryService {
 
   public removePortion(id: number): Observable<{ id: number; foodId: number }> {
     return this.http
-      .delete<{ id: number; foodId: number }>(`${this.baseUrl}${this.dateUrl}/${id}`)
+      .delete<{ id: number; foodId: number }>(`${this.url}${this.dateUrl}/${id}`)
       .pipe(
         map(ids => {
           const portions = [...this.diarySubject$.getValue().dto.portions];
@@ -184,7 +185,7 @@ export class DiaryService {
 
   public editComment(comment: string): Observable<string> {
     return this.http
-      .post<{ comment: string }>(`${this.baseUrl}${this.dateUrl}/comment`, { comment })
+      .post<{ comment: string }>(`${this.url}${this.dateUrl}/comment`, { comment })
       .pipe(
         map(response => {
           const previousState = this.diarySubject$.value
@@ -204,12 +205,12 @@ export class DiaryService {
 
   public deleteDiary(): Observable<void> {
     return this.http
-      .delete<void>(`${this.baseUrl}${this.dateUrl}`)
+      .delete<void>(`${this.url}${this.dateUrl}`)
       .pipe(tap(() => this.diarySubject$.next(undefined)));
   }
 
   public restoreDiary(dto: DiaryEntryPostDto): Observable<DiaryEntryDto> {
-    return this.http.post<DiaryEntryDto>(`${this.baseUrl}${this.dateUrl}`, dto).pipe(
+    return this.http.post<DiaryEntryDto>(`${this.url}${this.dateUrl}`, dto).pipe(
       map(responseDto => {
         this.diarySubject$.next(new Diary(responseDto));
         return responseDto;
