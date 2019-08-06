@@ -1,15 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  Validators,
-  ValidatorFn,
-  ValidationErrors
-} from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { FormControl, FormGroup, Validators, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { AuthenticationService } from '../services/authentication.service';
 import { UiService } from '../services/ui.service';
 import { User } from '../models/user';
+import { NoticeRoles } from '../ui/notice/notice.component';
 
 @Component({
   selector: 'app-authentication',
@@ -24,23 +18,17 @@ export class AuthenticationComponent implements OnInit {
   registerForm: FormGroup;
 
   loginName = new FormControl('', [Validators.required]);
-  loginPassword = new FormControl('', [
-    Validators.required,
-    Validators.minLength(8)
-  ]);
+  loginPassword = new FormControl('', [Validators.required, Validators.minLength(8)]);
 
   registerName = new FormControl('', [Validators.required]);
-  registerPassword = new FormControl('', [
-    Validators.required,
-    Validators.minLength(8)
-  ]);
+  registerPassword = new FormControl('', [Validators.required, Validators.minLength(8)]);
   confirmPassword = new FormControl('', [Validators.required]);
 
-  constructor(
-    private auth: AuthenticationService,
-    private router: Router,
-    private ui: UiService
-  ) {}
+  public loginError = false;
+
+  public noticeRoles = NoticeRoles;
+
+  constructor(private auth: AuthenticationService, private ui: UiService) {}
 
   ngOnInit() {
     this.loginForm = new FormGroup({
@@ -66,23 +54,18 @@ export class AuthenticationComponent implements OnInit {
       }
     });
 
-    // redirect to dashboard when already logged in, must happen last to avoid template issues
+    // redirect logged in users, must happen last to avoid template issues
     if (this.auth.currentUserValue) {
-      this.router.navigate(['/dashboard']);
-      return;
+      this.ui.goToToday();
     }
   }
 
   // the password must be confirmed
-  passwordsMistmatchValidator: ValidatorFn = (
-    form: FormGroup
-  ): ValidationErrors | null => {
+  passwordsMistmatchValidator: ValidatorFn = (form: FormGroup): ValidationErrors | null => {
     const registerPassword = form.get('registerPassword');
     const confirmPassword = form.get('confirmPassword');
 
-    return registerPassword &&
-      confirmPassword &&
-      registerPassword.value !== confirmPassword.value
+    return registerPassword && confirmPassword && registerPassword.value !== confirmPassword.value
       ? { passwordsMistmatch: true }
       : null;
   }
@@ -112,16 +95,15 @@ export class AuthenticationComponent implements OnInit {
   }
 
   private login(name: string, password: string): void {
-    this.auth.login(name, password).subscribe(
-      (user: User) => {
-        this.router.navigate(['/']);
-        this.ui.notify(`Logged in as <b>${user.name}</b>`);
-      },
-      error => {
-        console.error(error);
-        this.ui.warn(`Could not log in ${this.loginName.value}`);
+    this.auth.login(name, password).subscribe((user: User) => {
+      if (user) {
+        this.loginError = false;
+        this.ui.notify(`Logged in as ${user.name}`);
+        this.ui.goToToday();
+      } else {
+        this.loginError = true;
       }
-    );
+    });
   }
 
   handleRegistration() {

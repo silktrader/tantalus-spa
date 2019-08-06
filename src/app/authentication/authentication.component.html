@@ -7,14 +7,15 @@
         </h2>
       </ng-template>
       <form class="container" [formGroup]="loginForm" (ngSubmit)="handleLogin()">
-        <mat-form-field class="form-row" appearance="fill">
+        <mat-form-field class="form-row" appearance="outline">
           <mat-label>User Name</mat-label>
-          <input matInput type="text" formControlName="loginName" />
+          <input matInput type="text" formControlName="loginName" autocomplete="username" />
           <mat-error *ngIf="loginName.invalid">Invalid email address</mat-error>
         </mat-form-field>
-        <mat-form-field class="form-row" appearance="fill">
+        <mat-form-field class="form-row" appearance="outline">
           <mat-label>Password</mat-label>
-          <input matInput [type]="show ? 'text' : 'password'" formControlName="loginPassword" />
+          <input matInput [type]="show ? 'text' : 'password'" formControlName="loginPassword"
+            autocomplete="current-password" />
           <mat-icon *ngIf="loginPassword.dirty || loginPassword.touched" matSuffix (click)="show = !show">
             {{ show ? 'visibility_off' : 'visibility' }}</mat-icon>
           <mat-error *ngIf="loginPassword.invalid">{{
@@ -25,6 +26,9 @@
           Login
         </button>
       </form>
+      <app-notice *ngIf="loginError" [role]="noticeRoles.Error">
+        Invalid user name or password
+      </app-notice>
     </mat-tab>
     <mat-tab label="Register">
       <ng-template mat-tab-label>

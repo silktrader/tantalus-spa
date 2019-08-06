@@ -147,6 +147,10 @@ export class UiService {
     this.location.back();
   }
 
+  public goToToday() {
+    this.router.navigate(['/diary/today']);
+  }
+
   public goToFoods() {
     this.router.navigate(['/foods']);
   }

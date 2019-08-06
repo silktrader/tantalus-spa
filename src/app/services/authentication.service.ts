@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map, first } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { map, first, catchError } from 'rxjs/operators';
 import { User } from '../models/user';
 import { environment } from 'src/environments/environment';
 
@@ -25,9 +25,12 @@ export class AuthenticationService {
     return this.currentUserSubject.value;
   }
 
-  login(name: string, password: string): Observable<User> {
+  login(name: string, password: string): Observable<User | undefined> {
     return this.http.post<User>(this.url + 'login', { name, password }).pipe(
       first(),
+      catchError(error => {
+        return of(undefined);
+      }),
       map((user: User) => {
         // login successful if there's a jwt token in the response
         if (user && user.token) {
@@ -36,7 +39,8 @@ export class AuthenticationService {
           this.currentUserSubject.next(user);
           return user;
         }
-        console.log('Couldn\'t login!');
+
+        return undefined;
       })
     );
   }

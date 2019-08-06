@@ -27,6 +27,7 @@ import { QuantityEditorComponent } from './ui/quantity-editor/quantity-editor.co
 import { FocusThenSelectDirective } from './directives/focus-then-select.directive';
 import { ChartsModule } from 'ng2-charts';
 import { AddPortionDialogComponent } from './pages/diary/add-portion-dialog/add-portion-dialog.component';
+import { NoticeComponent } from './ui/notice/notice.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { AddPortionDialogComponent } from './pages/diary/add-portion-dialog/add-
     EditPortionDialogComponent,
     QuantityEditorComponent,
     FocusThenSelectDirective,
-    AddPortionDialogComponent
+    AddPortionDialogComponent,
+    NoticeComponent
   ],
   imports: [
     BrowserModule,
