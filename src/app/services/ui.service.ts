@@ -35,9 +35,10 @@ export class UiService {
     });
   }
 
-  get sidenavOpened(): boolean {
+  public get sidenavOpened(): boolean {
     return this.sidenav && this.sidenav.opened;
   }
+
   private readonly mobileSubject = new BehaviorSubject<boolean>(false);
   public get mobile(): Observable<boolean> {
     return this.mobileSubject.asObservable();

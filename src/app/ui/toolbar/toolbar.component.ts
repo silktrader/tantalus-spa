@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { UiService } from 'src/app/services/ui.service';
 
 @Component({
@@ -7,13 +7,20 @@ import { UiService } from 'src/app/services/ui.service';
   styleUrls: ['./toolbar.component.css']
 })
 export class ToolbarComponent implements OnInit {
-  @Input() title: string;
+  private ready = false;
 
   constructor(public ui: UiService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    // usual nasty hack to avoid expression changes errors
+    setTimeout(() => (this.ready = true), 0);
+  }
 
-  get sidenavOpened(): boolean {
-    return this.ui.sidenavOpened;
+  public get isSidenavOpen() {
+    return this.ready && this.ui.sidenavOpened;
+  }
+
+  public toggleSidenav(): void {
+    this.ui.toggleSidenav();
   }
 }
