@@ -16,6 +16,7 @@ export interface AddPortionDialogData {
   readonly ds: DiaryService;
   readonly ui: UiService;
   readonly fs: FoodsService;
+  readonly meal?: number;
 }
 
 @Component({
@@ -32,7 +33,10 @@ export class AddPortionDialogComponent {
     this.foodInput = new FormControl(undefined, {
       validators: Validators.required
     });
-    this.mealSelector = new FormControl(data.ds.focusedMeal);
+
+    // determine whether to use state or fall back to the latest used meal
+    const meal = Number.isInteger(data.meal) ? data.meal : data.ds.focusedMeal;
+    this.mealSelector = new FormControl(meal);
 
     this.filteredFoods$ = data.fs.getFilteredFoods(this.filterText$);
     this.foodInput.valueChanges

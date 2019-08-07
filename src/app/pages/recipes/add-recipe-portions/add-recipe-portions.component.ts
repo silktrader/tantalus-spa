@@ -29,7 +29,7 @@ export class AddRecipePortionsComponent implements OnInit {
     // fill the recipe's details from the router supplied data or fetch them during reloads or manual URL entries
     if (history.state && history.state.recipe) {
       this.originalRecipe = history.state.recipe;
-      this.mealSelector.setValue(history.state.selectedMeal);
+      this.mealSelector.setValue(history.state.meal);
       this.reset();
     } else {
       this.rs.findRecipe(+this.route.snapshot.paramMap.get('recipeId')).subscribe(recipe => {

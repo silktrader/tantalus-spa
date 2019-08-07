@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { Food } from 'src/app/models/food.model';
 import { Portion } from 'src/app/models/portion.model';
 import { DiaryService } from 'src/app/services/diary.service';
@@ -25,7 +25,7 @@ export class AddPortionComponent implements OnInit, OnDestroy {
   public previewedPortion: Portion;
 
   public quantitiesControl = new FormControl('', [Validators.required, PortionValidators.quantity]);
-  public mealSelector = new FormControl('');
+  public mealSelector = new FormControl(undefined);
 
   public portionForm: FormGroup = new FormGroup({
     quantity: this.quantitiesControl
@@ -33,6 +33,7 @@ export class AddPortionComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     public ds: DiaryService,
     private fs: FoodsService,
     private ui: UiService
@@ -58,7 +59,13 @@ export class AddPortionComponent implements OnInit, OnDestroy {
 
     this.subscription.add(this.ds.diary$.subscribe(diary => (this.diary = diary)));
 
-    this.mealSelector.setValue(this.ds.focusedMeal);
+    // attempt to read the selected meal from the state, else fall back on the last used meal
+    const meal =
+      history.state && Number.isInteger(history.state.meal)
+        ? history.state.meal
+        : this.ds.focusedMeal;
+    this.mealSelector.setValue(meal);
+
     this.quantitiesControl.setValue(100);
   }
 

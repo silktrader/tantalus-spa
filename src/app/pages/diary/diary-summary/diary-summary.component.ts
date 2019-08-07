@@ -102,12 +102,12 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
     return this.ds.date;
   }
 
-  public addPortion() {
+  public addPortion(meal?: number) {
     if (this.ui.isMobile) {
-      this.router.navigate(['add-portion'], { relativeTo: this.route });
+      this.router.navigate(['add-portion'], { relativeTo: this.route, state: { meal } });
     } else {
       this.dialog.open(AddPortionDialogComponent, {
-        data: { ds: this.ds, ui: this.ui, fs: this.fs }
+        data: { ds: this.ds, ui: this.ui, fs: this.fs, meal }
       });
     }
   }

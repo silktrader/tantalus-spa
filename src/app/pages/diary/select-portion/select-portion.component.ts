@@ -1,11 +1,4 @@
-import {
-  Component,
-  OnInit,
-  OnDestroy,
-  AfterViewInit,
-  ViewChild,
-  ElementRef
-} from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { Food } from 'src/app/models/food.model';
@@ -23,8 +16,7 @@ import { IPortion } from 'src/app/models/portion.interface';
   templateUrl: './select-portion.component.html',
   styleUrls: ['./select-portion.component.css']
 })
-export class SelectPortionComponent
-  implements OnInit, OnDestroy, AfterViewInit {
+export class SelectPortionComponent implements OnInit, OnDestroy, AfterViewInit {
   public filteredFoods$: Observable<ReadonlyArray<IPortion>>;
   nameFilter: BehaviorSubject<string> = new BehaviorSubject('');
 
@@ -52,21 +44,17 @@ export class SelectPortionComponent
   ngOnInit() {
     this.filteredFoods$ = this.fs.getFilteredFoods(this.nameFilter);
 
-    if (this.route.parent === null) {
-      console.log('ERROR');
-      return; // tk throw error warn user about wrong URL
-    }
+    // attempt to read the selected meal from the state, else fall back on the last used meal
+    const meal =
+      history.state && Number.isInteger(history.state.meal)
+        ? history.state.meal
+        : this.ds.focusedMeal;
+    this.mealSelector.setValue(meal);
 
-    this.mealSelector.setValue(this.ds.focusedMeal);
-
-    this.subscription.add(
-      this.ds.diary$.subscribe(diary => (this.diary = diary))
-    );
+    this.subscription.add(this.ds.diary$.subscribe(diary => (this.diary = diary)));
 
     this.subscription.add(
-      this.mealSelector.valueChanges.subscribe(
-        value => (this.ds.focusedMeal = value)
-      )
+      this.mealSelector.valueChanges.subscribe(value => (this.ds.focusedMeal = value))
     );
     this.searchBoxInputRef.nativeElement.focus();
   }
@@ -111,10 +99,13 @@ export class SelectPortionComponent
     if (this.isRecipe(selection)) {
       this.router.navigate(['../add-recipe', selection.id], {
         relativeTo: this.route,
-        state: { recipe: selection, selectedMeal: this.mealSelector.value }
+        state: { recipe: selection, meal: this.mealSelector.value }
       });
     } else {
-      this.router.navigate([selection.id], { relativeTo: this.route });
+      this.router.navigate([selection.id], {
+        relativeTo: this.route,
+        state: { meal: this.mealSelector.value }
+      });
     }
   }
 
