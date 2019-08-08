@@ -10,6 +10,7 @@ import { Diary } from '../models/diary.model';
 import { PortionAddDto } from '../models/portion-add-dto.model';
 import { FoodDto } from '../models/food-dto.model';
 import { environment } from 'src/environments/environment';
+import { DiaryAdapter } from './diary-adapter';
 
 @Injectable()
 export class DiaryService {
@@ -17,6 +18,12 @@ export class DiaryService {
 
   private readonly diarySubject$ = new BehaviorSubject<Diary>(undefined);
   public readonly diary$ = this.diarySubject$.asObservable();
+
+  private readonly state$ = new BehaviorSubject<DiaryEntryDto>(undefined);
+
+  public get state(): Readonly<DiaryEntryDto> {
+    return this.state$.getValue();
+  }
 
   public focusedMeal = 0;
 
@@ -36,7 +43,11 @@ export class DiaryService {
     this.pDateUrl = this.pDate.toISOString().substring(0, 10);
   }
 
-  constructor(private http: HttpClient, private route: ActivatedRoute) {
+  constructor(
+    private http: HttpClient,
+    private route: ActivatedRoute,
+    private diaryAdapter: DiaryAdapter
+  ) {
     // tk unsubscribtion?
     this.route.params
       .pipe(
@@ -65,7 +76,18 @@ export class DiaryService {
           return this.getDiaryData();
         })
       )
-      .subscribe(diaryDto => this.setDiaryData(diaryDto));
+      .subscribe(diaryDto => this.state$.next(diaryDto));
+
+    // any time a new state is acquired a new diary is created
+    this.state$.subscribe(state => {
+      if (state) {
+        this.diarySubject$.next(this.diaryAdapter.toModel(state));
+        this.focusedMeal = this.diarySubject$.value.latestMeal;
+      } else {
+        this.diarySubject$.next(undefined);
+        this.focusedMeal = 0;
+      }
+    });
   }
 
   // should this be configurable by users? tk
@@ -88,18 +110,26 @@ export class DiaryService {
     return this.http.get<DiaryEntryDto>(`${this.url}${this.dateUrl}`);
   }
 
-  private setDiaryData(diaryDto: DiaryEntryDto): void {
-    if (diaryDto) {
-      this.diarySubject$.next(new Diary(diaryDto));
-      this.focusedMeal = this.diarySubject$.value.latestMeal;
-    } else {
-      this.diarySubject$.next(undefined);
-    }
-  }
-
   /** Adds one portion and returns the server provided DTO; acts as a proxy of `addPortions` */
   public addPortion(portionDto: PortionAddDto): Observable<PortionDto> {
     return this.addPortions([portionDto]).pipe(map(dtos => dtos[0]));
+  }
+
+  /** Remove duplicate food DTOs to avoid the diary state growing in size */
+  private removeDuplicateFoods(portions: PortionDto[], foods: FoodDto[]): FoodDto[] {
+    // tk might be slow
+    const foodsMap = new Map(foods.map(food => [food.id, food] as [number, FoodDto]));
+    const addedFoodsIds = new Set<number>();
+    const foodsDtos = [];
+
+    for (const portion of portions) {
+      if (!addedFoodsIds.has(portion.foodId)) {
+        foodsDtos.push(foodsMap.get(portion.foodId));
+        addedFoodsIds.add(portion.foodId);
+      }
+    }
+
+    return foodsDtos;
   }
 
   /** Adds multiple portions when subscribed to and updates the diary with the new additions. */
@@ -111,17 +141,21 @@ export class DiaryService {
       )
       .pipe(
         map(response => {
-          // tk check for errors in the response? BadRequest()
-          const oldState =
-            this.diarySubject$.getValue() === undefined
-              ? { portions: [], foods: [] }
-              : { ...this.diarySubject$.getValue().dto };
-          this.diarySubject$.next(
-            new Diary({
-              portions: [...oldState.portions, ...response.portions],
-              foods: [...oldState.foods, ...response.foods]
-            })
-          );
+          const state = this.state$.getValue();
+
+          // the first portions of a new diary don't need to be added to a previous state
+          if (state === undefined) {
+            this.state$.next({ portions: response.portions, foods: response.foods });
+            return response.portions;
+          }
+
+          const portions = [...state.portions, ...response.portions];
+          this.state$.next({
+            ...state,
+            portions,
+            foods: this.removeDuplicateFoods(portions, [...state.foods, ...response.foods])
+          });
+
           return response.portions;
         })
       );
@@ -133,7 +167,7 @@ export class DiaryService {
       .pipe(
         map(response => {
           const newState = {
-            ...this.diarySubject$.getValue().dto
+            ...this.state$.getValue()
           };
           // select the portion to be edited in the new state
           for (const portion of newState.portions) {
@@ -142,7 +176,7 @@ export class DiaryService {
               portion.quantity = portionDto.quantity;
             }
           }
-          this.diarySubject$.next(new Diary(newState));
+          this.state$.next(newState);
           return response;
         })
       );
@@ -153,7 +187,7 @@ export class DiaryService {
       .delete<{ id: number; foodId: number }>(`${this.url}${this.dateUrl}/${id}`)
       .pipe(
         map(ids => {
-          const portions = [...this.diarySubject$.getValue().dto.portions];
+          const portions = [...this.state$.getValue().portions];
 
           // check which portion to delete and marks foods to be deleted when unused by other portions
           let deleteFood = true;
@@ -170,14 +204,14 @@ export class DiaryService {
           // delete portion
           portions.splice(deletedPortionIndex, 1);
 
-          // delete food when necessary
-          const foods = [...this.diarySubject$.getValue().dto.foods];
+          // delete food when necessary or copy the previous ones
+          const foods = [...this.state$.getValue().foods];
           if (deleteFood) {
             const deletedFoodIndex = foods.findIndex(food => food.id === ids.foodId);
             foods.splice(deletedFoodIndex, 1);
           }
 
-          this.diarySubject$.next(new Diary({ portions, foods }));
+          this.state$.next({ ...this.state$.getValue(), portions, foods });
           return ids;
         })
       );
@@ -188,16 +222,12 @@ export class DiaryService {
       .post<{ comment: string }>(`${this.url}${this.dateUrl}/comment`, { comment })
       .pipe(
         map(response => {
-          const previousState = this.diarySubject$.value
-            ? { ...this.diarySubject$.value.dto }
-            : { portions: [], foods: [] };
-          this.diarySubject$.next(
-            new Diary({
-              comment: response.comment,
-              portions: previousState.portions,
-              foods: previousState.foods
-            })
-          );
+          // update the state with the latest comments, or add an empty state when required
+          this.state$.next({
+            ...(this.state$.value || { portions: [], foods: [] }),
+            comment: response.comment
+          });
+
           return response.comment;
         })
       );
@@ -212,7 +242,7 @@ export class DiaryService {
   public restoreDiary(dto: DiaryEntryPostDto): Observable<DiaryEntryDto> {
     return this.http.post<DiaryEntryDto>(`${this.url}${this.dateUrl}`, dto).pipe(
       map(responseDto => {
-        this.diarySubject$.next(new Diary(responseDto));
+        this.state$.next(responseDto);
         return responseDto;
       })
     );

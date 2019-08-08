@@ -11,6 +11,7 @@ import { Portion } from 'src/app/models/portion.model';
 import { ChartOptions } from 'chart.js';
 import { AddPortionDialogComponent } from '../add-portion-dialog/add-portion-dialog.component';
 import { FoodsService } from 'src/app/services/foods.service';
+import { Meal } from 'src/app/models/meal.model';
 
 @Component({
   selector: 'app-diary-summary',
@@ -128,7 +129,7 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
 
   public deleteAll(): void {
     const date = this.ds.date;
-    const cachedDto = this.diary.dto;
+    const cachedDto = this.ds.state;
     this.ds.deleteDiary().subscribe({
       next: () => {
         this.ui.notify(`Deleted ${date.toLocaleDateString()}'s entries`, `Undo`, () => {

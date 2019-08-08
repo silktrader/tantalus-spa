@@ -1,54 +1,32 @@
 import { Meal } from './meal.model';
 import { Portion } from './portion.model';
-import { DiaryEntryDto } from './diary-entry-dto.model';
 import { Food } from './food.model';
 
 export class Diary {
-  // tk use mapper
-  public get dto() {
-    return this.diaryDto;
-  }
-
   public readonly comment: Readonly<string>;
-
-  private foodsMap: Map<number, Food> = new Map<number, Food>();
-  public get foods() {
-    return this.foodsMap.values;
-  }
 
   private mealsMap: Map<number, Meal> = new Map<number, Meal>();
   public get meals(): ReadonlyArray<Meal> {
     return Array.from(this.mealsMap.values()); // TK slow
   }
 
-  constructor(private readonly diaryDto: DiaryEntryDto) {
-    this.comment = diaryDto.comment || undefined;
-
-    // populate foods map for quick lookup and to avoid multiple identical objects
-    for (const foodDto of diaryDto.foods) {
-      this.foodsMap.set(foodDto.id, new Food(foodDto));
-    }
+  constructor(portions: Portion[], comment?: string) {
+    this.comment = comment;
 
     // create a collection that will hosts portions according to their ordered meal number
-    const orderedMeals = new Map<number, Array<Portion>>();
+    // tk can be improved with spread operator over static field?
+    const meals = new Map<number, Array<Portion>>();
     for (const mealNumber of Meal.numbers) {
-      orderedMeals.set(mealNumber, []);
+      meals.set(mealNumber, []);
     }
 
     // create portions and slot them in the cached meals map
-    for (const portionDto of diaryDto.portions) {
-      const portion = new Portion(
-        portionDto.id,
-        portionDto.quantity,
-        this.foodsMap.get(portionDto.foodId),
-        portionDto.meal
-      );
-
-      orderedMeals.get(portion.meal).push(portion);
+    for (const portion of portions) {
+      meals.get(portion.meal).push(portion);
     }
 
     // set the final meals map
-    for (const mealKvp of orderedMeals) {
+    for (const mealKvp of meals) {
       if (mealKvp[1].length === 0) {
         continue;
       }
@@ -73,7 +51,12 @@ export class Diary {
   }
 
   public get hasContents(): boolean {
-    return this.foodsMap.size > 0;
+    for (const meal of this.mealsMap.values()) {
+      if (meal.Portions.length > 0) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /** Which meals can be recorded [0-5] */

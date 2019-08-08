@@ -63,6 +63,7 @@ export class EditPortionDialogComponent implements OnInit {
           this.data.ui.notifyRestorePortion(this.data.portion.food.name);
         });
       });
+      this.dismiss();
     });
   }
 
