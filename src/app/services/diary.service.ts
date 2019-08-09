@@ -198,39 +198,8 @@ export class DiaryService {
     );
   }
 
-  public removePortion(id: number): Observable<{ id: number; foodId: number }> {
-    return this.http
-      .delete<{ id: number; foodId: number }>(`${this.url}${this.dateUrl}/${id}`)
-      .pipe(
-        map(ids => {
-          const portions = [...this.state$.getValue().portions];
-
-          // check which portion to delete and marks foods to be deleted when unused by other portions
-          let deleteFood = true;
-          let deletedPortionIndex: number;
-          for (let i = 0; i < portions.length; i++) {
-            if (portions[i].id === ids.id) {
-              deletedPortionIndex = i;
-            } else if (portions[i].foodId === ids.foodId) {
-              // the food's being referred to by another portions; don't mark it for deletion
-              deleteFood = false;
-            }
-          }
-
-          // delete portion
-          portions.splice(deletedPortionIndex, 1);
-
-          // delete food when necessary or copy the previous ones
-          const foods = [...this.state$.getValue().foods];
-          if (deleteFood) {
-            const deletedFoodIndex = foods.findIndex(food => food.id === ids.foodId);
-            foods.splice(deletedFoodIndex, 1);
-          }
-
-          this.state$.next({ ...this.state$.getValue(), portions, foods });
-          return ids;
-        })
-      );
+  public removePortion(id: number): Observable<void> {
+    return this.removePortions([id]);
   }
 
   public editComment(comment: string): Observable<string> {

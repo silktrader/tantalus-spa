@@ -137,6 +137,10 @@ export class UiService {
     this.warn(`Couldn't delete portion #${id}`);
   }
 
+  public warnFailedRemovals(ids: Array<number>) {
+    this.warn(`Couldn't delete ${ids.length} portions`);
+  }
+
   public toggleSidenav() {
     this.sidenav.toggle();
   }

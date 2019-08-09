@@ -59,7 +59,6 @@ export class EditPortionDialogComponent implements OnInit {
     this.data.ds.removePortion(this.data.portion.id).subscribe(() => {
       this.data.ui.notifyRemovedPortion(this.data.portion.food.name, () => {
         this.data.ds.addPortion(MapperService.toDto(this.data.portion)).subscribe(() => {
-          this.dismiss();
           this.data.ui.notifyRestorePortion(this.data.portion.food.name);
         });
       });

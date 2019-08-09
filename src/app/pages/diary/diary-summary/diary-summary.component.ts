@@ -161,11 +161,16 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
       restoreDtos.push(this.portionAdapter.toAddTo(portion));
     }
 
-    this.ds.removePortions(ids).subscribe(() => {
-      this.ui.notifyRemovedPortions(ids.length, () => {
-        this.ds.addPortions(restoreDtos).subscribe();
-      });
-    });
+    this.ds.removePortions(ids).subscribe(
+      () => {
+        this.ui.notifyRemovedPortions(ids.length, () => {
+          this.ds.addPortions(restoreDtos).subscribe();
+        });
+      },
+      () => {
+        this.ui.warnFailedRemovals(ids);
+      }
+    );
   }
 
   public editComment() {
