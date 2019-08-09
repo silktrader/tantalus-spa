@@ -7,7 +7,12 @@
 }
 
 .toolbar-actions {
-  flex: 1 1 0;
+  flex: 2 1 0;
+}
+
+::ng-deep .toolbar-actions button {
+  margin-left: 1rem;
+  margin-right: 1rem;
 }
 
 .toolbar-title {

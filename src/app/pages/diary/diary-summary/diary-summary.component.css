@@ -6,12 +6,19 @@ mat-expansion-panel {
 
 .container {
   display: flex;
-  flex-direction: row;
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+
+.full-height {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .portions-table {
   flex-grow: 5;
-  height: 100%;
+  overflow-y: scroll;
 }
 
 .table-desktop {

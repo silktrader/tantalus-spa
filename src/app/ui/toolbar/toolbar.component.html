@@ -9,7 +9,8 @@
     <ng-content select="span"></ng-content>
   </section>
   <section class="toolbar-actions">
-    <!-- <ng-content select="a"></ng-content> -->
+    <ng-content *ngIf="ui.isDesktop" select="[desktop-actions]"></ng-content>
+    <ng-content *ngIf="ui.isMobile" select="[mobile-actions]"></ng-content>
     <ng-content select="button"></ng-content>
   </section>
 </mat-toolbar>

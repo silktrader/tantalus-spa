@@ -123,7 +123,7 @@ export class AddPortionDialogComponent {
             });
             this.dialogRef.close();
           },
-          () => {
+          error => {
             this.data.ui.warnFailedAddedPortion(this.selectedFood.name);
             this.dialogRef.close();
           }
