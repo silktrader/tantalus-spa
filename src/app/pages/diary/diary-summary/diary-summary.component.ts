@@ -12,6 +12,9 @@ import { ChartOptions } from 'chart.js';
 import { AddPortionDialogComponent } from '../add-portion-dialog/add-portion-dialog.component';
 import { FoodsService } from 'src/app/services/foods.service';
 import { Meal } from 'src/app/models/meal.model';
+import { PortionDto } from 'src/app/models/portion-dto.model';
+import { PortionAdapter } from 'src/app/services/diary-adapter';
+import { PortionAddDto } from 'src/app/models/portion-add-dto.model';
 
 @Component({
   selector: 'app-diary-summary',
@@ -58,7 +61,8 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
     public ui: UiService,
     private router: Router,
     private route: ActivatedRoute,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private portionAdapter: PortionAdapter
   ) {}
 
   ngOnInit() {
@@ -144,6 +148,23 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
       error: message => {
         this.ui.warn(`Couldn't delete ${this.date.toLocaleDateString()}'s entries`);
       }
+    });
+  }
+
+  public deleteMealPortions(meal: Meal): void {
+    const ids: Array<number> = [];
+    const restoreDtos: Array<PortionAddDto> = [];
+
+    // create dtos of portions
+    for (const portion of meal.Portions) {
+      ids.push(portion.id);
+      restoreDtos.push(this.portionAdapter.toAddTo(portion));
+    }
+
+    this.ds.removePortions(ids).subscribe(() => {
+      this.ui.notifyRemovedPortions(ids.length, () => {
+        this.ds.addPortions(restoreDtos).subscribe();
+      });
     });
   }
 

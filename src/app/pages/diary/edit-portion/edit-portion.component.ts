@@ -158,7 +158,7 @@ export class EditPortionComponent implements OnInit, AfterViewInit, OnDestroy {
     const deletedPortion = this.originalPortion;
     this.ds.removePortion(this.originalPortion.id).subscribe({
       next: () => {
-        this.ui.notifyRemovePortion(deletedPortion.food.name, () => {
+        this.ui.notifyRemovedPortion(deletedPortion.food.name, () => {
           this.ds.addPortion(MapperService.toDto(deletedPortion)).subscribe(() => {
             this.ui.notifyRestorePortion(deletedPortion.food.name);
           });

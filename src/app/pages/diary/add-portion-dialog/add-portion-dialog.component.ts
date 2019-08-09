@@ -118,7 +118,7 @@ export class AddPortionDialogComponent {
           value => {
             this.data.ui.notifyAddedPortion(value.quantity, this.selectedFood.name, () => {
               this.data.ds.removePortion(value.id).subscribe(() => {
-                this.data.ui.notifyRemovePortion(this.selectedFood.name, () => {});
+                this.data.ui.notifyRemovedPortion(this.selectedFood.name);
               });
             });
             this.dialogRef.close();

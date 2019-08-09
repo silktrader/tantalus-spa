@@ -88,7 +88,10 @@
           </mat-nav-list>
           <mat-action-row>
             <button mat-icon-button (click)="addPortion(meal.order)">
-              <mat-icon>add</mat-icon>
+              <mat-icon>add-circle</mat-icon>
+            </button>
+            <button mat-icon-button (click)="deleteMealPortions(meal)">
+              <mat-icon>delete</mat-icon>
             </button>
           </mat-action-row>
 

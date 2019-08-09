@@ -116,8 +116,17 @@ export class UiService {
     this.warn(`Couldn't change portion #${id}`);
   }
 
-  public notifyRemovePortion(foodName: string, undoAction: () => void): void {
-    this.notify(`Removed ${foodName}'s portion`, 'Undo', undoAction);
+  public notifyRemovedPortion(foodName: string, undoAction?: () => void): void {
+    const message = `Removed ${foodName}'s portion`;
+    if (undoAction) {
+      this.notify(message, ActionNames.undo, undoAction);
+    } else {
+      this.notify(message);
+    }
+  }
+
+  public notifyRemovedPortions(portionsNumber: number, undoAction: () => void) {
+    this.notify(`Removed ${portionsNumber} portions`, ActionNames.undo, undoAction);
   }
 
   public notifyRestorePortion(foodName: string): void {

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { Meal } from '../models/meal.model';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { PortionDto } from '../models/portion-dto.model';
 import { DiaryEntryDto, DiaryEntryPostDto } from '../models/diary-entry-dto.model';
 import { ActivatedRoute, Params } from '@angular/router';
@@ -180,6 +180,22 @@ export class DiaryService {
           return response;
         })
       );
+  }
+
+  public removePortions(ids: Array<number>): Observable<void> {
+    // build the parameters list
+    let params = new HttpParams();
+    for (const id of ids) {
+      params = params.append('ids', id.toString());
+    }
+
+    return this.http.delete<void>(this.url + 'portions', { params }).pipe(
+      tap(() => {
+        const removedIds = new Set(ids);
+        const portions = this.state.portions.filter(portion => !removedIds.has(portion.id));
+        this.state$.next({ ...this.state, portions });
+      })
+    );
   }
 
   public removePortion(id: number): Observable<{ id: number; foodId: number }> {

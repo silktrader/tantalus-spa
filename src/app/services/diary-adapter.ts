@@ -5,6 +5,7 @@ import { Food } from '../models/food.model';
 import { Portion } from '../models/portion.model';
 import { PortionDto } from '../models/portion-dto.model';
 import { FoodDto } from '../models/food-dto.model';
+import { PortionAddDto } from '../models/portion-add-dto.model';
 
 export interface DtoAdapter<Dto, Model> {
   toModel(dto: Dto): Model;
@@ -18,7 +19,6 @@ export class DiaryAdapter implements DtoAdapter<DiaryEntryDto, Diary> {
   public toModel(dto: DiaryEntryDto): Diary {
     // build foods map
     const foods = new Map<number, Food>();
-    console.log(dto.foods);
     for (const foodDto of dto.foods) {
       if (foods.get(foodDto.id)) {
         continue;
@@ -62,5 +62,27 @@ export class DiaryAdapter implements DtoAdapter<DiaryEntryDto, Diary> {
     }
 
     return { portions, foods, comment: diary.comment };
+  }
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class PortionAdapter {
+  toDto(portion: Portion): PortionDto {
+    return {
+      id: portion.id,
+      foodId: portion.food.id,
+      quantity: portion.quantity,
+      meal: portion.meal
+    };
+  }
+
+  toAddTo(portion: Portion): PortionAddDto {
+    return {
+      foodId: portion.food.id,
+      quantity: portion.quantity,
+      meal: portion.meal
+    };
   }
 }
