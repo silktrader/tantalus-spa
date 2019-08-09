@@ -66,21 +66,14 @@ export class AddRecipePortionsComponent implements OnInit {
       )
       .subscribe(dtos => {
         this.router.navigate(['../..'], { relativeTo: this.route });
-        this.ui.notify(
-          `Added ${dtos.length} portions from ${this.originalRecipe.name}`,
-          'Undo',
-          () => {
-            const portionsRemovals: Array<Observable<{ id: number; foodId: number }>> = [];
-            for (const dto of dtos) {
-              portionsRemovals.push(this.ds.removePortion(dto.id));
-            }
-            forkJoin(portionsRemovals).subscribe(() =>
-              this.ui.notify(
-                `Removed ${portionsRemovals.length} portions from ${this.originalRecipe.name}`
-              )
+        this.ui.notifyAddedRecipe(dtos.length, this.originalRecipe.name, () => {
+          this.ds
+            .removePortions(dtos.map(dto => dto.id))
+            .subscribe(
+              () => this.ui.notifyRemovedPortions(dtos.length),
+              error => this.ui.warnFailedRemovals(dtos.map(dto => dto.id))
             );
-          }
-        );
+        });
       });
   }
 

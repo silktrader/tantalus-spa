@@ -5,9 +5,9 @@ import { FormControl } from '@angular/forms';
 import { Meal } from 'src/app/models/meal.model';
 import { DiaryService } from 'src/app/services/diary.service';
 import { UiService } from 'src/app/services/ui.service';
-import { MapperService as Mapper, MapperService } from 'src/app/services/mapper.service';
 import { PortionDto } from 'src/app/models/portion-dto.model';
 import { QuantityEditorComponent } from 'src/app/ui/quantity-editor/quantity-editor.component';
+import { DtoMapper } from 'src/app/services/dto-mapper';
 
 export interface EditPortionDialogData {
   readonly portion: Portion;
@@ -28,7 +28,8 @@ export class EditPortionDialogComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<EditPortionDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: EditPortionDialogData
+    @Inject(MAT_DIALOG_DATA) public data: EditPortionDialogData,
+    private mapper: DtoMapper
   ) {
     this.mealSelector = new FormControl(data.portion.meal);
   }
@@ -58,7 +59,7 @@ export class EditPortionDialogComponent implements OnInit {
   public deletePortion(): void {
     this.data.ds.removePortion(this.data.portion.id).subscribe(() => {
       this.data.ui.notifyRemovedPortion(this.data.portion.food.name, () => {
-        this.data.ds.addPortion(MapperService.toDto(this.data.portion)).subscribe(() => {
+        this.data.ds.addPortion(this.mapper.mapPortionAddDto(this.data.portion)).subscribe(() => {
           this.data.ui.notifyRestorePortion(this.data.portion.food.name);
         });
       });
@@ -75,7 +76,7 @@ export class EditPortionDialogComponent implements OnInit {
   }
 
   public save(): void {
-    this.changePortion(Mapper.toDto(this.data.portion), {
+    this.changePortion(this.mapper.mapPortionDto(this.data.portion), {
       id: this.data.portion.id,
       foodId: this.data.portion.food.id,
       quantity: this.quantityEditor.value,

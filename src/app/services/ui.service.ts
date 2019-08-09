@@ -72,16 +72,20 @@ export class UiService {
     this.snackBar.open(message, '', { duration: this.notificationsDuration });
   }
 
+  public notifyAddedPortion(quantity: number, foodName: string, undoAction: () => void) {
+    this.notify(`Added ${quantity} g. of ${foodName}`, ActionNames.undo, undoAction);
+  }
+
   public notifyAddedPortions(portionsNumber: number, undoAction: () => void) {
     this.notify(`Added ${portionsNumber} portions`, ActionNames.undo, undoAction);
   }
 
-  public warnFailedAddedPortions() {
-    this.warn(`Couldn't add portions`);
+  public notifyAddedRecipe(length: number, recipeName: string, undoAction: () => void) {
+    this.notify(`Added ${length} portions from ${recipeName}`, ActionNames.undo, undoAction);
   }
 
-  public notifyAddedPortion(quantity: number, foodName: string, undoAction: () => void) {
-    this.notify(`Added ${quantity} g. of ${foodName}`, ActionNames.undo, undoAction);
+  public warnFailedAddedPortions() {
+    this.warn(`Couldn't add portions`);
   }
 
   public warnFailedAddedPortion(foodName: string): void {
@@ -125,8 +129,13 @@ export class UiService {
     }
   }
 
-  public notifyRemovedPortions(portionsNumber: number, undoAction: () => void) {
-    this.notify(`Removed ${portionsNumber} portions`, ActionNames.undo, undoAction);
+  public notifyRemovedPortions(portionsNumber: number, undoAction?: () => void) {
+    const message = `Removed ${portionsNumber} portions`;
+    if (undoAction) {
+      this.notify(message, ActionNames.undo, undoAction);
+    } else {
+      this.notify(message);
+    }
   }
 
   public notifyRestorePortion(foodName: string): void {

@@ -2,34 +2,26 @@ import { Meal } from './meal.model';
 import { Portion } from './portion.model';
 
 export class Diary {
-  public readonly comment: Readonly<string>;
-
   private mealsMap: Map<number, Meal> = new Map<number, Meal>();
   public get meals(): ReadonlyArray<Meal> {
     return Array.from(this.mealsMap.values()); // TK slow
   }
 
-  constructor(portions: Portion[], comment?: string) {
-    this.comment = comment;
-
-    // create a collection that will hosts portions according to their ordered meal number
-    // tk can be improved with spread operator over static field?
-    const meals = new Map<number, Array<Portion>>();
-    for (const mealNumber of Meal.numbers) {
-      meals.set(mealNumber, []);
-    }
-
+  constructor(portions: Portion[], public readonly comment?: string) {
     // create portions and slot them in the cached meals map
+    const meals = new Map<number, Array<Portion>>();
     for (const portion of portions) {
-      meals.get(portion.meal).push(portion);
+      const meal = meals.get(portion.meal);
+      if (meal === undefined) {
+        meals.set(portion.meal, [portion]);
+      } else {
+        meal.push(portion);
+      }
     }
 
-    // set the final meals map
-    for (const mealKvp of meals) {
-      if (mealKvp[1].length === 0) {
-        continue;
-      }
-      this.mealsMap.set(mealKvp[0], new Meal(mealKvp[0], mealKvp[1]));
+    // set the final map by creating immutable meals
+    for (const kvp of meals) {
+      this.mealsMap.set(kvp[0], new Meal(kvp[0], kvp[1]));
     }
   }
 
