@@ -6,4 +6,3 @@
 * [ ] fill name when entering new food from "Create" button
 * remove reference to date when changing, deleting portions
 * lock PortionDto with `readonly`
-* merge MapperService and Adapter

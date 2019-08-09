@@ -10,7 +10,7 @@ import { Diary } from '../models/diary.model';
 import { PortionAddDto } from '../models/portion-add-dto.model';
 import { FoodDto } from '../models/food-dto.model';
 import { environment } from 'src/environments/environment';
-import { DiaryAdapter } from './diary-adapter';
+import { DtoMapper } from './dto-mapper';
 
 @Injectable()
 export class DiaryService {
@@ -43,11 +43,7 @@ export class DiaryService {
     this.pDateUrl = this.pDate.toISOString().substring(0, 10);
   }
 
-  constructor(
-    private http: HttpClient,
-    private route: ActivatedRoute,
-    private diaryAdapter: DiaryAdapter
-  ) {
+  constructor(private http: HttpClient, private route: ActivatedRoute, private mapper: DtoMapper) {
     // tk unsubscribtion?
     this.route.params
       .pipe(
@@ -81,7 +77,7 @@ export class DiaryService {
     // any time a new state is acquired a new diary is created
     this.state$.subscribe(state => {
       if (state) {
-        this.diarySubject$.next(this.diaryAdapter.toModel(state));
+        this.diarySubject$.next(this.mapper.mapDiary(state));
         this.focusedMeal = this.diarySubject$.value.latestMeal;
       } else {
         this.diarySubject$.next(undefined);

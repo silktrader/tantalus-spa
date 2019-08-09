@@ -7,16 +7,36 @@ import { PortionDto } from '../models/portion-dto.model';
 import { FoodDto } from '../models/food-dto.model';
 import { PortionAddDto } from '../models/portion-add-dto.model';
 
-export interface DtoAdapter<Dto, Model> {
-  toModel(dto: Dto): Model;
-  toDto(model: Model): Dto;
-}
-
+/**
+ * Ideally this service should implement various interfaces which are then injected into components.
+ * Angular requires additional code and a token though.
+ */
 @Injectable({
   providedIn: 'root'
 })
-export class DiaryAdapter implements DtoAdapter<DiaryEntryDto, Diary> {
-  public toModel(dto: DiaryEntryDto): Diary {
+export class DtoMapper {
+  public mapPortionDto(portion: Portion): PortionDto {
+    return {
+      id: portion.id,
+      foodId: portion.food.id,
+      quantity: portion.quantity,
+      meal: portion.meal
+    };
+  }
+
+  public mapPortionAddDto(portion: Portion): PortionAddDto {
+    return {
+      foodId: portion.food.id,
+      quantity: portion.quantity,
+      meal: portion.meal
+    };
+  }
+
+  public mapPortion(dto: PortionDto, food: Food): Portion {
+    return new Portion(dto.id, dto.quantity, food, dto.meal);
+  }
+
+  public mapDiary(dto: DiaryEntryDto): Diary {
     // build foods map
     const foods = new Map<number, Food>();
     for (const foodDto of dto.foods) {
@@ -38,7 +58,7 @@ export class DiaryAdapter implements DtoAdapter<DiaryEntryDto, Diary> {
     return new Diary(portions, dto.comment);
   }
 
-  public toDto(diary: Diary): DiaryEntryDto {
+  public mapDiaryDto(diary: Diary): DiaryEntryDto {
     const portions = new Array<PortionDto>();
     const foodIds = new Set<number>();
     const foods = new Array<FoodDto>();
@@ -62,27 +82,5 @@ export class DiaryAdapter implements DtoAdapter<DiaryEntryDto, Diary> {
     }
 
     return { portions, foods, comment: diary.comment };
-  }
-}
-
-@Injectable({
-  providedIn: 'root'
-})
-export class PortionAdapter {
-  toDto(portion: Portion): PortionDto {
-    return {
-      id: portion.id,
-      foodId: portion.food.id,
-      quantity: portion.quantity,
-      meal: portion.meal
-    };
-  }
-
-  toAddTo(portion: Portion): PortionAddDto {
-    return {
-      foodId: portion.food.id,
-      quantity: portion.quantity,
-      meal: portion.meal
-    };
   }
 }

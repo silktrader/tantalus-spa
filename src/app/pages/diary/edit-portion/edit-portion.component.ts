@@ -13,8 +13,8 @@ import { Portion } from 'src/app/models/portion.model';
 import { DiaryService } from 'src/app/services/diary.service';
 import { UiService } from 'src/app/services/ui.service';
 import { Diary } from 'src/app/models/diary.model';
-import { MapperService } from 'src/app/services/mapper.service';
 import { QuantityEditorComponent } from 'src/app/ui/quantity-editor/quantity-editor.component';
+import { DtoMapper } from 'src/app/services/dto-mapper';
 
 @Component({
   selector: 'app-edit-portion',
@@ -50,7 +50,8 @@ export class EditPortionComponent implements OnInit, AfterViewInit, OnDestroy {
     public ds: DiaryService,
     private route: ActivatedRoute,
     private router: Router,
-    private ui: UiService
+    private ui: UiService,
+    private mapper: DtoMapper
   ) {}
 
   ngOnInit() {
@@ -159,7 +160,7 @@ export class EditPortionComponent implements OnInit, AfterViewInit, OnDestroy {
     this.ds.removePortion(this.originalPortion.id).subscribe({
       next: () => {
         this.ui.notifyRemovedPortion(deletedPortion.food.name, () => {
-          this.ds.addPortion(MapperService.toDto(deletedPortion)).subscribe(() => {
+          this.ds.addPortion(this.mapper.mapPortionDto(deletedPortion)).subscribe(() => {
             this.ui.notifyRestorePortion(deletedPortion.food.name);
           });
         });
@@ -194,7 +195,7 @@ export class EditPortionComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private changePortion(initial: Portion, final: Portion): void {
-    this.ds.changePortion(MapperService.toDto(final)).subscribe(
+    this.ds.changePortion(this.mapper.mapPortionDto(final)).subscribe(
       () => {
         this.ui.notifyChangePortion(
           {

@@ -19,14 +19,12 @@
 
   </app-toolbar>
 
-
   <section class="container">
 
     <ng-container *ngIf="diary; else noMeals">
       <section class="portions-table" [ngClass]="{'table-desktop': ui.isDesktop, 'table-mobile': ui.isMobile}">
 
         <!-- Header -->
-
         <section class="header">
           <section class="header-notes">
             <mat-form-field class="columns-selector">
@@ -81,7 +79,6 @@
             </mat-expansion-panel-header>
             <mat-nav-list>
               <mat-list-item class="portion" *ngFor="let portion of meal.Portions">
-                <!-- <a [routerLink]="[portion.id]" (click)="editPortion(portion)" routerLinkActive="active"> -->
                 <a (click)="editPortion(portion)">
                   <span class="portion-header">
                     <span class="mat-body-2">{{portion.food.name}}</span>

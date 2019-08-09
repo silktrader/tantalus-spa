@@ -1,6 +1,5 @@
 import { Meal } from './meal.model';
 import { Portion } from './portion.model';
-import { Food } from './food.model';
 
 export class Diary {
   public readonly comment: Readonly<string>;
