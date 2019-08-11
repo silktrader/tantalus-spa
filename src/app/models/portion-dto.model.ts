@@ -1,6 +1,6 @@
-export class PortionDto {
+export interface PortionDto {
   readonly id: number;
-  meal: number;
+  readonly meal: number;
   readonly foodId: number;
-  quantity: number;
+  readonly quantity: number;
 }

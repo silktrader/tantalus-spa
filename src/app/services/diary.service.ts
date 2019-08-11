@@ -149,25 +149,18 @@ export class DiaryService {
       );
   }
 
-  public changePortion(portionDto: PortionDto): Observable<PortionDto> {
-    return this.http
-      .put<PortionDto>(`${this.url}${this.dateUrl}/${portionDto.id}`, portionDto)
-      .pipe(
-        map(response => {
-          const newState = {
-            ...this.state$.getValue()
-          };
-          // select the portion to be edited in the new state
-          for (const portion of newState.portions) {
-            if (portion.id === portionDto.id) {
-              portion.meal = portionDto.meal;
-              portion.quantity = portionDto.quantity;
-            }
-          }
-          this.state$.next(newState);
-          return response;
-        })
-      );
+  public changePortion(dto: PortionDto): Observable<PortionDto> {
+    return this.http.put<PortionDto>(`${this.url}${this.dateUrl}/${dto.id}`, dto).pipe(
+      map(responseDto => {
+        // create a new portion array and substitute the relevant entry
+        const portions = this.state.portions.map(portion =>
+          portion.id === responseDto.id ? responseDto : portion
+        );
+
+        this.state$.next({ ...this.state, portions });
+        return responseDto;
+      })
+    );
   }
 
   public removePortions(ids: Array<number>): Observable<void> {
