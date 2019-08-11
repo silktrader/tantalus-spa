@@ -1,12 +1,10 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { Food } from 'src/app/models/food.model';
 import { DiaryService } from 'src/app/services/diary.service';
 import { UiService } from 'src/app/services/ui.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FoodsService } from 'src/app/services/foods.service';
-import { Meal } from 'src/app/models/meal.model';
 import { Diary } from 'src/app/models/diary.model';
 import { Recipe } from 'src/app/models/recipe.model';
 import { IPortion } from 'src/app/models/portion.interface';
@@ -16,7 +14,7 @@ import { IPortion } from 'src/app/models/portion.interface';
   templateUrl: './select-portion.component.html',
   styleUrls: ['./select-portion.component.css']
 })
-export class SelectPortionComponent implements OnInit, OnDestroy, AfterViewInit {
+export class SelectPortionComponent implements OnInit, OnDestroy {
   public filteredFoods$: Observable<ReadonlyArray<IPortion>>;
   nameFilter: BehaviorSubject<string> = new BehaviorSubject('');
 
@@ -59,14 +57,8 @@ export class SelectPortionComponent implements OnInit, OnDestroy, AfterViewInit 
     this.searchBoxInputRef.nativeElement.focus();
   }
 
-  ngAfterViewInit() {}
-
   ngOnDestroy() {
     this.subscription.unsubscribe();
-  }
-
-  public get availableMeals(): ReadonlyArray<number> {
-    return Meal.numbers;
   }
 
   public back(): void {
@@ -109,8 +101,8 @@ export class SelectPortionComponent implements OnInit, OnDestroy, AfterViewInit 
     }
   }
 
-  public mealName(mealNumber: number) {
-    return Meal.mealNames[mealNumber];
+  public get mealTypes() {
+    return Diary.mealTypes;
   }
 
   public isRecipe(portion: IPortion): portion is Recipe {

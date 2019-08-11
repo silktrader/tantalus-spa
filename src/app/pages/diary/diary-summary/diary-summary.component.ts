@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Subscription, BehaviorSubject } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { UiService } from 'src/app/services/ui.service';
 import { Diary } from 'src/app/models/diary.model';
@@ -11,9 +11,9 @@ import { Portion } from 'src/app/models/portion.model';
 import { ChartOptions } from 'chart.js';
 import { AddPortionDialogComponent } from '../add-portion-dialog/add-portion-dialog.component';
 import { FoodsService } from 'src/app/services/foods.service';
-import { Meal } from 'src/app/models/meal.model';
 import { PortionAddDto } from 'src/app/models/portion-add-dto.model';
 import { DtoMapper } from 'src/app/services/dto-mapper';
+import { FoodProp } from 'src/app/models/food-prop.model';
 
 @Component({
   selector: 'app-diary-summary',
@@ -94,10 +94,12 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
 
   private fetchMacroChartData(): Array<number> {
     const data = [0, 0, 0];
-    for (const meal of this.diary.meals) {
-      data[0] += meal.getTotalProperty('proteins');
-      data[1] += meal.getTotalProperty('carbs');
-      data[2] += meal.getTotalProperty('fats');
+    for (const meal of this.diary.meals.values()) {
+      for (const portion of meal) {
+        data[0] += portion.getTotalProperty(FoodProp.proteins);
+        data[1] += portion.getTotalProperty(FoodProp.carbs);
+        data[2] += portion.getTotalProperty(FoodProp.fats);
+      }
     }
     return data;
   }
@@ -150,12 +152,12 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
     });
   }
 
-  public deleteMealPortions(meal: Meal): void {
+  public deletePortions(portions: ReadonlyArray<Portion>): void {
     const ids: Array<number> = [];
     const restoreDtos: Array<PortionAddDto> = [];
 
     // create dtos of portions
-    for (const portion of meal.Portions) {
+    for (const portion of portions) {
       ids.push(portion.id);
       restoreDtos.push(this.mapper.mapPortionAddDto(portion));
     }
@@ -173,14 +175,11 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
   }
 
   public editComment() {
-    this.ds.editComment(this.commentTextarea.value).subscribe({
-      next: () => {
-        this.ui.notify(`Edited comment`);
-      },
-      error: error => {
-        console.log(error);
-        this.ui.notify(`Couldn't edit comment ${error}`);
-      }
-    });
+    this.ds
+      .editComment(this.commentTextarea.value)
+      .subscribe(
+        () => this.ui.notify(`Edited comment`),
+        error => this.ui.notify(`Couldn't edit comment ${error}`)
+      );
   }
 }

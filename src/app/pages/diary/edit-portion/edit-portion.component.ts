@@ -140,6 +140,10 @@ export class EditPortionComponent implements OnInit, AfterViewInit, OnDestroy {
     );
   }
 
+  public get mealTypes() {
+    return Diary.mealTypes;
+  }
+
   public back(): void {
     this.router.navigate(['..'], { relativeTo: this.route });
   }

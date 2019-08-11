@@ -11,6 +11,7 @@ import { IPortion } from 'src/app/models/portion.interface';
 import { Observable, Subject } from 'rxjs';
 import { RecipeDto } from 'src/app/models/recipe-autocomplete.model';
 import { PortionAddDto } from 'src/app/models/portion-add-dto.model';
+import { Diary } from 'src/app/models/diary.model';
 
 export interface AddPortionDialogData {
   readonly ds: DiaryService;
@@ -92,6 +93,10 @@ export class AddPortionDialogComponent {
 
   public isMissingPortion = false;
 
+  public get mealTypes() {
+    return Diary.mealTypes;
+  }
+
   public displayFood(foodDto: FoodDto): string | undefined {
     if (foodDto) {
       return foodDto.name;
@@ -114,8 +119,8 @@ export class AddPortionDialogComponent {
           quantity: this.quantityEditor.value,
           meal: this.mealSelector.value
         })
-        .subscribe(
-          value => {
+        .subscribe({
+          next: value => {
             this.data.ui.notifyAddedPortion(value.quantity, this.selectedFood.name, () => {
               this.data.ds.removePortion(value.id).subscribe(() => {
                 this.data.ui.notifyRemovedPortion(this.selectedFood.name);
@@ -123,11 +128,11 @@ export class AddPortionDialogComponent {
             });
             this.dialogRef.close();
           },
-          error => {
+          error: () => {
             this.data.ui.warnFailedAddedPortion(this.selectedFood.name);
             this.dialogRef.close();
           }
-        );
+        });
     } else if (this.selectedRecipe) {
       const portions: Array<PortionAddDto> = [];
       for (const ingredient of this.selectedRecipe.ingredients) {

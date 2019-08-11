@@ -46,7 +46,7 @@ export class DtoMapper {
       foods.set(foodDto.id, new Food(foodDto));
     }
 
-    const portions: Portion[] = [];
+    const portions: Array<Portion> = [];
     for (const portionDto of dto.portions) {
       const food = foods.get(portionDto.foodId);
       if (food === undefined) {
@@ -63,8 +63,8 @@ export class DtoMapper {
     const foodIds = new Set<number>();
     const foods = new Array<FoodDto>();
 
-    for (const meal of diary.meals) {
-      for (const portion of meal.Portions) {
+    for (const meal of diary.meals.values()) {
+      for (const portion of meal) {
         // serialise portions
         portions.push({
           id: portion.id,

@@ -2,12 +2,12 @@ import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Portion } from 'src/app/models/portion.model';
 import { FormControl } from '@angular/forms';
-import { Meal } from 'src/app/models/meal.model';
 import { DiaryService } from 'src/app/services/diary.service';
 import { UiService } from 'src/app/services/ui.service';
 import { PortionDto } from 'src/app/models/portion-dto.model';
 import { QuantityEditorComponent } from 'src/app/ui/quantity-editor/quantity-editor.component';
 import { DtoMapper } from 'src/app/services/dto-mapper';
+import { Diary } from 'src/app/models/diary.model';
 
 export interface EditPortionDialogData {
   readonly portion: Portion;
@@ -35,6 +35,10 @@ export class EditPortionDialogComponent implements OnInit {
   }
 
   ngOnInit() {}
+
+  public get mealTypes(): ReadonlyMap<number, string> {
+    return Diary.mealTypes;
+  }
 
   private changePortion(oldPortion: PortionDto, newPortion: PortionDto): void {
     this.data.ds.changePortion(newPortion).subscribe(
@@ -86,13 +90,5 @@ export class EditPortionDialogComponent implements OnInit {
 
   public dismiss(): void {
     this.dialogRef.close(undefined);
-  }
-
-  public getMealName(index: number) {
-    return Meal.mealNames[index];
-  }
-
-  public get mealNumbers(): ReadonlyArray<number> {
-    return Meal.numbers;
   }
 }

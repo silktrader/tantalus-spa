@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { switchMap, map, tap } from 'rxjs/operators';
-import { Meal } from '../models/meal.model';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { PortionDto } from '../models/portion-dto.model';
 import { DiaryEntryDto, DiaryEntryPostDto } from '../models/diary-entry-dto.model';
@@ -72,7 +71,11 @@ export class DiaryService {
           return this.getDiaryData();
         })
       )
-      .subscribe(diaryDto => this.state$.next(diaryDto));
+      .subscribe(diaryDto => {
+        // the state expects either a value or undefined, not null
+        diaryDto = diaryDto || undefined;
+        this.state$.next(diaryDto);
+      });
 
     // any time a new state is acquired a new diary is created
     this.state$.subscribe(state => {
@@ -84,15 +87,6 @@ export class DiaryService {
         this.focusedMeal = 0;
       }
     });
-  }
-
-  // should this be configurable by users? tk
-  public get availableMealsIDs(): ReadonlyArray<number> {
-    return Meal.numbers;
-  }
-
-  getMealName(id: number): string {
-    return Meal.getName(id);
   }
 
   getRecordedPortions(mealId: number): number {
@@ -137,19 +131,17 @@ export class DiaryService {
       )
       .pipe(
         map(response => {
-          const state = this.state$.getValue();
-
           // the first portions of a new diary don't need to be added to a previous state
-          if (state === undefined) {
+          if (this.state === undefined) {
             this.state$.next({ portions: response.portions, foods: response.foods });
             return response.portions;
           }
 
-          const portions = [...state.portions, ...response.portions];
+          const portions = [...this.state.portions, ...response.portions];
           this.state$.next({
-            ...state,
+            ...this.state,
             portions,
-            foods: this.removeDuplicateFoods(portions, [...state.foods, ...response.foods])
+            foods: this.removeDuplicateFoods(portions, [...this.state.foods, ...response.foods])
           });
 
           return response.portions;
@@ -187,8 +179,7 @@ export class DiaryService {
 
     return this.http.delete<void>(this.url + 'portions', { params }).pipe(
       tap(() => {
-        const removedIds = new Set(ids);
-        const portions = this.state.portions.filter(portion => !removedIds.has(portion.id));
+        const portions = this.state.portions.filter(portion => !ids.includes(portion.id));
         this.state$.next({ ...this.state, portions });
       })
     );
@@ -217,7 +208,7 @@ export class DiaryService {
   public deleteDiary(): Observable<void> {
     return this.http
       .delete<void>(`${this.url}${this.dateUrl}`)
-      .pipe(tap(() => this.diarySubject$.next(undefined)));
+      .pipe(tap(() => this.state$.next(undefined)));
   }
 
   public restoreDiary(dto: DiaryEntryPostDto): Observable<DiaryEntryDto> {

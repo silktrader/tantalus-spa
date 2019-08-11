@@ -1,75 +1,96 @@
-import { Meal } from './meal.model';
 import { Portion } from './portion.model';
 
 export class Diary {
-  private mealsMap: Map<number, Meal> = new Map<number, Meal>();
-  public get meals(): ReadonlyArray<Meal> {
-    return Array.from(this.mealsMap.values()); // TK slow
-  }
+  public static mealTypes = new Map<number, string>([
+    [0, 'Breakfast'],
+    [1, 'Lunch'],
+    [2, 'Snacks'],
+    [3, 'Dinner']
+  ]);
+
+  // tk lock up
+  public readonly meals: ReadonlyMap<number, ReadonlyArray<Portion>>;
+
+  public readonly proteins = 0;
+  public readonly carbs = 0;
+  public readonly fats = 0;
+  public readonly calories = 0;
 
   constructor(portions: Portion[], public readonly comment?: string) {
-    // create portions and slot them in the cached meals map
-    const meals = new Map<number, Array<Portion>>();
-    for (const portion of portions) {
-      const meal = meals.get(portion.meal);
-      if (meal === undefined) {
-        meals.set(portion.meal, [portion]);
-      } else {
-        meal.push(portion);
-      }
+    // create an ordered map from the available meals
+    const orderedMeals = new Map<number, Array<Portion>>();
+    for (const mealIndex of Diary.mealTypes.keys()) {
+      orderedMeals.set(mealIndex, []);
     }
 
-    // set the final map by creating immutable meals
-    for (const kvp of meals) {
-      this.mealsMap.set(kvp[0], new Meal(kvp[0], kvp[1]));
+    // slot portions in the ordered map
+    for (const portion of portions) {
+      orderedMeals.get(portion.meal).push(portion);
+
+      // assign aggregates to avoid multiple iterations
+      this.proteins += portion.proteins;
+      this.carbs += portion.carbs;
+      this.fats += portion.fats;
+      this.calories += portion.calories;
     }
+
+    // assign the cached map to a readonly collection
+    this.meals = orderedMeals;
   }
 
   public getTotalProperty(propertyName: string) {
     let total = 0;
-    this.mealsMap.forEach(meal => (total += meal.getTotalProperty(propertyName)));
+    for (const meal of this.meals.values()) {
+      for (const portion of meal) {
+        total += portion.getTotalProperty(propertyName);
+      }
+    }
     return total;
   }
 
   public get latestMeal(): number {
     let latestMeal = 0;
-    for (const meal of this.mealsMap.values()) {
-      if (meal.order > latestMeal) {
-        latestMeal = meal.order;
+    for (const kvp of this.meals) {
+      if (kvp[1].length > 0 && kvp[0] > latestMeal) {
+        latestMeal = kvp[0];
       }
     }
     return latestMeal;
   }
 
   public get hasContents(): boolean {
-    for (const meal of this.mealsMap.values()) {
-      if (meal.Portions.length > 0) {
+    for (const meal of this.meals.values()) {
+      if (meal.length > 0) {
         return true;
       }
     }
     return false;
   }
 
-  /** Which meals can be recorded [0-5] */
-  public get availableMeals(): ReadonlyArray<number> {
-    return Meal.numbers;
+  public getMealName(meal: number): string {
+    return Diary.mealTypes.get(meal);
   }
 
-  public getMealName(mealNumber: number): string {
-    return Meal.mealNames[mealNumber];
+  public getMealProperty(meal: number, property: string): number {
+    const portions = this.meals.get(meal);
+    let total = 0;
+    for (const portion of portions) {
+      total += portion.getTotalProperty(property);
+    }
+    return total;
   }
 
   public recordedMeals(mealNumber: number): number {
-    const meal = this.mealsMap.get(mealNumber);
+    const meal = this.meals.get(mealNumber);
     if (meal === undefined) {
       return 0;
     }
-    return meal.Portions.length;
+    return meal.length;
   }
 
   public getPortion(id: number): Portion | undefined {
-    for (const meal of this.mealsMap.values()) {
-      for (const portion of meal.Portions) {
+    for (const meal of this.meals.values()) {
+      for (const portion of meal) {
         if (portion.id === id) {
           return portion;
         }

@@ -10,7 +10,6 @@ import { FoodsService } from 'src/app/services/foods.service';
 import { UiService } from 'src/app/services/ui.service';
 import { Diary } from 'src/app/models/diary.model';
 import { PortionAddDto } from 'src/app/models/portion-add-dto.model';
-import { Meal } from 'src/app/models/meal.model';
 import { PortionValidators } from 'src/app/validators/portion-quantity.validator';
 
 @Component({
@@ -101,12 +100,8 @@ export class AddPortionComponent implements OnInit, OnDestroy {
     );
   }
 
-  public getMealName(mealNumber: number) {
-    return Meal.mealNames[mealNumber];
-  }
-
-  public get availableMeals() {
-    return Meal.numbers;
+  public get mealTypes() {
+    return Diary.mealTypes;
   }
 
   public get quantityError(): string {

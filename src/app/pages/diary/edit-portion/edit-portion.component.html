@@ -50,10 +50,9 @@
         <app-quantity-editor [initialValue]="originalPortion.quantity"></app-quantity-editor>
         <mat-button-toggle-group class="meal-toggle-group" [value]="ds.focusedMeal" [formControl]="mealSelector"
           required>
-          <mat-button-toggle class="meal-toggle" *ngFor="let availableMeal of ds.availableMealsIDs"
-            [value]="availableMeal">
-            <span [matBadge]="diary.recordedMeals(availableMeal)" matBadgeOverlap="false"
-              matBadgeSize="medium">{{diary.getMealName(availableMeal)}}</span>
+          <mat-button-toggle class="meal-toggle" *ngFor="let kvp of mealTypes | keyvalue" [value]="kvp.key">
+            <span [matBadge]="diary.recordedMeals(kvp.key)" matBadgeOverlap="false"
+              matBadgeSize="medium">{{kvp.value}}</span>
           </mat-button-toggle>
         </mat-button-toggle-group>
       </section>

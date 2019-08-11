@@ -5,7 +5,7 @@ import { Location } from '@angular/common';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
-import { Meal } from '../models/meal.model';
+import { Diary } from '../models/diary.model';
 
 export enum Breakpoints {
   mobile = '(max-width: 959px)',
@@ -101,7 +101,7 @@ export class UiService {
     let message = `${initial.foodName}`;
 
     if (initial.meal !== final.meal) {
-      message += ` moved to ${Meal.getName(final.meal)}`;
+      message += ` moved to ${Diary.mealTypes[final.meal]}`;
       if (quantityDifference !== 0) {
         message += `, `;
       }
