@@ -2,7 +2,7 @@ import { Component, Inject, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DiaryService } from 'src/app/services/diary.service';
 import { UiService } from 'src/app/services/ui.service';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { QuantityEditorComponent } from 'src/app/ui/quantity-editor/quantity-editor.component';
 import { FoodDto } from 'src/app/models/food-dto.model';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -27,17 +27,32 @@ export interface AddPortionDialogData {
   providers: [DiaryService]
 })
 export class AddPortionDialogComponent {
+  @ViewChild(QuantityEditorComponent, { static: false })
+  public quantityEditor: QuantityEditorComponent;
+
+  public readonly foodInput = new FormControl(undefined, { validators: Validators.required });
+  public readonly mealSelector = new FormControl();
+
+  public readonly mainFormGroup = new FormGroup({
+    mealSelector: this.mealSelector,
+    foodInput: this.foodInput
+  });
+
+  public readonly filteredFoods$: Observable<ReadonlyArray<IPortion>>;
+  private readonly filterText$ = new Subject<string>();
+
+  private selectedFood: FoodDto;
+  private selectedRecipe: RecipeDto;
+
+  public isMissingPortion = false;
+
   constructor(
     public dialogRef: MatDialogRef<AddPortionDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: AddPortionDialogData
   ) {
-    this.foodInput = new FormControl(undefined, {
-      validators: Validators.required
-    });
-
     // determine whether to use state or fall back to the latest used meal
     const meal = Number.isInteger(data.meal) ? data.meal : data.ds.focusedMeal;
-    this.mealSelector = new FormControl(meal);
+    this.mealSelector.setValue(meal);
 
     this.filteredFoods$ = data.fs.getFilteredFoods(this.filterText$);
     this.foodInput.valueChanges
@@ -79,19 +94,6 @@ export class AddPortionDialogComponent {
   public get addingRecipe(): boolean {
     return this.selectedRecipe !== undefined;
   }
-  @ViewChild(QuantityEditorComponent, { static: false })
-  public quantityEditor: QuantityEditorComponent;
-
-  public readonly mealSelector: FormControl;
-  public readonly foodInput: FormControl;
-
-  public readonly filteredFoods$: Observable<ReadonlyArray<IPortion>>;
-  private readonly filterText$ = new Subject<string>();
-
-  private selectedFood: FoodDto;
-  private selectedRecipe: RecipeDto;
-
-  public isMissingPortion = false;
 
   public get mealTypes() {
     return Diary.mealTypes;

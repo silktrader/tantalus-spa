@@ -146,7 +146,7 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
             );
         });
       },
-      error: message => {
+      error: () => {
         this.ui.warn(`Couldn't delete ${this.date.toLocaleDateString()}'s entries`);
       }
     });

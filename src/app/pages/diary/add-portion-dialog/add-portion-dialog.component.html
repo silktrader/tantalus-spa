@@ -1,26 +1,30 @@
-<section class="dialog" mat-dialog-content>
-    <mat-form-field class="ingredient-row-name" appearance="outline">
-        <mat-label>Food Name</mat-label>
-        <input matInput [matAutocomplete]="auto" type="text" [formControl]="foodInput" (blur)="checkMissingPortion()">
-        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFood" (optionSelected)="quantityEditor.focus()">
-            <mat-option *ngFor="let foodData of (filteredFoods$ | async)" [value]="foodData">{{foodData.name}}
+<form [formGroup]="mainFormGroup" (ngSubmit)="save()">
+    <section class="dialog" mat-dialog-content>
+        <mat-form-field class="ingredient-row-name" appearance="outline">
+            <mat-label>Food Name</mat-label>
+            <input matInput [matAutocomplete]="auto" type="text" [formControl]="foodInput"
+                (blur)="checkMissingPortion()">
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFood"
+                (optionSelected)="quantityEditor.focus()">
+                <mat-option *ngFor="let foodData of (filteredFoods$ | async)" [value]="foodData">{{foodData.name}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+        <app-quantity-editor [disabled]="addingRecipe" [initialValue]="0"></app-quantity-editor>
+        <mat-select [formControl]="mealSelector" class="meal-selector">
+            <mat-option *ngFor="let kvp of mealTypes | keyvalue" [value]="kvp.key">
+                {{kvp.value}}
             </mat-option>
-        </mat-autocomplete>
-    </mat-form-field>
-    <app-quantity-editor [disabled]="addingRecipe" [initialValue]="0"></app-quantity-editor>
-    <mat-select [formControl]="mealSelector" class="meal-selector">
-        <mat-option *ngFor="let kvp of mealTypes | keyvalue" [value]="kvp.key">
-            {{kvp.value}}
-        </mat-option>
-    </mat-select>
-</section>
-<section class="errors">
-    <mat-error *ngIf="hasQuantityError">{{quantityEditor.error}}</mat-error>
-    <mat-error *ngIf="isMissingPortion">Missing Food, create <a [routerLink]="['/foods/add']"
-            (click)="dialogRef.close()">{{foodInput.value}}</a></mat-error>
-</section>
+        </mat-select>
+    </section>
+    <section class="errors">
+        <mat-error *ngIf="hasQuantityError">{{quantityEditor.error}}</mat-error>
+        <mat-error *ngIf="isMissingPortion">Missing Food, create <a [routerLink]="['/foods/add']"
+                (click)="dialogRef.close()">{{foodInput.value}}</a></mat-error>
+    </section>
 
-<section mat-dialog-actions class="actions">
-    <button mat-flat-button mat-dialog-close>Dismiss</button>
-    <button mat-flat-button color="primary" (click)="save()" [disabled]="!saveable">Save</button>
-</section>
+    <section mat-dialog-actions class="actions">
+        <button mat-flat-button mat-dialog-close>Dismiss</button>
+        <button type="submit" mat-flat-button color="primary" [disabled]="!saveable">Save</button>
+    </section>
+</form>

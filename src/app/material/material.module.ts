@@ -23,7 +23,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatSortModule } from '@angular/material/sort';
 
 @NgModule({
@@ -36,6 +36,7 @@ import { MatSortModule } from '@angular/material/sort';
     MatCardModule,
     MatButtonModule,
     ReactiveFormsModule,
+    FormsModule,
     MatDividerModule,
     MatSidenavModule,
     MatSelectModule,
