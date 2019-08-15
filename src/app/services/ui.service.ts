@@ -101,7 +101,7 @@ export class UiService {
     let message = `${initial.foodName}`;
 
     if (initial.meal !== final.meal) {
-      message += ` moved to ${Diary.mealTypes[final.meal]}`;
+      message += ` moved to ${Diary.mealTypes.get(final.meal)}`;
       if (quantityDifference !== 0) {
         message += `, `;
       }

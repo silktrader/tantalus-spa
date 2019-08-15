@@ -60,9 +60,15 @@ export class EditFoodComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // adding a new food; there's no ID
+    // adding a new food since there's no ID
     if (this.IdString === undefined) {
       this.setupForm();
+
+      // check if a name was supplied
+      if (history.state && history.state.foodName) {
+        this.addFoodForm.get('name').setValue(history.state.foodName);
+      }
+
       this.status = EditFoodStatus.Editing;
     } else {
       const id = Number(this.IdString);
