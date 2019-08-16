@@ -1,17 +1,11 @@
-import {
-  Component,
-  OnInit,
-  ViewChild,
-  OnDestroy,
-  AfterViewInit,
-  ChangeDetectorRef
-} from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { UiService } from 'src/app/services/ui.service';
 import { MatSidenav } from '@angular/material/sidenav';
 import { User } from 'src/app/models/user';
 import { delay } from 'rxjs/operators';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-main-navigation',
@@ -40,6 +34,8 @@ export class MainNavigationComponent implements OnInit, OnDestroy {
   public authenticatedUser: User;
   private subscription = new Subscription();
 
+  public dateInput = new FormControl();
+
   constructor(private auth: AuthenticationService, private ui: UiService) {}
 
   ngOnInit(): void {
@@ -49,6 +45,7 @@ export class MainNavigationComponent implements OnInit, OnDestroy {
         this.authenticatedUser = user;
       })
     );
+
     this.subscription.add(
       this.ui.mobile.subscribe(isMobile => {
         if (isMobile) {
@@ -61,6 +58,14 @@ export class MainNavigationComponent implements OnInit, OnDestroy {
       this.ui.desktop.subscribe(isDesktop => {
         if (isDesktop) {
           this.setDesktopSidenav();
+        }
+      })
+    );
+
+    this.subscription.add(
+      this.dateInput.valueChanges.subscribe((date: Date) => {
+        if (date !== this.ds.date) {
+          this.ui.goToDate(date);
         }
       })
     );

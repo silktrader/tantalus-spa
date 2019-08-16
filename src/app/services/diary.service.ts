@@ -13,33 +13,14 @@ import { DtoMapper } from './dto-mapper';
 
 @Injectable()
 export class DiaryService {
-  private readonly url = environment.baseUrl + 'diary/';
-
-  private readonly diarySubject$ = new BehaviorSubject<Diary>(undefined);
-  public readonly diary$ = this.diarySubject$.asObservable();
-
-  private readonly state$ = new BehaviorSubject<DiaryEntryDto>(undefined);
-
   public get state(): Readonly<DiaryEntryDto> {
     return this.state$.getValue();
   }
-
-  public focusedMeal = 0;
-
-  private pDateUrl: string;
   private get dateUrl(): string {
     return this.pDateUrl;
   }
-
-  private pDate: Date;
   public get date(): Date {
     return this.pDate;
-  }
-
-  private setDate(date: Date) {
-    this.pDate = date;
-    this.pDate.setUTCHours(0, 0, 0);
-    this.pDateUrl = this.pDate.toISOString().substring(0, 10);
   }
 
   constructor(private http: HttpClient, private route: ActivatedRoute, private mapper: DtoMapper) {
@@ -65,7 +46,7 @@ export class DiaryService {
               break;
             }
             default:
-              this.setDate(new Date(params.date));
+              this.setDate(DiaryService.parseUrl(params.date));
           }
 
           return this.getDiaryData();
@@ -87,6 +68,44 @@ export class DiaryService {
         this.focusedMeal = 0;
       }
     });
+  }
+
+  private readonly url = environment.baseUrl + 'diary/';
+
+  private readonly diarySubject$ = new BehaviorSubject<Diary>(undefined);
+  public readonly diary$ = this.diarySubject$.asObservable();
+
+  private readonly state$ = new BehaviorSubject<DiaryEntryDto>(undefined);
+
+  public focusedMeal = 0;
+
+  private pDateUrl: string;
+
+  private pDate: Date;
+
+  // public static parseURLDate();
+
+  public static toDateUrl(date: Date): string {
+    return `${date.getFullYear()}-${DiaryService.padDate(
+      date.getMonth() + 1
+    )}-${DiaryService.padDate(date.getDate())}`;
+  }
+
+  private static padDate(monthOrDay: number) {
+    return monthOrDay < 10 ? '0' + monthOrDay : monthOrDay;
+  }
+
+  /**
+   * Native date parsing is chaotic and likely to be tied to browsers implementations
+   */
+  public static parseUrl(urlString: string): Date {
+    const dateParts = urlString.split('-').map(Number);
+    return new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+  }
+
+  private setDate(date: Date) {
+    this.pDate = date;
+    this.pDateUrl = DiaryService.toDateUrl(date);
   }
 
   getRecordedPortions(mealId: number): number {

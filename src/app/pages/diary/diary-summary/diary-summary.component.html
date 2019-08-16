@@ -1,6 +1,10 @@
 <div class="full-height">
   <app-toolbar>
-    <a>{{date | date:'longDate'}}</a>
+    <a class="date-selection" (click)="picker.open()">{{date | date:'longDate'}}
+      <input class="hidden-date-input" [matDatepicker]="picker" [formControl]="dateInput">
+      <mat-datepicker-toggle [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </a>
 
     <section desktop-actions>
       <button *ngIf="diary" mat-raised-button color="warn" (click)="deleteAll()">

@@ -24,3 +24,12 @@ mat-sidenav {
   font-size: 120%;
   padding: 16px;
 }
+
+.hidden-date-input {
+  width: 0;
+  height: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  visibility: hidden;
+}

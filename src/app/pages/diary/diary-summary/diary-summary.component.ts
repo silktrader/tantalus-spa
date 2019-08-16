@@ -27,6 +27,7 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
   public columns: ReadonlyArray<string> = ['Calories', 'Macronutrients'];
   public columnSelector = new FormControl();
   public readonly commentTextarea = new FormControl();
+  public readonly dateInput = new FormControl();
 
   private readonly subscription: Subscription = new Subscription();
 
@@ -68,6 +69,7 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.ds.diary$.subscribe(diary => {
         this.diary = diary;
+        this.dateInput.setValue(this.ds.date);
 
         if (diary === undefined) {
           this.commentTextarea.reset();
@@ -86,6 +88,12 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
       this.columnSelector.valueChanges.subscribe(value => (this.focus = value))
     );
     this.columnSelector.setValue(this.columns[0]);
+
+    this.dateInput.valueChanges.subscribe((date: Date) => {
+      if (date !== this.ds.date) {
+        this.ui.goToDate(date);
+      }
+    });
   }
 
   ngOnDestroy() {

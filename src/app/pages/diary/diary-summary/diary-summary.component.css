@@ -191,3 +191,23 @@ mat-card.no-meals {
 
 .add-portion {
 }
+
+.date-selection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hidden-date-input {
+  width: 0;
+  height: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  visibility: hidden;
+}
+
+mat-datepicker-toggle {
+  margin-left: 1rem;
+  color: white;
+}

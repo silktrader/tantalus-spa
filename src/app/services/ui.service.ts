@@ -6,6 +6,7 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
 import { Diary } from '../models/diary.model';
+import { DiaryService } from './diary.service';
 
 export enum Breakpoints {
   mobile = '(max-width: 959px)',
@@ -172,6 +173,10 @@ export class UiService {
 
   public goToToday() {
     this.router.navigate(['/diary/today']);
+  }
+
+  public goToDate(date: Date) {
+    this.router.navigate(['diary', DiaryService.toDateUrl(date)]);
   }
 
   public goToFoods() {
