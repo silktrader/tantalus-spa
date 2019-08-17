@@ -83,8 +83,6 @@ export class DiaryService {
 
   private pDate: Date;
 
-  // public static parseURLDate();
-
   public static toDateUrl(date: Date): string {
     return `${date.getFullYear()}-${DiaryService.padDate(
       date.getMonth() + 1

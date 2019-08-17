@@ -12,7 +12,7 @@ export class Food extends FoodDto implements IPortion {
   }
 
   get calories(): number {
-    return this.proteins * 4 + this.carbs * 4 + this.fats * 9;
+    return this.proteins * 4 + this.carbs * 4 + this.fats * 9 + this.alcohol * 7;
   }
 
   get proteinsPercentage(): number {
@@ -37,6 +37,7 @@ export class Food extends FoodDto implements IPortion {
     return definedProperties / Food.detailProperties.length;
   }
 
+  // tk use mapper
   get deserialised(): FoodDto {
     return this.data;
   }

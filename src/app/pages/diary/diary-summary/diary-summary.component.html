@@ -123,7 +123,7 @@
       <section class="macro-chart">
         <ng-container *ngIf="diary">
           <h3>Macronutrients</h3>
-          <canvas baseChart [data]="macroChartsData" [labels]="macroChartsLabels" chartType="pie"
+          <canvas baseChart [data]="macroChart.data" [labels]="macroChart.labels" chartType="pie"
             [options]="macroChartsOptions">
           </canvas>
         </ng-container>

@@ -52,8 +52,7 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
     }
   };
 
-  public macroChartsData: Array<number> = [];
-  public macroChartsLabels: Array<string> = ['Proteins', 'Carbs', 'Fats'];
+  public macroChart: { data: ReadonlyArray<number>; labels: ReadonlyArray<string> };
 
   constructor(
     private ds: DiaryService,
@@ -79,7 +78,7 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
         this.commentTextarea.reset(diary.comment);
 
         // populate chart data, tk here? what about mobile?
-        this.macroChartsData = this.fetchMacroChartData();
+        this.macroChart = this.calculateMacroChart();
       })
     );
 
@@ -100,16 +99,25 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  private fetchMacroChartData(): Array<number> {
+  private calculateMacroChart(): { data: ReadonlyArray<number>; labels: ReadonlyArray<string> } {
     const data = [0, 0, 0];
+    const labels = [FoodProp.proteins, FoodProp.carbs, FoodProp.fats];
+    let alcohol = 0;
     for (const meal of this.diary.meals.values()) {
       for (const portion of meal) {
-        data[0] += portion.getTotalProperty(FoodProp.proteins);
-        data[1] += portion.getTotalProperty(FoodProp.carbs);
-        data[2] += portion.getTotalProperty(FoodProp.fats);
+        data[0] += portion.getTotalProperty(labels[0]);
+        data[1] += portion.getTotalProperty(labels[1]);
+        data[2] += portion.getTotalProperty(labels[2]);
+        alcohol += portion.getTotalProperty(FoodProp.alcohol);
       }
     }
-    return data;
+
+    // add alcohol variable only when relevant
+    if (alcohol > 0) {
+      data.push(alcohol);
+      labels.push(FoodProp.alcohol);
+    }
+    return { data, labels };
   }
 
   public get date(): Date {
