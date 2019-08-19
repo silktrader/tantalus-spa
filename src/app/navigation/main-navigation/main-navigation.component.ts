@@ -64,9 +64,7 @@ export class MainNavigationComponent implements OnInit, OnDestroy {
 
     this.subscription.add(
       this.dateInput.valueChanges.subscribe((date: Date) => {
-        if (date !== this.ds.date) {
           this.ui.goToDate(date);
-        }
       })
     );
   }

@@ -6,3 +6,4 @@
 * [ ] fill name when entering new food from "Create" button
 * remove reference to date when changing, deleting portions
 * look into using one observable for breakpoints thanks to enums
+* prevent creation of foods with equal or similar name

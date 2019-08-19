@@ -123,9 +123,33 @@
       <section class="macro-chart">
         <ng-container *ngIf="diary">
           <h3>Macronutrients</h3>
-          <canvas baseChart [data]="macroChart.data" [labels]="macroChart.labels" chartType="pie"
-            [options]="macroChartsOptions">
-          </canvas>
+          <ngx-charts-pie-chart [results]="macroData.grams" [labels]="false" [legend]="false" [legendPosition]="'below'"
+            [legendTitle]="''">
+            <ng-template #tooltipTemplate let-model="model">
+              <h3 class="tooltip-name">
+                {{ model.name }}
+              </h3>
+              <h4>{{ model.value | number:'1.0-0'}} g.</h4>
+            </ng-template>
+          </ngx-charts-pie-chart>
+          <ngx-charts-pie-chart [results]="macroData.calories" [labels]="false" [legend]="false"
+            [legendPosition]="'below'" [legendTitle]="''">
+            <ng-template #tooltipTemplate let-model="model">
+              <h3 class="tooltip-name">
+                {{ model.name }}
+              </h3>
+              <h4>{{ model.value | number:'1.0-0'}} kcal.</h4>
+            </ng-template>
+          </ngx-charts-pie-chart>
+          <ngx-charts-pie-chart [results]="macroData.meals" [labels]="false" [legend]="false" [legendPosition]="'below'"
+            [legendTitle]="''">
+            <ng-template #tooltipTemplate let-model="model">
+              <h3 class="tooltip-name">
+                {{ model.name }}
+              </h3>
+              <h4>{{ model.value | number:'1.0-0'}} kcal.</h4>
+            </ng-template>
+          </ngx-charts-pie-chart>
         </ng-container>
       </section>
 

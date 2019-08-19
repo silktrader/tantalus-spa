@@ -25,9 +25,9 @@ import { AddRecipePortionsComponent } from './pages/recipes/add-recipe-portions/
 import { EditPortionDialogComponent } from './pages/diary/edit-portion-dialog/edit-portion-dialog.component';
 import { QuantityEditorComponent } from './ui/quantity-editor/quantity-editor.component';
 import { FocusThenSelectDirective } from './directives/focus-then-select.directive';
-import { ChartsModule } from 'ng2-charts';
 import { AddPortionDialogComponent } from './pages/diary/add-portion-dialog/add-portion-dialog.component';
 import { NoticeComponent } from './ui/notice/notice.component';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 @NgModule({
   declarations: [
@@ -58,7 +58,7 @@ import { NoticeComponent } from './ui/notice/notice.component';
     HttpClientModule,
     MaterialModule,
     AppRoutingModule,
-    ChartsModule
+    NgxChartsModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

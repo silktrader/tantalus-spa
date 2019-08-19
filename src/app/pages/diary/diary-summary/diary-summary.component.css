@@ -211,3 +211,7 @@ mat-datepicker-toggle {
   margin-left: 1rem;
   color: white;
 }
+
+.tooltip-name {
+  text-transform: capitalize;
+}

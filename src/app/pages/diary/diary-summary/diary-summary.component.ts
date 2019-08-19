@@ -8,12 +8,16 @@ import { DiaryService } from 'src/app/services/diary.service';
 import { EditPortionDialogComponent } from '../edit-portion-dialog/edit-portion-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Portion } from 'src/app/models/portion.model';
-import { ChartOptions } from 'chart.js';
 import { AddPortionDialogComponent } from '../add-portion-dialog/add-portion-dialog.component';
 import { FoodsService } from 'src/app/services/foods.service';
 import { PortionAddDto } from 'src/app/models/portion-add-dto.model';
 import { DtoMapper } from 'src/app/services/dto-mapper';
 import { FoodProp } from 'src/app/models/food-prop.model';
+
+export interface NgxChartEntry {
+  name: string;
+  value: number;
+}
 
 @Component({
   selector: 'app-diary-summary',
@@ -31,28 +35,11 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
 
   private readonly subscription: Subscription = new Subscription();
 
-  // tk create chart details class
-  public readonly macroChartsOptions: Readonly<ChartOptions> = {
-    responsive: false,
-    legend: {
-      display: true,
-      position: 'bottom',
-      labels: {
-        fontFamily: '\'Roboto\', \'sans-serif\'',
-        usePointStyle: true
-      }
-    },
-    plugins: {
-      datalabels: {
-        formatter: (value, ctx) => {
-          const label = ctx.chart.data.labels[ctx.dataIndex];
-          return label;
-        }
-      }
-    }
-  };
-
-  public macroChart: { data: ReadonlyArray<number>; labels: ReadonlyArray<string> };
+  public macroData: {
+    grams: ReadonlyArray<NgxChartEntry>;
+    calories: ReadonlyArray<NgxChartEntry>;
+    meals: ReadonlyArray<NgxChartEntry>;
+  } = { grams: [], calories: [], meals: [] };
 
   constructor(
     private ds: DiaryService,
@@ -78,7 +65,7 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
         this.commentTextarea.reset(diary.comment);
 
         // populate chart data, tk here? what about mobile?
-        this.macroChart = this.calculateMacroChart();
+        this.macroData = this.calculateMacroChart();
       })
     );
 
@@ -97,27 +84,6 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
-  }
-
-  private calculateMacroChart(): { data: ReadonlyArray<number>; labels: ReadonlyArray<string> } {
-    const data = [0, 0, 0];
-    const labels = [FoodProp.proteins, FoodProp.carbs, FoodProp.fats];
-    let alcohol = 0;
-    for (const meal of this.diary.meals.values()) {
-      for (const portion of meal) {
-        data[0] += portion.getTotalProperty(labels[0]);
-        data[1] += portion.getTotalProperty(labels[1]);
-        data[2] += portion.getTotalProperty(labels[2]);
-        alcohol += portion.getTotalProperty(FoodProp.alcohol);
-      }
-    }
-
-    // add alcohol variable only when relevant
-    if (alcohol > 0) {
-      data.push(alcohol);
-      labels.push(FoodProp.alcohol);
-    }
-    return { data, labels };
   }
 
   public get date(): Date {
@@ -197,5 +163,52 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
         () => this.ui.notify(`Edited comment`),
         error => this.ui.notify(`Couldn't edit comment ${error}`)
       );
+  }
+
+  private calculateMacroChart(): {
+    grams: Array<NgxChartEntry>;
+    calories: Array<NgxChartEntry>;
+    meals: Array<NgxChartEntry>;
+  } {
+    const gramsData: Array<NgxChartEntry> = [];
+    const caloriesData: Array<NgxChartEntry> = [];
+    const mealsData: Array<NgxChartEntry> = [];
+
+    for (const kvp of Diary.mealTypes) {
+      mealsData.push({ name: kvp[1], value: kvp[0] });
+    }
+
+    // establish relevant macronutrients
+    const macros = [FoodProp.proteins, FoodProp.carbs, FoodProp.fats, FoodProp.alcohol];
+    const kcalMultipliers = [4, 4, 9, 7];
+
+    // initialise the data arrays
+    for (const macro of macros) {
+      gramsData.push({ name: macro, value: 0 });
+      caloriesData.push({ name: macro, value: 0 });
+    }
+
+    // establish macronutrients aggregates in grams
+    for (let meal = 0; meal < this.diary.meals.size; meal++) {
+      let totalCalories = 0;
+      for (const portion of this.diary.meals.get(meal)) {
+        for (let m = 0; m < macros.length; m++) {
+          const grams = portion.getTotalProperty(macros[m]);
+          gramsData[m].value += grams;
+
+          const calories = grams * kcalMultipliers[m];
+          caloriesData[m].value += calories;
+          totalCalories += calories;
+        }
+      }
+      mealsData[meal].value = totalCalories;
+    }
+
+    // compute calories aggregates
+    for (let m = 0; m < macros.length; m++) {
+      caloriesData[m].value = gramsData[m].value * kcalMultipliers[m];
+    }
+
+    return { grams: gramsData, calories: caloriesData, meals: mealsData };
   }
 }
