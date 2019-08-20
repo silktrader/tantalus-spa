@@ -19,7 +19,11 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.app.json",
             "assets": ["src/favicon.ico", "src/assets", "src/web.config"],
-            "styles": ["src/styles.css", "node_modules/font-awesome/css/font-awesome.css"],
+            "styles": [
+              "src/styles.css",
+              "node_modules/font-awesome/css/font-awesome.css",
+              "src/tantalus-dark.scss"
+            ],
             "scripts": [],
             "es5BrowserSupport": true
           },

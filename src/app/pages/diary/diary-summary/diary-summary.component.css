@@ -102,22 +102,22 @@ mat-expansion-panel {
 }
 
 .calories {
-  color: #673ab7;
+  /* color: #673ab7; */
 }
 
 .proteins {
   /* color: #916965; */
-  color: #673ab7;
+  /* color: #673ab7; */
 }
 
 .carbs {
   /* color:#F2DC6F; */
-  color: #673ab7;
+  /* color: #673ab7; */
 }
 
 .fats {
   /* color:#928D87; */
-  color: #673ab7;
+  /* color: #673ab7; */
 }
 
 mat-list-item a {

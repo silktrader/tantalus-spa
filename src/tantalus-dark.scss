@@ -1,0 +1,14 @@
+@import '~@angular/material/theming';
+@include mat-core();
+
+$tantalus-dark-primary: mat-palette($mat-teal, 200);
+$tantalus-dark-accent: mat-palette($mat-yellow, 200);
+$tantalus-dark-warn: mat-palette($mat-red, 200);
+
+$tantalus-dark-theme: mat-dark-theme(
+  $tantalus-dark-primary,
+  $tantalus-dark-accent,
+  $tantalus-dark-warn
+);
+
+@include angular-material-theme($tantalus-dark-theme);

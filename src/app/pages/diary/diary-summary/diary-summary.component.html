@@ -103,9 +103,9 @@
             <mat-action-row>
               <button mat-button color="warn" (click)="deletePortions(kvp.value)"
                 [disabled]="diary.recordedMeals(kvp.key) == 0">
-                Remove All
+                Remove Meal
               </button>
-              <button mat-button color="primary" (click)="addPortion(kvp.key)">
+              <button mat-button color="accent" (click)="addPortion(kvp.key)">
                 Add Portions
               </button>
             </mat-action-row>
