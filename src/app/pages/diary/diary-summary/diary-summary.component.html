@@ -122,34 +122,29 @@
 
       <section class="macro-chart">
         <ng-container *ngIf="diary">
-          <h3>Macronutrients</h3>
-          <ngx-charts-pie-chart [results]="macroData.grams" [labels]="false" [legend]="false" [legendPosition]="'below'"
-            [legendTitle]="''">
-            <ng-template #tooltipTemplate let-model="model">
-              <h3 class="tooltip-name">
-                {{ model.name }}
-              </h3>
-              <h4>{{ model.value | number:'1.0-0'}} g.</h4>
-            </ng-template>
-          </ngx-charts-pie-chart>
-          <ngx-charts-pie-chart [results]="macroData.calories" [labels]="false" [legend]="false"
-            [legendPosition]="'below'" [legendTitle]="''">
-            <ng-template #tooltipTemplate let-model="model">
-              <h3 class="tooltip-name">
-                {{ model.name }}
-              </h3>
-              <h4>{{ model.value | number:'1.0-0'}} kcal.</h4>
-            </ng-template>
-          </ngx-charts-pie-chart>
-          <ngx-charts-pie-chart [results]="macroData.meals" [labels]="false" [legend]="false" [legendPosition]="'below'"
-            [legendTitle]="''">
-            <ng-template #tooltipTemplate let-model="model">
-              <h3 class="tooltip-name">
-                {{ model.name }}
-              </h3>
-              <h4>{{ model.value | number:'1.0-0'}} kcal.</h4>
-            </ng-template>
-          </ngx-charts-pie-chart>
+          <h4 class="chart-title">Calories per macronutrient</h4>
+          <section class="chart">
+            <ngx-charts-pie-chart [results]="macroData.calories" [labels]="false" [legend]="false"
+              [legendPosition]="'below'" [legendTitle]="''" [doughnut]="true" [arcWidth]="0.6" [scheme]="macroColours">
+              <ng-template #tooltipTemplate let-model="model">
+                <h3 class="tooltip-name">
+                  {{ model.name }}
+                </h3>
+                <h4>{{ model.value | number:'1.0-0'}} kcal.</h4>
+              </ng-template>
+            </ngx-charts-pie-chart>
+            <div class="chart-overlay">
+              <span class="doughnut-overlay">{{diary.calories | number:'1.0-0'}} <em>kcal</em></span>
+            </div>
+          </section>
+
+          <h4 class="chart-title">Calories distribution across meals</h4>
+          <section class="chart">
+            <ngx-charts-bar-vertical-stacked class="vertical-bar-chart" [results]="macroData.meals" [barPadding]="10"
+              [scheme]="macroColours" [noBarWhenZero]="true" [xAxis]="true" [yAxis]="false" [showGridLines]="false"
+              [showXAxisLabel]="true" [showYAxisLabel]="false">
+            </ngx-charts-bar-vertical-stacked>
+          </section>
         </ng-container>
       </section>
 

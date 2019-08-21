@@ -36,10 +36,15 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
   private readonly subscription: Subscription = new Subscription();
 
   public macroData: {
-    grams: ReadonlyArray<NgxChartEntry>;
     calories: ReadonlyArray<NgxChartEntry>;
-    meals: ReadonlyArray<NgxChartEntry>;
-  } = { grams: [], calories: [], meals: [] };
+    meals: ReadonlyArray<{ name: string; series: Array<NgxChartEntry> }>;
+  } = { calories: [], meals: [] };
+
+  public macroColours = {
+    // domain: ['#e57373', '#ffd54f', '#a1887f', '#78909c'] warm colours
+    // domain: ['#81c784', '#64b5f6', '#f06292', '#78909c'] cool colours
+    domain: ['#64b5f6', '#ffd54f', '#e57373']
+  };
 
   constructor(
     private ds: DiaryService,
@@ -166,49 +171,38 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
   }
 
   private calculateMacroChart(): {
-    grams: Array<NgxChartEntry>;
     calories: Array<NgxChartEntry>;
-    meals: Array<NgxChartEntry>;
+    meals: Array<{ name: string; series: Array<NgxChartEntry> }>;
   } {
-    const gramsData: Array<NgxChartEntry> = [];
-    const caloriesData: Array<NgxChartEntry> = [];
-    const mealsData: Array<NgxChartEntry> = [];
-
-    for (const kvp of Diary.mealTypes) {
-      mealsData.push({ name: kvp[1], value: kvp[0] });
-    }
-
     // establish relevant macronutrients
     const macros = [FoodProp.proteins, FoodProp.carbs, FoodProp.fats, FoodProp.alcohol];
     const kcalMultipliers = [4, 4, 9, 7];
 
-    // initialise the data arrays
-    for (const macro of macros) {
-      gramsData.push({ name: macro, value: 0 });
-      caloriesData.push({ name: macro, value: 0 });
+    const mealsData: Array<{ name: string; series: Array<NgxChartEntry> }> = [];
+
+    for (const kvp of Diary.mealTypes) {
+      const series = [];
+      for (const macro of macros) {
+        series.push({ name: macro, value: 0 });
+      }
+      mealsData.push({ name: kvp[1], series });
     }
+
+    const caloriesData: Array<NgxChartEntry> = macros.map(macro => ({ name: macro, value: 0 }));
 
     // establish macronutrients aggregates in grams
     for (let meal = 0; meal < this.diary.meals.size; meal++) {
       let totalCalories = 0;
       for (const portion of this.diary.meals.get(meal)) {
         for (let m = 0; m < macros.length; m++) {
-          const grams = portion.getTotalProperty(macros[m]);
-          gramsData[m].value += grams;
-
-          const calories = grams * kcalMultipliers[m];
+          const calories = portion.getTotalProperty(macros[m]) * kcalMultipliers[m];
           caloriesData[m].value += calories;
           totalCalories += calories;
+          mealsData[meal].series[m].value += calories;
         }
       }
-      mealsData[meal].value = totalCalories;
     }
 
-    // compute calories aggregates
-    for (let m = 0; m < macros.length; m++) {
-      caloriesData[m].value = gramsData[m].value * kcalMultipliers[m];
-    }
-
-    return { grams: gramsData, calories: caloriesData, meals: mealsData };
+    return { calories: caloriesData, meals: mealsData };
   }
 }
