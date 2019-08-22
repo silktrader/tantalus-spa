@@ -167,7 +167,7 @@ export class DiaryService {
   }
 
   public changePortion(dto: PortionDto): Observable<PortionDto> {
-    return this.http.put<PortionDto>(`${this.url}${this.dateUrl}/${dto.id}`, dto).pipe(
+    return this.http.put<PortionDto>(`${this.url}portions/${dto.id}`, dto).pipe(
       map(responseDto => {
         // create a new portion array and substitute the relevant entry
         const portions = this.state.portions.map(portion =>

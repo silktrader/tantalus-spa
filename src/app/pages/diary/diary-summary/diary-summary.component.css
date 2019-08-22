@@ -101,25 +101,6 @@ mat-expansion-panel {
   flex-basis: 33.3%;
 }
 
-.calories {
-  /* color: #673ab7; */
-}
-
-.proteins {
-  /* color: #916965; */
-  /* color: #673ab7; */
-}
-
-.carbs {
-  /* color:#F2DC6F; */
-  /* color: #673ab7; */
-}
-
-.fats {
-  /* color:#928D87; */
-  /* color: #673ab7; */
-}
-
 mat-list-item a {
   display: flex;
   width: 100%;
@@ -197,7 +178,6 @@ mat-card.no-meals {
   text-align: center;
   font-weight: 500;
   font-style: italic;
-  margin: 0;
 }
 
 .chart-overlay {
@@ -223,9 +203,6 @@ mat-card.no-meals {
   fill: white;
 }
 
-.add-portion {
-}
-
 .date-selection {
   display: flex;
   justify-content: center;
@@ -243,7 +220,7 @@ mat-card.no-meals {
 
 mat-datepicker-toggle {
   margin-left: 1rem;
-  color: white;
+  color: rgba(0, 0, 0, 0.8);
 }
 
 .tooltip-name {
