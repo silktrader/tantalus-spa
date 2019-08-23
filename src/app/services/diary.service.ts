@@ -13,14 +13,24 @@ import { DtoMapper } from './dto-mapper';
 
 @Injectable()
 export class DiaryService {
+  private baseUrl: string;
+
+  private readonly diarySubject$ = new BehaviorSubject<Diary>(undefined);
+  public readonly diary$ = this.diarySubject$.asObservable();
+
+  private readonly state$ = new BehaviorSubject<DiaryEntryDto>(undefined);
+
+  public focusedMeal = 0;
+
+  // tslint:disable-next-line: variable-name
+  private _date: Date;
+
   public get state(): Readonly<DiaryEntryDto> {
     return this.state$.getValue();
   }
-  private get dateUrl(): string {
-    return this.pDateUrl;
-  }
+
   public get date(): Date {
-    return this.pDate;
+    return this._date;
   }
 
   constructor(private http: HttpClient, private route: ActivatedRoute, private mapper: DtoMapper) {
@@ -70,19 +80,6 @@ export class DiaryService {
     });
   }
 
-  private readonly url = environment.baseUrl + 'diary/';
-
-  private readonly diarySubject$ = new BehaviorSubject<Diary>(undefined);
-  public readonly diary$ = this.diarySubject$.asObservable();
-
-  private readonly state$ = new BehaviorSubject<DiaryEntryDto>(undefined);
-
-  public focusedMeal = 0;
-
-  private pDateUrl: string;
-
-  private pDate: Date;
-
   public static toDateUrl(date: Date): string {
     return `${date.getFullYear()}-${DiaryService.padDate(
       date.getMonth() + 1
@@ -102,8 +99,8 @@ export class DiaryService {
   }
 
   private setDate(date: Date) {
-    this.pDate = date;
-    this.pDateUrl = DiaryService.toDateUrl(date);
+    this._date = date;
+    this.baseUrl = environment.baseUrl + 'diary/' + DiaryService.toDateUrl(date);
   }
 
   getRecordedPortions(mealId: number): number {
@@ -114,7 +111,7 @@ export class DiaryService {
   }
 
   private getDiaryData(): Observable<DiaryEntryDto> {
-    return this.http.get<DiaryEntryDto>(`${this.url}${this.dateUrl}`);
+    return this.http.get<DiaryEntryDto>(this.baseUrl);
   }
 
   /** Adds one portion and returns the server provided DTO; acts as a proxy of `addPortions` */
@@ -142,10 +139,7 @@ export class DiaryService {
   /** Adds multiple portions when subscribed to and updates the diary with the new additions. */
   public addPortions(portionDtos: PortionAddDto[]): Observable<PortionDto[]> {
     return this.http
-      .post<{ portions: PortionDto[]; foods: FoodDto[] }>(
-        `${this.url}${this.dateUrl}/portions`,
-        portionDtos
-      )
+      .post<{ portions: PortionDto[]; foods: FoodDto[] }>(this.baseUrl + '/portions', portionDtos)
       .pipe(
         map(response => {
           // the first portions of a new diary don't need to be added to a previous state
@@ -167,7 +161,7 @@ export class DiaryService {
   }
 
   public changePortion(dto: PortionDto): Observable<PortionDto> {
-    return this.http.put<PortionDto>(`${this.url}portions/${dto.id}`, dto).pipe(
+    return this.http.put<PortionDto>(this.baseUrl + '/portions/' + dto.id, dto).pipe(
       map(responseDto => {
         // create a new portion array and substitute the relevant entry
         const portions = this.state.portions.map(portion =>
@@ -187,7 +181,7 @@ export class DiaryService {
       params = params.append('ids', id.toString());
     }
 
-    return this.http.delete<void>(this.url + 'portions', { params }).pipe(
+    return this.http.delete<void>(this.baseUrl + '/portions', { params }).pipe(
       tap(() => {
         const portions = this.state.portions.filter(portion => !ids.includes(portion.id));
         this.state$.next({ ...this.state, portions });
@@ -200,29 +194,25 @@ export class DiaryService {
   }
 
   public editComment(comment: string): Observable<string> {
-    return this.http
-      .post<{ comment: string }>(`${this.url}${this.dateUrl}/comment`, { comment })
-      .pipe(
-        map(response => {
-          // update the state with the latest comments, or add an empty state when required
-          this.state$.next({
-            ...(this.state$.value || { portions: [], foods: [] }),
-            comment: response.comment
-          });
+    return this.http.post<{ comment: string }>(this.baseUrl + ' /comment', { comment }).pipe(
+      map(response => {
+        // update the state with the latest comments, or add an empty state when required
+        this.state$.next({
+          ...(this.state$.value || { portions: [], foods: [] }),
+          comment: response.comment
+        });
 
-          return response.comment;
-        })
-      );
+        return response.comment;
+      })
+    );
   }
 
   public deleteDiary(): Observable<void> {
-    return this.http
-      .delete<void>(`${this.url}${this.dateUrl}`)
-      .pipe(tap(() => this.state$.next(undefined)));
+    return this.http.delete<void>(this.baseUrl).pipe(tap(() => this.state$.next(undefined)));
   }
 
   public restoreDiary(dto: DiaryEntryPostDto): Observable<DiaryEntryDto> {
-    return this.http.post<DiaryEntryDto>(`${this.url}${this.dateUrl}`, dto).pipe(
+    return this.http.post<DiaryEntryDto>(this.baseUrl, dto).pipe(
       map(responseDto => {
         this.state$.next(responseDto);
         return responseDto;
