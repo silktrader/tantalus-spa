@@ -26,6 +26,7 @@ export class SelectPortionComponent implements OnInit, OnDestroy {
   });
 
   public diary: Diary;
+  public readonly date = this.ds.date;
 
   private subscription = new Subscription();
 
@@ -33,7 +34,7 @@ export class SelectPortionComponent implements OnInit, OnDestroy {
 
   constructor(
     private fs: FoodsService,
-    public ds: DiaryService,
+    private ds: DiaryService,
     private ui: UiService,
     private route: ActivatedRoute,
     private router: Router

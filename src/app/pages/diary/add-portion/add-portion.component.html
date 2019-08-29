@@ -66,8 +66,7 @@
     </section>
 
     <section class="meals-controls">
-      <mat-button-toggle-group [vertical]="true" class="meal-toggle-group" [value]="ds.focusedMeal"
-        [formControl]="mealSelector" required>
+      <mat-button-toggle-group [vertical]="true" class="meal-toggle-group" [formControl]="mealSelector" required>
         <mat-button-toggle class="meal-toggle" *ngFor="let kvp of mealTypes | keyvalue" [value]="kvp.key">
           <span [matBadge]="diary?.recordedMeals(kvp.key)" matBadgeOverlap="false"
             matBadgeSize="medium">{{kvp.value}}</span>

@@ -1,7 +1,11 @@
-<app-toolbar>
-  <a routerLink="../" routerLinkActive="active">{{ds.date | date:'longDate'}}</a>
-  <a>Select Food</a>
-</app-toolbar>
+<mat-toolbar color="primary">
+  <button mat-icon-button (click)="back()">
+    <mat-icon>
+      close
+    </mat-icon>
+  </button>
+  <span class="toolbar-title">Select Food or Recipe</span>
+</mat-toolbar>
 
 <form class="inputs" [formGroup]="filterForm">
   <mat-form-field class="search">
@@ -36,11 +40,9 @@
         <mat-icon class="search-item-icon" matListIcon>list</mat-icon>
       </ng-template>
       <span class="search-item-name">{{portion.name}}</span>
-      <span class="search-item-calories">{{portion.calories | number:'1.0-0'}}</span>
+      <span class="search-item-calories">{{portion.calories | number:'1.0-0'}} kcal.</span>
     </a>
   </mat-nav-list>
-
-  <mat-divider></mat-divider>
 
   <section class="no-results" *ngIf="filteredFoods.length === 0 && searchBox.value !== ''">
     <span class="no-results-message"><b>{{searchBox.value}}</b> not found</span>

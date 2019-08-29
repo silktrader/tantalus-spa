@@ -5,3 +5,4 @@
 * look into using one observable for breakpoints thanks to enums
 * prevent creation of foods with equal or similar name
 * map Food and its DTO
+* calculate how many results fit in the selection, don't return more than can be displayed

@@ -1,7 +1,18 @@
+mat-toolbar {
+  justify-content: baseline;
+}
+
+.toolbar-title {
+  flex: 1 1 auto;
+  text-align: center;
+}
+
 .inputs {
   display: flex;
-  justify-content: space-around;
   width: 100%;
+  margin: 0.5rem;
+  flex-direction: column;
+  align-items: center;
 }
 
 .search {
@@ -22,24 +33,26 @@
 }
 
 .search-item-icon {
-  margin-left: 5%;
-  flex-basis: 10%;
+  width: 1rem;
+  margin-right: 0.5rem;
 }
 
 .search-item-name {
-  font-weight: bold;
-  flex-basis: 60%;
-  /* border-bottom: 1px solid rgba(0,0,0,.12) */
+  font-weight: 500;
+  flex-grow: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .search-item-calories {
-  font-weight: 500;
+  flex-grow: 0;
+  width: 4rem;
   font-style: italic;
-  flex-basis: 20%;
+  font-size: 80%;
+  color: gray;
   justify-content: flex-end;
   text-align: right;
-  margin-right: 5%;
-  color: #673ab7;
 }
 
 .search-items:hover {

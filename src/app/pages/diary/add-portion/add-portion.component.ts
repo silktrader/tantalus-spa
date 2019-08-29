@@ -24,14 +24,13 @@ export class AddPortionComponent implements OnInit, OnDestroy {
   public previewedPortion: Portion;
 
   public mealSelector = new FormControl(undefined);
-
   public quantityInput = new FormControl(100, [Validators.required, PortionValidators.quantity]);
 
   constructor(
     private route: ActivatedRoute,
-    public ds: DiaryService,
+    private ds: DiaryService,
     private fs: FoodsService,
-    public ui: UiService
+    private ui: UiService
   ) {}
 
   ngOnInit() {
