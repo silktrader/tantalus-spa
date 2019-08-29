@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Params } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
-import { Subscription } from 'rxjs';
+import { Subscription, of } from 'rxjs';
 import { Food } from 'src/app/models/food.model';
 import { Portion } from 'src/app/models/portion.model';
 import { DiaryService } from 'src/app/services/diary.service';
@@ -23,8 +23,6 @@ export class AddPortionComponent implements OnInit, OnDestroy {
   public food: Food;
   public previewedPortion: Portion;
 
-  public loaded = true;
-
   public mealSelector = new FormControl(undefined);
 
   public quantityInput = new FormControl(100, [Validators.required, PortionValidators.quantity]);
@@ -37,20 +35,31 @@ export class AddPortionComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    // attempt to read the selected meal from the state, else fall back on the last used meal
+    const meal =
+      history.state && Number.isInteger(history.state.meal)
+        ? history.state.meal
+        : this.ds.focusedMeal;
+    this.mealSelector.setValue(meal);
+
     this.subscription = this.route.params
       .pipe(
         switchMap((params: Params) => {
-          const foodID = params.foodID;
-          return this.fs.getFood(foodID);
+          // check whether a food was passed to the route; must create food from serialised data
+          if (history.state && history.state.food) {
+            return of(new Food(history.state.food.data));
+          }
+
+          return this.fs.getFood(params.foodID);
         })
       )
-      .subscribe(food => {
+      .subscribe((food: Food) => {
         if (food === undefined) {
           this.back();
           return;
         }
 
-        this.previewedPortion = new Portion(undefined, 100, food, 0);
+        this.previewedPortion = new Portion(undefined, 100, food, meal);
         this.food = food;
       });
 
@@ -67,13 +76,6 @@ export class AddPortionComponent implements OnInit, OnDestroy {
         );
       })
     );
-
-    // attempt to read the selected meal from the state, else fall back on the last used meal
-    const meal =
-      history.state && Number.isInteger(history.state.meal)
-        ? history.state.meal
-        : this.ds.focusedMeal;
-    this.mealSelector.setValue(meal);
   }
 
   ngOnDestroy() {
@@ -85,7 +87,7 @@ export class AddPortionComponent implements OnInit, OnDestroy {
   }
 
   public get show(): boolean {
-    return this.loaded && this.food !== undefined;
+    return this.food !== undefined;
   }
 
   public get saveDisabled(): boolean {
@@ -99,17 +101,17 @@ export class AddPortionComponent implements OnInit, OnDestroy {
       quantity: this.quantityInput.value
     };
 
-    this.ds.addPortion(portionData).subscribe(
-      data => {
+    this.ds.addPortion(portionData).subscribe({
+      next: () => {
         this.back();
         this.ui.notify(`Added ${this.food.name}`, 'Undo', () => {
           // this.ds.removePortion(data);
         });
       },
-      error => {
+      error: () => {
         this.ui.warn(`Couldn't record ${this.food.name}`);
       }
-    );
+    });
   }
 
   public get mealTypes() {

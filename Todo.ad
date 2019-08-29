@@ -4,4 +4,4 @@
 * [ ] delete diary entry when last portion is remove and no comments remain
 * look into using one observable for breakpoints thanks to enums
 * prevent creation of foods with equal or similar name
-* in add-portion.component get the food from the route when possible
+* map Food and its DTO

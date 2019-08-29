@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { DiaryService } from 'src/app/services/diary.service';
@@ -96,7 +96,7 @@ export class SelectPortionComponent implements OnInit, OnDestroy {
     } else {
       this.router.navigate([selection.id], {
         relativeTo: this.route,
-        state: { meal: this.mealSelector.value }
+        state: { meal: this.mealSelector.value, food: selection }
       });
     }
   }
