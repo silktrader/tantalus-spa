@@ -23,8 +23,7 @@ export interface AddPortionDialogData {
 @Component({
   selector: 'app-add-portion-dialog',
   templateUrl: './add-portion-dialog.component.html',
-  styleUrls: ['./add-portion-dialog.component.css'],
-  providers: [DiaryService]
+  styleUrls: ['./add-portion-dialog.component.css']
 })
 export class AddPortionDialogComponent {
   @ViewChild(QuantityEditorComponent, { static: false })

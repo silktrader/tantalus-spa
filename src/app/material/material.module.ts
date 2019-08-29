@@ -26,6 +26,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatSortModule } from '@angular/material/sort';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatSliderModule } from '@angular/material/slider';
 
 @NgModule({
   declarations: [],
@@ -59,7 +60,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
     MatAutocompleteModule,
     MatProgressSpinnerModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatSliderModule
   ],
   exports: [
     MatFormFieldModule,
@@ -90,7 +92,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
     MatAutocompleteModule,
     MatProgressSpinnerModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatSliderModule
   ]
 })
 export class MaterialModule {}

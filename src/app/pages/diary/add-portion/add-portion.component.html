@@ -1,73 +1,80 @@
-<app-toolbar>
-  <a routerLink="../.." routerLinkActive="active">{{ds.date | date:'longDate'}}</a>
-  <a routerLink="../" routerLinkActive="active">Select Food</a>
-  <a>Add Portion</a>
-</app-toolbar>
+<section class="contents">
+  <mat-toolbar color="primary">
+    <button mat-icon-button (click)="back()">
+      <mat-icon>
+        close
+      </mat-icon>
+    </button>
+    <span class="toolbar-title">New Portion</span>
+    <button mat-icon-button (click)="save()" [disabled]="saveDisabled">
+      <mat-icon>done</mat-icon>
+    </button>
+  </mat-toolbar>
 
-<ng-container *ngIf="food !== undefined">
-  <mat-card>
-    <mat-card-header class="header">
-      <mat-card-title>
-        <section class="header">
-          <section class="header-left">
-            <button mat-icon-button>
-              <mat-icon>star_border</mat-icon>
-            </button>
-          </section>
-          <span class="header-title">{{food.name}}</span>
-          <section class="header-right">
-            <a mat-icon-button [routerLink]="[ '/food/', food.id]">
-              <mat-icon>edit</mat-icon>
-            </a>
-          </section>
-        </section>
-      </mat-card-title>
-    </mat-card-header>
-    <mat-card-content class="summary">
+  <ng-container *ngIf="show">
+    <section class="header">
+
+      <h3>{{food.name}}</h3>
+
+    </section>
+    <section class="summary">
       <section class="macronutrients">
         <div class="macronutrients-section">
-          <span class="macronutrients-number">{{previewedPortion.calories}}</span>
+          <span class="macronutrients-number">{{previewedPortion.calories | number:'1.0-0'}}</span>
           <span class="macronutrients-label">Calories</span>
         </div>
         <div class="macronutrients-section">
-          <span class="macronutrients-number">{{previewedPortion.proteins}}</span>
+          <span class="macronutrients-number">{{previewedPortion.proteins | number:'1.0-0'}}</span>
           <span class="macronutrients-label">Proteins</span>
         </div>
         <div class="macronutrients-section">
-          <span class="macronutrients-number">{{previewedPortion.carbs}}</span>
+          <span class="macronutrients-number">{{previewedPortion.carbs | number:'1.0-0'}}</span>
           <span class="macronutrients-label">Carbs</span>
         </div>
         <div class="macronutrients-section">
-          <span class="macronutrients-number">{{previewedPortion.fats}}</span>
+          <span class="macronutrients-number">{{previewedPortion.fats | number:'1.0-0'}}</span>
           <span class="macronutrients-label">Fats</span>
         </div>
       </section>
+    </section>
 
-      <section class="inputs">
-        <mat-form-field class="quantity" [formGroup]="portionForm">
-          <section>
-            <input class="quantity-editor" matInput type="number" autocomplete="off" formControlName="quantity" />
-            <span matSuffix class="quantity-unit">grams</span>
-            <mat-error>{{quantityError}}</mat-error>
-          </section>
+    <section class="inputs">
+      <section class="quantity-inputs">
 
-        </mat-form-field>
+        <section class="quantity-inputs-controls">
+          <button mat-icon-button color="primary" (click)="addGrams(-1)">
+            <mat-icon>remove_circle</mat-icon>
+          </button>
+          <mat-form-field appearance="outline" class="quantity-input">
+            <mat-label>grams</mat-label>
+            <input matInput type="number" [formControl]="quantityInput">
+            <mat-error *ngIf="quantityInput.invalid">{{quantityError}}</mat-error>
+          </mat-form-field>
+          <button mat-icon-button color="primary" (click)="addGrams(1)">
+            <mat-icon>add_circle</mat-icon>
+          </button>
+        </section>
 
-        <mat-button-toggle-group class="meal-toggle-group" [value]="ds.focusedMeal" [formControl]="mealSelector"
-          required>
-          <mat-button-toggle class="meal-toggle" *ngFor="let kvp of mealTypes | keyvalue" [value]="kvp.key">
-            <span [matBadge]="diary?.recordedMeals(kvp.key)" matBadgeOverlap="false"
-              matBadgeSize="medium">{{kvp.value}}</span>
-          </mat-button-toggle>
-        </mat-button-toggle-group>
-
+        <section class="quantity-inputs-shortcuts">
+          <button mat-flat-button (click)="quantityInput.setValue(0)">0</button>
+          <button mat-flat-button (click)="addGrams(10)">+10</button>
+          <button mat-flat-button (click)="addGrams(50)">+50</button>
+          <button mat-flat-button (click)="addGrams(100)">+100</button>
+        </section>
+        <!-- <mat-error *ngIf="hasQuantityError">{{quantityEditor.error}}</mat-error> -->
       </section>
+    </section>
 
-      <section class="buttons">
-        <button type="submit" (click)="save()" color="primary" mat-raised-button [disabled]="saveDisabled">Save</button>
-      </section>
-    </mat-card-content>
+    <section class="meals-controls">
+      <mat-button-toggle-group [vertical]="true" class="meal-toggle-group" [value]="ds.focusedMeal"
+        [formControl]="mealSelector" required>
+        <mat-button-toggle class="meal-toggle" *ngFor="let kvp of mealTypes | keyvalue" [value]="kvp.key">
+          <span [matBadge]="diary?.recordedMeals(kvp.key)" matBadgeOverlap="false"
+            matBadgeSize="medium">{{kvp.value}}</span>
+        </mat-button-toggle>
+      </mat-button-toggle-group>
 
+    </section>
 
-  </mat-card>
-</ng-container>
+  </ng-container>
+</section>

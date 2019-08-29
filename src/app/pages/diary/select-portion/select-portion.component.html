@@ -44,6 +44,6 @@
 
   <section class="no-results" *ngIf="filteredFoods.length === 0 && searchBox.value !== ''">
     <span class="no-results-message"><b>{{searchBox.value}}</b> not found</span>
-    <button mat-raised-button color="primary" (click)="startFoodCreation()">Create</button>
+    <button mat-raised-button color="accent" (click)="startFoodCreation()">Create</button>
   </section>
 </ng-container>

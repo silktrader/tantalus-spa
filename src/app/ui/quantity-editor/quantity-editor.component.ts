@@ -13,6 +13,7 @@ export class QuantityEditorComponent implements AfterViewInit {
   public input = new FormControl(undefined, [Validators.required, PortionValidators.quantity]);
 
   @ViewChild(MatInput, { static: false }) matInput: MatInput;
+
   @Input() readonly initialValue: number;
 
   private disabledState: boolean;

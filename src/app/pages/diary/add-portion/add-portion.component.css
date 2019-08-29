@@ -1,63 +1,102 @@
-mat-card {
-  margin: 3%;
+.contents {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
 }
 
-::ng-deep .mat-card-header-text {
-  width: 100%;
+mat-toolbar {
+  justify-content: baseline;
+}
+
+.toolbar-title {
+  flex: 1 1 auto;
+  text-align: center;
 }
 
 .header {
   display: flex;
-  width: 100%;
+  flex-grow: 0;
+  height: 5rem;
   justify-content: center;
-  align-items: center;
-}
-
-.header-left {
-  display: flex;
-  flex-basis: 25%;
-  align-items: center;
-  justify-content: flex-start;
-}
-
-.header-title {
-  flex-basis: 50%;
-  align-items: center;
-  text-align: center;
-}
-
-.header-right {
-  display: flex;
-  flex-basis: 25%;
-  align-items: center;
-  justify-content: flex-end;
 }
 
 .summary {
-  width: 100%;
+  display: flex;
+  flex-grow: 2;
+  min-height: 10rem;
 }
 
 .inputs {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  align-items: center;
+}
+
+.meal-selector {
+  width: 12ch;
+}
+
+.quantity-inputs-controls {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+}
+
+.quantity-inputs {
   width: 100%;
+  height: 8rem;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.quantity {
-  width: 10ch;
+.quantity-input {
+  width: 5rem;
 }
 
-.quantity-editor {
-  width: 5ch;
+/* Customisations of the input field */
+
+input {
+  text-align: center;
 }
 
-.quantity-unit {
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+/* nasty hack to fix the vertical alignment of the mat-label */
+::ng-deep mat-form-field .mat-form-field-infix {
+  bottom: 0.25em !important;
+}
+
+/* another nasty hack to fix cropping of letters */
+::ng-deep mat-form-field .mat-form-field-label {
   font-style: italic;
+  height: 133.33%;
 }
 
-.meal-selector {
-  width: 12ch;
+.quantity-inputs-shortcuts {
+  width: 80%;
+  max-width: 20rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.quantity-inputs-shortcuts button {
+  width: 3rem;
+}
+
+mat-error {
+  font-size: 80%;
+  text-align: center;
+  font-style: italic;
 }
 
 .macronutrients {
@@ -85,16 +124,15 @@ mat-card {
   font-style: italic;
 }
 
-.buttons {
-  width: 100%;
+.meals-controls {
   display: flex;
-  justify-content: space-around;
-  align-items: baseline;
-  margin-top: 10%;
+  flex-grow: 0;
+  margin-bottom: 2rem;
+  justify-content: center;
 }
 
 .meal-toggle-group {
-  width: 90%;
+  width: 10rem;
 }
 
 .meal-toggle {

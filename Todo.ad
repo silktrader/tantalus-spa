@@ -2,6 +2,6 @@
 
 * [ ] update nutrients data in preview when editing portions
 * [ ] delete diary entry when last portion is remove and no comments remain
-* check whether portion is owned by user
 * look into using one observable for breakpoints thanks to enums
 * prevent creation of foods with equal or similar name
+* in add-portion.component get the food from the route when possible
