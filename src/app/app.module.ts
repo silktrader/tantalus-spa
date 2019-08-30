@@ -16,9 +16,8 @@ import { MainNavigationComponent } from './navigation/main-navigation/main-navig
 import { UnauthorisedErrorInterceptor } from './services/unauthorised-error.interceptor.ts.service';
 import { DiaryComponent } from './pages/diary/diary.component';
 import { DiarySummaryComponent } from './pages/diary/diary-summary/diary-summary.component';
-import { AddPortionComponent } from './pages/diary/add-portion/add-portion.component';
+import { EditPortionFullscreenComponent } from './pages/diary/edit-portion-fullscreen/edit-portion-fullscreen.component';
 import { SelectPortionComponent } from './pages/diary/select-portion/select-portion.component';
-import { EditPortionComponent } from './pages/diary/edit-portion/edit-portion.component';
 import { RecipesSummaryComponent } from './pages/recipes/recipe-summary/recipes-summary.component';
 import { EditRecipeComponent } from './pages/recipes/edit-recipe/edit-recipe.component';
 import { AddRecipePortionsComponent } from './pages/recipes/add-recipe-portions/add-recipe-portions.component';
@@ -40,9 +39,8 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
     MainNavigationComponent,
     DiaryComponent,
     DiarySummaryComponent,
-    AddPortionComponent,
+    EditPortionFullscreenComponent,
     SelectPortionComponent,
-    EditPortionComponent,
     RecipesSummaryComponent,
     EditRecipeComponent,
     AddRecipePortionsComponent,

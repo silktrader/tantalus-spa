@@ -8,7 +8,7 @@ import { FoodsComponent } from './pages/foods/foods.component';
 import { EditFoodComponent } from './pages/edit-food/edit-food.component';
 import { DiaryComponent } from './pages/diary/diary.component';
 import { DiarySummaryComponent } from './pages/diary/diary-summary/diary-summary.component';
-import { AddPortionComponent } from './pages/diary/add-portion/add-portion.component';
+import { EditPortionFullscreenComponent } from './pages/diary/edit-portion-fullscreen/edit-portion-fullscreen.component';
 import { SelectPortionComponent } from './pages/diary/select-portion/select-portion.component';
 import { EditPortionComponent } from './pages/diary/edit-portion/edit-portion.component';
 import { RecipesSummaryComponent } from './pages/recipes/recipe-summary/recipes-summary.component';
@@ -25,9 +25,9 @@ const routes: Routes = [
     children: [
       { path: '', component: DiarySummaryComponent },
       { path: 'add-portion', component: SelectPortionComponent },
-      { path: 'add-portion/:foodID', component: AddPortionComponent },
+      { path: 'add-portion/:foodID', component: EditPortionFullscreenComponent },
       { path: 'add-recipe/:recipeId', component: AddRecipePortionsComponent },
-      { path: ':portionId', component: EditPortionComponent }
+      { path: ':portionId', component: EditPortionFullscreenComponent }
     ]
   },
   {

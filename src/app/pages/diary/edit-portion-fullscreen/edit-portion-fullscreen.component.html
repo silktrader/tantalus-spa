@@ -5,16 +5,41 @@
         close
       </mat-icon>
     </button>
-    <span class="toolbar-title">New Portion</span>
-    <button mat-icon-button (click)="save()" [disabled]="saveDisabled">
-      <mat-icon>done</mat-icon>
-    </button>
+
+    <ng-container *ngIf="addingNewPortion; else editPortionTitle">
+      <span class="toolbar-title">New Portion</span>
+      <button mat-icon-button (click)="save()" [disabled]="saveDisabled">
+        <mat-icon>done</mat-icon>
+      </button>
+    </ng-container>
+
+    <ng-template #editPortionTitle>
+      <span class="toolbar-title">Edit Portion</span>
+      <button mat-icon-button (click)="change()" [disabled]="saveDisabled">
+        <mat-icon>done</mat-icon>
+      </button>
+      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions Menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="undo()" [disabled]="undoDisabled">
+          <mat-icon>undo</mat-icon>
+          <span>Undo Changes</span>
+        </button>
+        <button mat-menu-item (click)="delete()">
+          <mat-icon>delete</mat-icon>
+          <span>Delete Portion</span>
+        </button>
+      </mat-menu>
+    </ng-template>
+
   </mat-toolbar>
 
   <ng-container *ngIf="show">
     <section class="header">
 
-      <h3>{{food.name}}</h3>
+      <h3>{{previewedPortion.food.name}}</h3>
 
     </section>
     <section class="summary">
