@@ -24,7 +24,7 @@ mat-toolbar {
 .summary {
   display: flex;
   flex-direction: column;
-  flex-grow: 2;
+  flex-grow: 1;
   align-items: center;
   width: 100%;
 }

@@ -21,17 +21,17 @@
     <mat-nav-list>
       <!-- routerLink is needed in concomitance with anchors to allow keyboard navigation with tab -->
       <h3 mat-subheader>Diary</h3>
-      <a mat-list-item routerLink="/diary/yesterday" cdkFocusRegionStart>
+      <a mat-list-item routerLink="/diary/yesterday" (click)="navigateAway()" cdkFocusRegionStart>
         <mat-icon mat-list-icon>calendar_today</mat-icon>
         <h4 mat-line>Yesterday</h4>
         <p mat-line>{{ yesterday | date }}</p>
       </a>
-      <a mat-list-item routerLink="/diary/today" cdkFocusInitial>
+      <a mat-list-item routerLink="/diary/today" (click)="navigateAway()" cdkFocusInitial>
         <mat-icon mat-list-icon>today</mat-icon>
         <h4 mat-line>Today</h4>
         <p mat-line>{{ today | date }}</p>
       </a>
-      <a mat-list-item routerLink="/diary/tomorrow">
+      <a mat-list-item routerLink="/diary/tomorrow" (click)="navigateAway()">
         <mat-icon mat-list-icon>calendar_today</mat-icon>
         <h4 mat-line>Tomorrow</h4>
         <p mat-line>{{ tomorrow | date }}</p>
@@ -46,11 +46,11 @@
 
       <mat-divider></mat-divider>
       <h3 mat-subheader>Tables</h3>
-      <a mat-list-item routerLink="/foods" routerLinkActive="active">
+      <a mat-list-item routerLink="/foods" (click)="navigateAway()">
         <mat-icon mat-list-icon>table_chart</mat-icon>
         <h4 mat-line>Foods</h4>
       </a>
-      <a mat-list-item routerLink="/recipes" cdkFocusRegionEnd>
+      <a mat-list-item routerLink="/recipes" (click)="navigateAway()" cdkFocusRegionEnd>
         <mat-icon mat-list-icon>table_chart</mat-icon>
         <h4 mat-line>Recipes</h4>
       </a>

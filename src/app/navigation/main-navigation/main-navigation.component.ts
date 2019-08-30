@@ -64,7 +64,8 @@ export class MainNavigationComponent implements OnInit, OnDestroy {
 
     this.subscription.add(
       this.dateInput.valueChanges.subscribe((date: Date) => {
-          this.ui.goToDate(date);
+        this.ui.goToDate(date);
+        this.navigateAway();
       })
     );
   }
@@ -109,5 +110,11 @@ export class MainNavigationComponent implements OnInit, OnDestroy {
   public handleLogout(): void {
     this.auth.logout();
     this.ui.goLogin();
+  }
+
+  public navigateAway(): void {
+    if (this.ui.isMobile) {
+      this.ui.closeSidenav();
+    }
   }
 }
