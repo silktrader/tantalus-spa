@@ -24,6 +24,10 @@ export class Portion {
     return (this.food.calories * this.quantity) / 100;
   }
 
+  get alcohol(): number {
+    return (this.food.alcohol * this.quantity) / 100;
+  }
+
   public getTotalProperty(property: string): number {
     return (this.food[property] * this.quantity) / 100;
   }

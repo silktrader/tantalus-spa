@@ -7,6 +7,8 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
 import { Diary } from '../models/diary.model';
 import { DiaryService } from './diary.service';
+import { FoodProp } from '../models/food-prop.model';
+import { ChartsConfiguration } from '../ui/ChartsConfiguration';
 
 export enum Breakpoints {
   mobile = '(max-width: 959px)',
@@ -19,6 +21,16 @@ export enum ActionNames {
 
 @Injectable({ providedIn: 'root' })
 export class UiService {
+  // domain: ['#e57373', '#ffd54f', '#a1887f', '#78909c'] warm colours
+  // domain: ['#81c784', '#64b5f6', '#f06292', '#78909c'] cool colours
+  public readonly colours = new Map<string, string>([
+    [FoodProp.proteins, '#64b5f6'],
+    [FoodProp.carbs, '#ffd54f'],
+    [FoodProp.fats, '#e57373']
+  ]);
+
+  public readonly chartsConfiguration = new ChartsConfiguration();
+
   constructor(
     private router: Router,
     private snackBar: MatSnackBar,
@@ -34,6 +46,12 @@ export class UiService {
       this.mobileSubject.next(result.breakpoints[Breakpoints.mobile]);
       this.desktopSubject.next(result.breakpoints[Breakpoints.desktop]);
     });
+
+    this.chartsConfiguration.setMacronutrientsScheme(
+      this.colours.get(FoodProp.proteins),
+      this.colours.get(FoodProp.carbs),
+      this.colours.get(FoodProp.fats)
+    );
   }
 
   public get sidenavOpened(): boolean {

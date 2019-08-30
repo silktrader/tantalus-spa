@@ -11,6 +11,8 @@ import { UiService } from 'src/app/services/ui.service';
 import { Diary } from 'src/app/models/diary.model';
 import { PortionAddDto } from 'src/app/models/portion-add-dto.model';
 import { PortionValidators } from 'src/app/validators/portion-quantity.validator';
+import { NgxChartEntry } from '../diary-summary/diary-summary.component';
+import { FoodProp } from 'src/app/models/food-prop.model';
 
 @Component({
   selector: 'app-add-portion',
@@ -25,6 +27,8 @@ export class AddPortionComponent implements OnInit, OnDestroy {
 
   public mealSelector = new FormControl(undefined);
   public quantityInput = new FormControl(100, [Validators.required, PortionValidators.quantity]);
+
+  public chartData: { calories: ReadonlyArray<NgxChartEntry> };
 
   constructor(
     private route: ActivatedRoute,
@@ -59,6 +63,9 @@ export class AddPortionComponent implements OnInit, OnDestroy {
         }
 
         this.previewedPortion = new Portion(undefined, 100, food, meal);
+        this.chartData = this.getChartData();
+
+        // assign food last to trigger the display of all related informations
         this.food = food;
       });
 
@@ -73,6 +80,7 @@ export class AddPortionComponent implements OnInit, OnDestroy {
           this.food,
           this.mealSelector.value
         );
+        this.chartData = this.getChartData();
       })
     );
   }
@@ -123,5 +131,20 @@ export class AddPortionComponent implements OnInit, OnDestroy {
 
   public addGrams(quantity: number) {
     this.quantityInput.setValue(this.quantityInput.value + quantity);
+  }
+
+  public getChartData(): { calories: Array<NgxChartEntry> } {
+    return {
+      calories: [
+        { name: FoodProp.proteins, value: this.previewedPortion.proteins },
+        { name: FoodProp.carbs, value: this.previewedPortion.carbs },
+        { name: FoodProp.fats, value: this.previewedPortion.fats },
+        { name: FoodProp.alcohol, value: this.previewedPortion.alcohol }
+      ]
+    };
+  }
+
+  public get macronutrientsScheme() {
+    return this.ui.chartsConfiguration.macronutrientsScheme;
   }
 }

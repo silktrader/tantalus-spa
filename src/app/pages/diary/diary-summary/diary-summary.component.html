@@ -125,7 +125,8 @@
           <h4 class="chart-title">Calories per macronutrient</h4>
           <section class="chart">
             <ngx-charts-pie-chart [results]="macroData.calories" [labels]="false" [legend]="false"
-              [legendPosition]="'below'" [legendTitle]="''" [doughnut]="true" [arcWidth]="0.6" [scheme]="macroColours">
+              [legendPosition]="'below'" [legendTitle]="''" [doughnut]="true" [arcWidth]="0.6"
+              [scheme]="macronutrientsScheme">
               <ng-template #tooltipTemplate let-model="model">
                 <h3 class="tooltip-name">
                   {{ model.name }}
@@ -141,8 +142,8 @@
           <h4 class="chart-title">Calories distribution across meals</h4>
           <section class="chart">
             <ngx-charts-bar-vertical-stacked class="vertical-bar-chart" [results]="macroData.meals" [barPadding]="10"
-              [scheme]="macroColours" [noBarWhenZero]="true" [xAxis]="true" [yAxis]="false" [showGridLines]="false"
-              [showXAxisLabel]="true" [showYAxisLabel]="false">
+              [scheme]="macronutrientsScheme" [noBarWhenZero]="true" [xAxis]="true" [yAxis]="false"
+              [showGridLines]="false" [showXAxisLabel]="true" [showYAxisLabel]="false">
             </ngx-charts-bar-vertical-stacked>
           </section>
         </ng-container>

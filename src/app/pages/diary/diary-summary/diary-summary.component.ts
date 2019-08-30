@@ -40,12 +40,6 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
     meals: ReadonlyArray<{ name: string; series: Array<NgxChartEntry> }>;
   } = { calories: [], meals: [] };
 
-  public macroColours = {
-    // domain: ['#e57373', '#ffd54f', '#a1887f', '#78909c'] warm colours
-    // domain: ['#81c784', '#64b5f6', '#f06292', '#78909c'] cool colours
-    domain: ['#64b5f6', '#ffd54f', '#e57373']
-  };
-
   constructor(
     private ds: DiaryService,
     private fs: FoodsService,
@@ -204,5 +198,9 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
     }
 
     return { calories: caloriesData, meals: mealsData };
+  }
+
+  public get macronutrientsScheme() {
+    return this.ui.chartsConfiguration.macronutrientsScheme;
   }
 }
