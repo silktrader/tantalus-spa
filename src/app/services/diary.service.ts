@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 import { switchMap, map, tap } from 'rxjs/operators';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { PortionDto } from '../models/portion-dto.model';
@@ -15,19 +15,16 @@ import { DtoMapper } from './dto-mapper';
 export class DiaryService {
   private baseUrl: string;
 
-  private readonly diarySubject$ = new BehaviorSubject<Diary>(undefined);
+  private readonly diarySubject$ = new ReplaySubject<Diary>(1);
   public readonly diary$ = this.diarySubject$.asObservable();
 
-  private readonly state$ = new BehaviorSubject<DiaryEntryDto>(undefined);
+  private readonly state$ = new ReplaySubject<DiaryEntryDto>(1);
+  public state: Readonly<DiaryEntryDto>; // tk expose as readonly
 
   public focusedMeal = 0;
 
   // tslint:disable-next-line: variable-name
   private _date: Date;
-
-  public get state(): Readonly<DiaryEntryDto> {
-    return this.state$.getValue();
-  }
 
   public get date(): Date {
     return this._date;
@@ -70,10 +67,14 @@ export class DiaryService {
 
     // any time a new state is acquired a new diary is created
     this.state$.subscribe(state => {
+      this.state = state;
       if (state) {
-        this.diarySubject$.next(this.mapper.mapDiary(state));
-        this.focusedMeal = this.diarySubject$.value.latestMeal;
+        const diary = this.mapper.mapDiary(state);
+        this.diarySubject$.next(diary);
+        // tk rename getLatestMeal()?
+        this.focusedMeal = diary.latestMeal;
       } else {
+        // tk handle this better
         this.diarySubject$.next(undefined);
         this.focusedMeal = 0;
       }
@@ -101,13 +102,6 @@ export class DiaryService {
   private setDate(date: Date) {
     this._date = date;
     this.baseUrl = environment.baseUrl + 'diary/' + DiaryService.toDateUrl(date);
-  }
-
-  getRecordedPortions(mealId: number): number {
-    if (this.diarySubject$.value === undefined) {
-      return 0;
-    }
-    return this.diarySubject$.value.recordedMeals(mealId);
   }
 
   private getDiaryData(): Observable<DiaryEntryDto> {
@@ -198,7 +192,7 @@ export class DiaryService {
       map(response => {
         // update the state with the latest comments, or add an empty state when required
         this.state$.next({
-          ...(this.state$.value || { portions: [], foods: [] }),
+          ...(this.state || { portions: [], foods: [] }),
           comment: response.comment
         });
 

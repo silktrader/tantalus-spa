@@ -4,6 +4,11 @@ mat-expansion-panel {
   margin-bottom: 1.5rem;
 }
 
+.loading-notice {
+  font-style: italic;
+  margin: auto;
+}
+
 .container {
   display: flex;
   flex: 1 1 auto;

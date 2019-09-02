@@ -7,3 +7,6 @@
 * map Food and its DTO
 * calculate how many results fit in the selection, don't return more than can be displayed
 * enable undo for new portions added
+* allow recipes deletion
+* clean up mobile add recipe dialog
+* group calories and macros in desktop summary

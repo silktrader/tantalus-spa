@@ -35,6 +35,8 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
 
   private readonly subscription: Subscription = new Subscription();
 
+  public loading = true;
+
   public macroData: {
     calories: ReadonlyArray<NgxChartEntry>;
     meals: ReadonlyArray<{ name: string; series: Array<NgxChartEntry> }>;
@@ -53,18 +55,17 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.subscription.add(
       this.ds.diary$.subscribe(diary => {
+        this.loading = true;
         this.diary = diary;
         this.dateInput.setValue(this.ds.date);
 
-        if (diary === undefined) {
-          this.commentTextarea.reset();
-          return;
+        if (diary) {
+          this.commentTextarea.reset(diary.comment);
+          this.macroData = this.calculateMacroChart();
         }
 
-        this.commentTextarea.reset(diary.comment);
-
         // populate chart data, tk here? what about mobile?
-        this.macroData = this.calculateMacroChart();
+        this.loading = false;
       })
     );
 
