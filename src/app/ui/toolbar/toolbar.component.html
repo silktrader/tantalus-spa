@@ -4,13 +4,15 @@
       <mat-icon>menu</mat-icon>
     </button>
   </section>
+
   <section class="toolbar-title">
-    <ng-content slot="a" select="a"></ng-content>
-    <ng-content select="span"></ng-content>
+    <ng-content select="[title]"></ng-content>
+    <ng-content *ngIf="isDesktop" select="[desktop-title]"></ng-content>
+    <ng-content *ngIf="isMobile" select="[mobile-title]"></ng-content>
   </section>
+
   <section class="toolbar-actions">
-    <ng-content *ngIf="ui.isDesktop" select="[desktop-actions]"></ng-content>
-    <ng-content *ngIf="ui.isMobile" select="[mobile-actions]"></ng-content>
-    <ng-content select="button"></ng-content>
+    <ng-content *ngIf="isDesktop" select="[desktop-actions]"></ng-content>
+    <ng-content *ngIf="isMobile" select="[mobile-actions]"></ng-content>
   </section>
 </mat-toolbar>

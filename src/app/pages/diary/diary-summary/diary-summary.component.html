@@ -1,10 +1,15 @@
 <div class="full-height">
   <app-toolbar>
-    <a class="date-selection" (click)="picker.open()">{{date | date:'longDate'}}
+    <h4 desktop-title class="date-selection" (click)="picker.open()">{{date | date:'longDate'}}
       <input class="hidden-date-input" [matDatepicker]="picker" [formControl]="dateInput">
       <mat-datepicker-toggle [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
-    </a>
+    </h4>
+
+    <h4 mobile-title (click)="picker.open()">{{date | date:'longDate'}}
+      <input class="hidden-date-input" [matDatepicker]="mobilePicker" [formControl]="dateInput">
+      <mat-datepicker #mobilePicker></mat-datepicker>
+    </h4>
 
     <section desktop-actions>
       <button *ngIf="diary" mat-raised-button color="warn" (click)="deleteAll()">
@@ -19,6 +24,16 @@
       <button mat-icon-button (click)="addPortion()">
         <mat-icon>add</mat-icon>
       </button>
+      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions Menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="deleteAll()">
+          <mat-icon>delete</mat-icon>
+          <span>Delete All</span>
+        </button>
+      </mat-menu>
     </section>
 
   </app-toolbar>

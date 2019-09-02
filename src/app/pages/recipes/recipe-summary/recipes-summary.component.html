@@ -1,8 +1,17 @@
 <app-toolbar>
-  <a>All Recipes</a>
-  <button mat-icon-button (click)="addNewRecipe()">
-    <mat-icon>add</mat-icon>
-  </button>
+  <h4 title>Recipes</h4>
+
+  <section desktop-actions>
+    <button mat-raised-button color="accent" (click)="addNewRecipe()">
+      Add Recipe
+    </button>
+  </section>
+
+  <section mobile-actions>
+    <button mat-icon-button (click)="addNewRecipe()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </section>
 </app-toolbar>
 
 <mat-progress-spinner class="spinner" *ngIf="dataSource.loading$ | async" mode="intedeterminate"></mat-progress-spinner>

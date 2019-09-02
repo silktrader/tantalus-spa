@@ -1,8 +1,17 @@
 <app-toolbar>
-  <a>All Foods</a>
-  <button mat-icon-button (click)="ui.goToAddFood()">
-    <mat-icon>add</mat-icon>
-  </button>
+  <h4 title>Foods</h4>
+
+  <section desktop-actions>
+    <button mat-raised-button color="accent" (click)="ui.goToAddFood()">
+      Add Food
+    </button>
+  </section>
+
+  <section mobile-actions>
+    <button mat-icon-button (click)="ui.goToAddFood()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </section>
 </app-toolbar>
 
 <section class="container">

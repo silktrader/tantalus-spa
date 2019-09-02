@@ -9,11 +9,19 @@ import { UiService } from 'src/app/services/ui.service';
 export class ToolbarComponent implements OnInit {
   private ready = false;
 
-  constructor(public ui: UiService) {}
+  constructor(private ui: UiService) {}
 
   ngOnInit() {
     // usual nasty hack to avoid expression changes errors
     setTimeout(() => (this.ready = true), 0);
+  }
+
+  public get isMobile(): boolean {
+    return this.ui.isMobile;
+  }
+
+  public get isDesktop(): boolean {
+    return this.ui.isDesktop;
   }
 
   public get isSidenavOpen() {

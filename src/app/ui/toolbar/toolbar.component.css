@@ -8,11 +8,12 @@
 
 .toolbar-actions {
   flex: 2 1 0;
+  display: flex;
+  justify-content: flex-end;
 }
 
-::ng-deep .toolbar-actions button {
+::ng-deep [desktop-actions] button {
   margin-left: 1rem;
-  margin-right: 1rem;
 }
 
 .toolbar-title {
