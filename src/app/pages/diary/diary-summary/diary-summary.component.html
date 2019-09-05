@@ -75,6 +75,10 @@
                   <span class="mat-caption header-macro-label">Fats</span>
                   <span>{{diary.fats | number:'1.0-0'}}</span>
                 </section>
+                <section class="header-macro-column">
+                  <span class="mat-caption header-macro-label">Calories</span>
+                  <span>{{diary.calories | number:'1.0-0'}}</span>
+                </section>
               </section>
             </ng-container>
 
@@ -99,6 +103,8 @@
                       class="meal-header-macro carbs">{{diary.getMealProperty(kvp.key, 'carbs') | number:'1.0-0'}}</span>
                     <span
                       class="meal-header-macro fats">{{diary.getMealProperty(kvp.key, 'fats') | number:'1.0-0'}}</span>
+                    <span
+                      class="meal-header-macro">{{diary.getMealProperty(kvp.key, 'calories') | number:'1.0-0'}}</span>
                   </span>
                   <span *ngIf="focus == 'Calories'" class="meal-header-aggregate calories">{{diary.getMealProperty(kvp.key, 'calories') |
             number:'1.0-0'}}</span>
@@ -112,9 +118,13 @@
                       <span class="portion-header-quantity mat-caption">{{portion.quantity | number:'1.0-0'}} g.</span>
                     </span>
                     <span *ngIf="focus == 'Macronutrients'" class="portion-column mat-body-1">
-                      <span class="portion-macro">{{portion.proteins | number:'1.0-0'}}</span>
-                      <span class="portion-macro">{{portion.carbs | number:'1.0-0'}}</span>
-                      <span class="portion-macro">{{portion.fats | number:'1.0-0'}}</span>
+                      <span class="portion-macro"
+                        [ngClass]="{'proteins': settings.useMacroColours}">{{portion.proteins | number:'1.0-0'}}</span>
+                      <span class="portion-macro"
+                        [ngClass]="{'carbs': settings.useMacroColours}">{{portion.carbs | number:'1.0-0'}}</span>
+                      <span class="portion-macro"
+                        [ngClass]="{'fats': settings.useMacroColours}">{{portion.fats | number:'1.0-0'}}</span>
+                      <span class="portion-macro">{{portion.calories | number:'1.0-0'}}</span>
                     </span>
                     <span *ngIf="focus == 'Calories'" class="portion-column calories">{{portion.calories |
               number:'1.0-0'}}</span>

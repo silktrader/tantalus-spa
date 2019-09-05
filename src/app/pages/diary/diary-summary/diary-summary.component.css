@@ -231,3 +231,15 @@ mat-datepicker-toggle {
 .tooltip-name {
   text-transform: capitalize;
 }
+
+.carbs {
+  color: #ffd54f;
+}
+
+.proteins {
+  color: #64b5f6;
+}
+
+.fats {
+  color: #e57373;
+}

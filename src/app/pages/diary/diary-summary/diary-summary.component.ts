@@ -13,6 +13,7 @@ import { FoodsService } from 'src/app/services/foods.service';
 import { PortionAddDto } from 'src/app/models/portion-add-dto.model';
 import { DtoMapper } from 'src/app/services/dto-mapper';
 import { FoodProp } from 'src/app/models/food-prop.model';
+import { SettingsService, ISummarySettings } from 'src/app/services/settings.service';
 
 export interface NgxChartEntry {
   name: string;
@@ -36,6 +37,7 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
   private readonly subscription: Subscription = new Subscription();
 
   public loading = true;
+  public settings: ISummarySettings;
 
   public macroData: {
     calories: ReadonlyArray<NgxChartEntry>;
@@ -46,6 +48,7 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
     private ds: DiaryService,
     private fs: FoodsService,
     public ui: UiService,
+    private ss: SettingsService,
     private router: Router,
     private route: ActivatedRoute,
     private dialog: MatDialog,
@@ -79,6 +82,10 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
       if (date !== this.ds.date) {
         this.ui.goToDate(date);
       }
+    });
+
+    this.ss.summary$.subscribe(settings => {
+      this.settings = settings;
     });
   }
 
