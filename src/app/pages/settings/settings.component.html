@@ -1,0 +1,38 @@
+<app-toolbar>
+    <h4 title>Settings</h4>
+
+    <section desktop-actions>
+        <button mat-raised-button color="accent">
+            Reset Defaults
+        </button>
+    </section>
+
+    <section mobile-actions>
+        <button mat-icon-button>
+            <mat-icon>reset</mat-icon>
+        </button>
+    </section>
+</app-toolbar>
+
+<section class="settings">
+    <form [formGroup]="summaryGroup">
+        <h4 class="settings-header">Diary Summary</h4>
+        <section class="setting-item">
+            <div class="setting-label">
+                <h5 class="setting-label-title">Colour Macronutrients</h5>
+                <h6 class="setting-label-caption">Highlight protein, carbohydrates and fats aggregates with different
+                    colours</h6>
+            </div>
+            <mat-slide-toggle [color]="'primary'" formControlName="useMacroColours"></mat-slide-toggle>
+        </section>
+        <section class="setting-item">
+            <div class="setting-label">
+                <h5 class="setting-label-title">One Meal Focus</h5>
+                <h6 class="setting-label-caption">Collapse meals that aren't focused</h6>
+            </div>
+            <mat-slide-toggle [color]="'primary'" [checked]="false"></mat-slide-toggle>
+        </section>
+    </form>
+    <mat-divider></mat-divider>
+
+</section>

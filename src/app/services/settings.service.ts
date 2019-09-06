@@ -53,7 +53,7 @@ export class SettingsService {
   }
 
   public setSummary(settings: ISummarySettings) {
-    this.db.put('ui', settings);
+    this.db.put('ui', settings, 'summary');
     this.summarySubject$.next(settings);
   }
 }

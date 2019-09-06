@@ -1,0 +1,32 @@
+.settings {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  width: 20rem;
+}
+.settings-header {
+  margin-left: 0px;
+}
+
+.setting-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.setting-label {
+  flex: 1 1 auto;
+}
+
+.setting-label-title {
+  margin: 0;
+  margin-bottom: 0.5rem;
+}
+
+.setting-label-caption {
+  margin: 0;
+  font-weight: normal;
+  font-size: 80%;
+  font-style: italic;
+  color: gray;
+}

@@ -27,6 +27,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatSortModule } from '@angular/material/sort';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @NgModule({
   declarations: [],
@@ -61,7 +62,8 @@ import { MatSliderModule } from '@angular/material/slider';
     MatProgressSpinnerModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatSliderModule
+    MatSliderModule,
+    MatSlideToggleModule
   ],
   exports: [
     MatFormFieldModule,
@@ -93,7 +95,8 @@ import { MatSliderModule } from '@angular/material/slider';
     MatProgressSpinnerModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatSliderModule
+    MatSliderModule,
+    MatSlideToggleModule
   ]
 })
 export class MaterialModule {}

@@ -13,6 +13,7 @@ import { SelectPortionComponent } from './pages/diary/select-portion/select-port
 import { RecipesSummaryComponent } from './pages/recipes/recipe-summary/recipes-summary.component';
 import { EditRecipeComponent } from './pages/recipes/edit-recipe/edit-recipe.component';
 import { AddRecipePortionsComponent } from './pages/recipes/add-recipe-portions/add-recipe-portions.component';
+import { SettingsComponent } from './pages/settings/settings.component';
 
 const routes: Routes = [
   { path: 'login', component: AuthenticationComponent },
@@ -53,6 +54,11 @@ const routes: Routes = [
   {
     path: 'recipes/:id',
     component: EditRecipeComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'settings',
+    component: SettingsComponent,
     canActivate: [AuthGuard]
   }
   // { path: '**', redirectTo: 'dashboard' }

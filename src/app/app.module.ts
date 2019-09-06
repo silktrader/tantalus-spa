@@ -27,6 +27,7 @@ import { FocusThenSelectDirective } from './directives/focus-then-select.directi
 import { AddPortionDialogComponent } from './pages/diary/add-portion-dialog/add-portion-dialog.component';
 import { NoticeComponent } from './ui/notice/notice.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { SettingsComponent } from './pages/settings/settings.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
     QuantityEditorComponent,
     FocusThenSelectDirective,
     AddPortionDialogComponent,
-    NoticeComponent
+    NoticeComponent,
+    SettingsComponent
   ],
   imports: [
     BrowserModule,
