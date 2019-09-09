@@ -40,7 +40,7 @@
 
   <section class="container">
 
-    <section class="loading-notice" *ngIf="loading; else contents">
+    <section class="loading-notice" *ngIf="loading || (!settings); else contents">
       <h4>loading results</h4>
       <mat-spinner></mat-spinner>
     </section>
@@ -49,20 +49,27 @@
       <ng-container *ngIf="diary?.hasContents; else noMeals">
         <section class="portions-table" [ngClass]="{'table-desktop': ui.isDesktop, 'table-mobile': ui.isMobile}">
 
-          <!-- Header -->
+          <!-- Header and columns selection -->
           <section class="header">
             <section class="header-notes">
               <mat-form-field class="columns-selector">
                 <mat-select [formControl]="columnSelector" required>
-                  <mat-option *ngFor="let column of columns" [value]="column">{{column}}</mat-option>
+                  <ng-container *ngIf="ui.isDesktop; else mobileColumnSelector">
+                    <mat-option *ngFor="let column of desktopColumns | keyvalue" [value]="column.key">{{column.value}}
+                    </mat-option>
+                  </ng-container>
+                  <ng-template #mobileColumnSelector>
+                    <mat-option *ngFor="let column of mobileColumns | keyvalue" [value]="column.key">{{column.value}}
+                    </mat-option>
+                  </ng-template>
                 </mat-select>
               </mat-form-field>
             </section>
 
-            <!-- Macronutrients header -->
-            <ng-container *ngIf="focus == 'Macronutrients'">
+            <!-- Global headers -->
+            <ng-container [ngSwitch]="focus">
 
-              <section class="header-columns">
+              <section *ngSwitchCase="'MacroLong'" class="header-columns">
                 <section class="header-macro-column">
                   <span class="mat-caption header-macro-label">Prot.</span>
                   <span>{{diary.proteins | number:'1.0-0'}}</span>
@@ -80,44 +87,63 @@
                   <span>{{diary.calories | number:'1.0-0'}}</span>
                 </section>
               </section>
-            </ng-container>
 
-            <!-- Calories header -->
-            <ng-container *ngIf="focus == 'Calories'">
-              <section class="header-columns">
+              <section *ngSwitchCase="'MacroShort'" class="header-columns">
+                <section class="header-macro-column">
+                  <span class="mat-caption header-macro-label">Prot.</span>
+                  <span>{{diary.proteins | number:'1.0-0'}}</span>
+                </section>
+                <section class="header-macro-column">
+                  <span class="mat-caption header-macro-label">Carb.</span>
+                  <span>{{diary.carbs | number:'1.0-0'}}</span>
+                </section>
+                <section class="header-macro-column">
+                  <span class="mat-caption header-macro-label">Fats</span>
+                  <span>{{diary.fats | number:'1.0-0'}}</span>
+                </section>
+              </section>
+
+              <section *ngSwitchCase="'Calories'" class="header-columns">
                 <span class="meal-header-aggregate">{{diary.calories | number:'1.0-0'}}</span>
               </section>
+
             </ng-container>
+
           </section>
 
           <!-- Portions and columns -->
           <mat-accordion class="meals-container" multi="true">
             <mat-expansion-panel [expanded]="true" hideToggle *ngFor="let kvp of diary.meals | keyvalue">
+
+              <!-- Meal aggregates headers -->
               <mat-expansion-panel-header>
-                <span class="meal-header mat-subheading-2">
+                <span [ngSwitch]="focus" class="meal-header mat-subheading-2">
                   <span class="meal-header-title">{{diary.getMealName(kvp.key)}}</span>
-                  <span *ngIf="focus == 'Macronutrients'" class="meal-header-aggregate">
-                    <span
-                      class="meal-header-macro proteins">{{diary.getMealProperty(kvp.key, 'proteins') | number:'1.0-0'}}</span>
-                    <span
-                      class="meal-header-macro carbs">{{diary.getMealProperty(kvp.key, 'carbs') | number:'1.0-0'}}</span>
-                    <span
-                      class="meal-header-macro fats">{{diary.getMealProperty(kvp.key, 'fats') | number:'1.0-0'}}</span>
+                  <span *ngSwitchCase="'MacroLong'" class="meal-header-aggregate">
+                    <span class="meal-header-macro"
+                      [ngClass]="{'proteins': settings.useMacroColours}">{{diary.getMealProperty(kvp.key, 'proteins') | number:'1.0-0'}}</span>
+                    <span class="meal-header-macro"
+                      [ngClass]="{'carbs': settings.useMacroColours}">{{diary.getMealProperty(kvp.key, 'carbs') | number:'1.0-0'}}</span>
+                    <span class="meal-header-macro"
+                      [ngClass]="{'fats': settings.useMacroColours}">{{diary.getMealProperty(kvp.key, 'fats') | number:'1.0-0'}}</span>
                     <span
                       class="meal-header-macro">{{diary.getMealProperty(kvp.key, 'calories') | number:'1.0-0'}}</span>
                   </span>
-                  <span *ngIf="focus == 'Calories'" class="meal-header-aggregate calories">{{diary.getMealProperty(kvp.key, 'calories') |
+                  <span *ngSwitchCase="'Calories'" class="meal-header-aggregate calories">{{diary.getMealProperty(kvp.key, 'calories') |
             number:'1.0-0'}}</span>
                 </span>
               </mat-expansion-panel-header>
+
+              <!-- Columns listing portions values -->
               <mat-nav-list>
                 <mat-list-item class="portion" *ngFor="let portion of kvp.value">
-                  <a (click)="editPortion(portion)">
+                  <a [ngSwitch]="focus" (click)="editPortion(portion)">
                     <span class="portion-header">
                       <span class="mat-body-2">{{portion.food.name}}</span>
                       <span class="portion-header-quantity mat-caption">{{portion.quantity | number:'1.0-0'}} g.</span>
                     </span>
-                    <span *ngIf="focus == 'Macronutrients'" class="portion-column mat-body-1">
+
+                    <span *ngSwitchCase="'MacroLong'" class="portion-column mat-body-1">
                       <span class="portion-macro"
                         [ngClass]="{'proteins': settings.useMacroColours}">{{portion.proteins | number:'1.0-0'}}</span>
                       <span class="portion-macro"
@@ -126,8 +152,20 @@
                         [ngClass]="{'fats': settings.useMacroColours}">{{portion.fats | number:'1.0-0'}}</span>
                       <span class="portion-macro">{{portion.calories | number:'1.0-0'}}</span>
                     </span>
-                    <span *ngIf="focus == 'Calories'" class="portion-column calories">{{portion.calories |
+
+                    <!-- Mobile columns content -->
+                    <span *ngSwitchCase="'Calories'" class="portion-column calories">{{portion.calories |
               number:'1.0-0'}}</span>
+
+                    <span *ngSwitchCase="'MacroShort'" class="portion-column mat-body-1">
+                      <span class="portion-macro"
+                        [ngClass]="{'proteins': settings.useMacroColours}">{{portion.proteins | number:'1.0-0'}}</span>
+                      <span class="portion-macro"
+                        [ngClass]="{'carbs': settings.useMacroColours}">{{portion.carbs | number:'1.0-0'}}</span>
+                      <span class="portion-macro"
+                        [ngClass]="{'fats': settings.useMacroColours}">{{portion.fats | number:'1.0-0'}}</span>
+                    </span>
+
                   </a>
                 </mat-list-item>
               </mat-nav-list>

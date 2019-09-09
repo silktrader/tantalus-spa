@@ -29,7 +29,13 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
   public focus: string;
   public diary: Diary;
 
-  public columns: ReadonlyArray<string> = ['Calories', 'Macronutrients'];
+  public desktopColumns = new Map<string, string>([['MacroLong', 'Macronutrients']]);
+
+  public mobileColumns = new Map<string, string>([
+    ['Calories', 'Calories'],
+    ['MacroShort', 'Macronutrients']
+  ]);
+
   public columnSelector = new FormControl();
   public readonly commentTextarea = new FormControl();
   public readonly dateInput = new FormControl();
@@ -37,7 +43,7 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
   private readonly subscription: Subscription = new Subscription();
 
   public loading = true;
-  public settings: ISummarySettings;
+  public settings: ISummarySettings = undefined;
 
   public macroData: {
     calories: ReadonlyArray<NgxChartEntry>;
@@ -72,20 +78,23 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
       })
     );
 
+    // read display settings before all other operations
+    this.ss.summary$.subscribe(settings => {
+      this.settings = settings;
+    });
+
     // sets up the colums selector and specify a default value
     this.subscription.add(
       this.columnSelector.valueChanges.subscribe(value => (this.focus = value))
     );
-    this.columnSelector.setValue(this.columns[0]);
+
+    // tk determine whether mobile default or otherwise
+    this.columnSelector.setValue('MacroLong');
 
     this.dateInput.valueChanges.subscribe((date: Date) => {
       if (date !== this.ds.date) {
         this.ui.goToDate(date);
       }
-    });
-
-    this.ss.summary$.subscribe(settings => {
-      this.settings = settings;
     });
   }
 
