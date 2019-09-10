@@ -50,16 +50,18 @@
         <section class="portions-table" [ngClass]="{'table-desktop': ui.isDesktop, 'table-mobile': ui.isMobile}">
 
           <!-- Header and columns selection -->
-          <section class="header">
+          <div class="header">
             <section class="header-notes">
               <mat-form-field class="columns-selector">
                 <mat-select [formControl]="columnSelector" required>
                   <ng-container *ngIf="ui.isDesktop; else mobileColumnSelector">
-                    <mat-option *ngFor="let column of desktopColumns | keyvalue" [value]="column.key">{{column.value}}
+                    <mat-option *ngFor="let column of widescreenColumns | keyvalue" [value]="column.key">
+                      {{column.value}}
                     </mat-option>
                   </ng-container>
                   <ng-template #mobileColumnSelector>
-                    <mat-option *ngFor="let column of mobileColumns | keyvalue" [value]="column.key">{{column.value}}
+                    <mat-option *ngFor="let column of smallscreenColumns | keyvalue" [value]="column.key">
+                      {{column.value}}
                     </mat-option>
                   </ng-template>
                 </mat-select>
@@ -69,7 +71,8 @@
             <!-- Global headers -->
             <ng-container [ngSwitch]="focus">
 
-              <section *ngSwitchCase="'MacroLong'" class="header-columns">
+              <!-- Desktop aggregates -->
+              <section *ngSwitchCase="'macro'" class="header-columns">
                 <section class="header-macro-column">
                   <span class="mat-caption header-macro-label">Prot.</span>
                   <span>{{diary.proteins | number:'1.0-0'}}</span>
@@ -88,7 +91,34 @@
                 </section>
               </section>
 
-              <section *ngSwitchCase="'MacroShort'" class="header-columns">
+              <section *ngSwitchCase="'fats'" class="header-columns">
+                <section class="header-macro-column">
+                  <span class="mat-caption header-macro-label">Fats</span>
+                  <span>{{diary.fats | number:'1.0-0'}}</span>
+                </section>
+                <section class="header-macro-column">
+                  <span class="mat-caption header-macro-label">Sat.</span>
+                  <span>{{diary.getTotalProperty('saturated') | number:'1.0-0'}}</span>
+                </section>
+                <section class="header-macro-column">
+                  <span class="mat-caption header-macro-label">Mono.</span>
+                  <span>{{diary.getTotalProperty('monounsaturated') | number:'1.0-0'}}</span>
+                </section>
+                <section class="header-macro-column">
+                  <span class="mat-caption header-macro-label">Poly.</span>
+                  <span>{{diary.getTotalProperty('polyunsaturated') | number:'1.0-0'}}</span>
+                </section>
+                <section class="header-macro-column">
+                  <span class="mat-caption header-macro-label">Chol.</span>
+                  <span>{{diary.getTotalProperty('cholesterol') | number:'1.0-0'}}</span>
+                </section>
+                <section class="header-macro-column">
+                  <span class="mat-caption header-macro-label">Trans</span>
+                  <span>{{diary.getTotalProperty('trans') | number:'1.0-0'}}</span>
+                </section>
+              </section>
+
+              <section *ngSwitchCase="'macroShort'" class="header-columns">
                 <section class="header-macro-column">
                   <span class="mat-caption header-macro-label">Prot.</span>
                   <span>{{diary.proteins | number:'1.0-0'}}</span>
@@ -105,11 +135,16 @@
 
               <section *ngSwitchCase="'Calories'" class="header-columns">
                 <span class="meal-header-aggregate">{{diary.calories | number:'1.0-0'}}</span>
+                <div style="height: 5rem; width: 5rem">
+                  <ngx-charts-pie-chart [results]="macroData.calories" [labels]="false" [legend]="false"
+                    [scheme]="macronutrientsScheme">
+                  </ngx-charts-pie-chart>
+                </div>
               </section>
 
             </ng-container>
 
-          </section>
+          </div>
 
           <!-- Portions and columns -->
           <mat-accordion class="meals-container" multi="true">
@@ -119,7 +154,8 @@
               <mat-expansion-panel-header>
                 <span [ngSwitch]="focus" class="meal-header mat-subheading-2">
                   <span class="meal-header-title">{{diary.getMealName(kvp.key)}}</span>
-                  <span *ngSwitchCase="'MacroLong'" class="meal-header-aggregate">
+
+                  <span *ngSwitchCase="'macro'" class="meal-header-aggregate">
                     <span class="meal-header-macro"
                       [ngClass]="{'proteins': settings.useMacroColours}">{{diary.getMealProperty(kvp.key, 'proteins') | number:'1.0-0'}}</span>
                     <span class="meal-header-macro"
@@ -129,8 +165,36 @@
                     <span
                       class="meal-header-macro">{{diary.getMealProperty(kvp.key, 'calories') | number:'1.0-0'}}</span>
                   </span>
-                  <span *ngSwitchCase="'Calories'" class="meal-header-aggregate calories">{{diary.getMealProperty(kvp.key, 'calories') |
+
+                  <span *ngSwitchCase="'fats'" class="meal-header-aggregate">
+                    <span class="meal-header-macro">{{diary.getMealProperty(kvp.key, 'fats') | number:'1.0-0'}}</span>
+                    <span
+                      class="meal-header-macro">{{diary.getMealProperty(kvp.key, 'saturated') | number:'1.0-0'}}</span>
+                    <span
+                      class="meal-header-macro">{{diary.getMealProperty(kvp.key, 'monounsaturated') | number:'1.0-0'}}</span>
+                    <span
+                      class="meal-header-macro">{{diary.getMealProperty(kvp.key, 'polyunsaturated') | number:'1.0-0'}}</span>
+                    <span
+                      class="meal-header-macro">{{diary.getMealProperty(kvp.key, 'cholesterol') | number:'1.0-0'}}</span>
+                    <span class="meal-header-macro">{{diary.getMealProperty(kvp.key, 'trans') | number:'1.0-0'}}</span>
+                  </span>
+
+                  <!-- Mobile aggregate headers -->
+                  <span *ngSwitchCase="'macroShort'" class="meal-header-aggregate">
+                    <span class="meal-header-macro"
+                      [ngClass]="{'proteins': settings.useMacroColours}">{{diary.getMealProperty(kvp.key, 'proteins') | number:'1.0-0'}}</span>
+                    <span class="meal-header-macro"
+                      [ngClass]="{'carbs': settings.useMacroColours}">{{diary.getMealProperty(kvp.key, 'carbs') | number:'1.0-0'}}</span>
+                    <span class="meal-header-macro"
+                      [ngClass]="{'fats': settings.useMacroColours}">{{diary.getMealProperty(kvp.key, 'fats') | number:'1.0-0'}}</span>
+                  </span>
+
+                  <span *ngSwitchCase="'Calories'" class="meal-header-aggregate calories">
+                    <span class="secondary-value">{{diary.getMealCaloriesPercentage(kvp.key) | percent}}</span>
+                    <span>{{diary.getMealProperty(kvp.key, 'calories') |
             number:'1.0-0'}}</span>
+
+                  </span>
                 </span>
               </mat-expansion-panel-header>
 
@@ -143,7 +207,7 @@
                       <span class="portion-header-quantity mat-caption">{{portion.quantity | number:'1.0-0'}} g.</span>
                     </span>
 
-                    <span *ngSwitchCase="'MacroLong'" class="portion-column mat-body-1">
+                    <span *ngSwitchCase="'macro'" class="portion-column mat-body-1">
                       <span class="portion-macro"
                         [ngClass]="{'proteins': settings.useMacroColours}">{{portion.proteins | number:'1.0-0'}}</span>
                       <span class="portion-macro"
@@ -154,10 +218,13 @@
                     </span>
 
                     <!-- Mobile columns content -->
-                    <span *ngSwitchCase="'Calories'" class="portion-column calories">{{portion.calories |
+                    <span *ngSwitchCase="'Calories'" class="portion-column calories">
+                      <span class="portion-macro secondary-value">{{portion.calories / diary.calories | percent}}</span>
+                      <span class="portion-macro">{{portion.calories |
               number:'1.0-0'}}</span>
+                    </span>
 
-                    <span *ngSwitchCase="'MacroShort'" class="portion-column mat-body-1">
+                    <span *ngSwitchCase="'macroShort'" class="portion-column mat-body-1">
                       <span class="portion-macro"
                         [ngClass]="{'proteins': settings.useMacroColours}">{{portion.proteins | number:'1.0-0'}}</span>
                       <span class="portion-macro"

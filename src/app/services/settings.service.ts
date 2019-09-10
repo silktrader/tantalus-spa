@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { openDB, IDBPDatabase, DBSchema } from 'idb';
-import { Observable, ReplaySubject } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
+import { DiaryComponent } from '../pages/diary/diary.component';
+import { DiarySummaryComponent } from '../pages/diary/diary-summary/diary-summary.component';
 
 export interface SettingsSchema extends DBSchema {
   ui: {
@@ -11,18 +13,30 @@ export interface SettingsSchema extends DBSchema {
 
 export interface ISummarySettings {
   useMacroColours: boolean;
-  preferredColumn: number;
+  preferredWidescreenColumn: string;
+  preferredSmallscreenColumn: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class SettingsService {
+  public static widescreenColumns = new Map<string, string>([
+    ['macro', 'Macronutrients'],
+    ['fats', 'Fats']
+  ]);
+
+  public static smallscreenColumns = new Map<string, string>([
+    ['macroShort', 'Macronutrients'],
+    ['Calories', 'Calories']
+  ]);
+
   // determine a default object to fall back to when missing configuration
   private static defaultSettings = {
     summary: {
       useMacroColours: true,
-      preferredColumn: 0
+      preferredWidescreenColumn: SettingsService.widescreenColumns.keys().next().value,
+      preferredSmallscreenColumn: SettingsService.smallscreenColumns.keys().next().value
     }
   };
 

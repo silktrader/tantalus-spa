@@ -80,6 +80,14 @@ export class Diary {
     return total;
   }
 
+  public getMealCaloriesPercentage(meal: number): number {
+    let mealCalories = 0;
+    for (const portion of this.meals.get(meal)) {
+      mealCalories += portion.calories;
+    }
+    return mealCalories / this.calories;
+  }
+
   public recordedMeals(mealNumber: number): number {
     const meal = this.meals.get(mealNumber);
     if (meal === undefined) {

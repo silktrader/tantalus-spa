@@ -1,12 +1,12 @@
+.loading-notice {
+  font-style: italic;
+  margin: auto;
+}
+
 mat-expansion-panel {
   margin: 3%;
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
-}
-
-.loading-notice {
-  font-style: italic;
-  margin: auto;
 }
 
 .container {
@@ -33,6 +33,8 @@ mat-expansion-panel {
 .table-mobile {
 }
 
+/* Column selector and diary aggregates */
+
 .header {
   display: flex;
   /* matches the padding of the cards below  */
@@ -53,19 +55,17 @@ mat-expansion-panel {
 
 .header-columns {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
   flex-basis: 35%;
 }
 
 .header-macro-column {
   display: flex;
   flex-direction: column;
-  flex-basis: 33.3%;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  width: 4ch;
   text-align: right;
   font-weight: bold;
-  align-items: flex-end;
 }
 
 .header-macro-label {
@@ -73,6 +73,8 @@ mat-expansion-panel {
   text-align: right;
   max-width: 5ch;
 }
+
+/* Meal cards */
 
 .meals-container {
   margin: 3%;
@@ -94,16 +96,14 @@ mat-expansion-panel {
 .meal-header-aggregate {
   display: flex;
   flex-basis: 35%;
-  text-align: right;
   font-weight: bold;
-  justify-content: flex-end;
+  justify-content: space-between;
 }
 
 .meal-header-macro {
-  text-align: right;
-  align-items: center;
   font-weight: 500;
-  flex-basis: 33.3%;
+  width: 4ch;
+  text-align: right;
 }
 
 mat-list-item a {
@@ -130,12 +130,19 @@ mat-list-item a {
 .portion-column {
   display: flex;
   flex-basis: 35%;
-  justify-content: flex-end;
+  justify-content: space-between;
 }
 
 .portion-macro {
-  flex-basis: 33.3%;
+  /* the width's necessary to right align numbers */
+  width: 4ch;
   text-align: right;
+}
+
+/* column value, less important than others */
+.secondary-value {
+  font-size: 80%;
+  font-style: italic;
 }
 
 mat-card.no-meals {

@@ -29,13 +29,6 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
   public focus: string;
   public diary: Diary;
 
-  public desktopColumns = new Map<string, string>([['MacroLong', 'Macronutrients']]);
-
-  public mobileColumns = new Map<string, string>([
-    ['Calories', 'Calories'],
-    ['MacroShort', 'Macronutrients']
-  ]);
-
   public columnSelector = new FormControl();
   public readonly commentTextarea = new FormControl();
   public readonly dateInput = new FormControl();
@@ -81,15 +74,19 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
     // read display settings before all other operations
     this.ss.summary$.subscribe(settings => {
       this.settings = settings;
+
+      // set the preferred column view depending on the client's screen
+      this.columnSelector.setValue(
+        this.ui.isDesktop
+          ? this.settings.preferredWidescreenColumn
+          : this.settings.preferredSmallscreenColumn
+      );
     });
 
     // sets up the colums selector and specify a default value
     this.subscription.add(
       this.columnSelector.valueChanges.subscribe(value => (this.focus = value))
     );
-
-    // tk determine whether mobile default or otherwise
-    this.columnSelector.setValue('MacroLong');
 
     this.dateInput.valueChanges.subscribe((date: Date) => {
       if (date !== this.ds.date) {
@@ -219,5 +216,13 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
 
   public get macronutrientsScheme() {
     return this.ui.chartsConfiguration.macronutrientsScheme;
+  }
+
+  public get widescreenColumns() {
+    return SettingsService.widescreenColumns;
+  }
+
+  public get smallscreenColumns() {
+    return SettingsService.smallscreenColumns;
   }
 }
