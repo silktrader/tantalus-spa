@@ -55,12 +55,12 @@
               <mat-form-field class="columns-selector">
                 <mat-select [formControl]="columnSelector" required>
                   <ng-container *ngIf="ui.isDesktop; else mobileColumnSelector">
-                    <mat-option *ngFor="let column of widescreenColumns | keyvalue" [value]="column.key">
+                    <mat-option *ngFor="let column of largeColumnSet | keyvalue" [value]="column.key">
                       {{column.value}}
                     </mat-option>
                   </ng-container>
                   <ng-template #mobileColumnSelector>
-                    <mat-option *ngFor="let column of smallscreenColumns | keyvalue" [value]="column.key">
+                    <mat-option *ngFor="let column of smallColumnSet | keyvalue" [value]="column.key">
                       {{column.value}}
                     </mat-option>
                   </ng-template>
@@ -134,12 +134,12 @@
               </section>
 
               <section *ngSwitchCase="'Calories'" class="header-columns">
-                <span class="meal-header-aggregate">{{diary.calories | number:'1.0-0'}}</span>
                 <div style="height: 5rem; width: 5rem">
                   <ngx-charts-pie-chart [results]="macroData.calories" [labels]="false" [legend]="false"
                     [scheme]="macronutrientsScheme">
                   </ngx-charts-pie-chart>
                 </div>
+                <span class="meal-header-aggregate">{{diary.calories | number:'1.0-0'}}</span>
               </section>
 
             </ng-container>

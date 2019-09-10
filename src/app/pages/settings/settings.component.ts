@@ -11,11 +11,13 @@ import * as deepEqual from 'deep-equal';
 })
 export class SettingsComponent implements OnInit, OnDestroy {
   public summaryGroup = new FormGroup({
-    useMacroColours: new FormControl()
+    useMacroColours: new FormControl(),
+    largeColumnSet: new FormControl(),
+    smallColumnSet: new FormControl()
   });
 
   // provides a reference for comparison when evaluating the group's changes
-  private summaryReference: ISummarySettings;
+  public summaryReference: ISummarySettings;
 
   private subscription = new Subscription();
 
@@ -42,5 +44,13 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+  }
+
+  public get largeColumnSet() {
+    return SettingsService.largeColumnSet;
+  }
+
+  public get smallColumnSet() {
+    return SettingsService.smallColumnSet;
   }
 }

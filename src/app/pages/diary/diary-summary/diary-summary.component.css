@@ -58,6 +58,8 @@ mat-expansion-panel {
   justify-content: space-between;
   align-items: center;
   flex-basis: 35%;
+  /* matches the height of the calories graph on smallscreens */
+  height: 5rem;
 }
 
 .header-macro-column {

@@ -74,12 +74,14 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
     // read display settings before all other operations
     this.ss.summary$.subscribe(settings => {
       this.settings = settings;
+      console.log(this.settings);
 
       // subscribe to breakpoint notifiers only once settings are read
       this.subscription.add(
         this.ui.desktop.subscribe(isDesktop => {
           if (isDesktop) {
-            this.columnSelector.setValue(this.settings.preferredWidescreenColumn);
+            console.log('setting column desktop');
+            this.columnSelector.setValue(this.settings.largeColumnSet);
           }
         })
       );
@@ -87,7 +89,8 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
       this.subscription.add(
         this.ui.mobile.subscribe(isMobile => {
           if (isMobile) {
-            this.columnSelector.setValue(this.settings.preferredSmallscreenColumn);
+            console.log('setting column mobile: ' + this.settings.smallColumnSet);
+            this.columnSelector.setValue(this.settings.smallColumnSet);
           }
         })
       );
@@ -228,11 +231,11 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
     return this.ui.chartsConfiguration.macronutrientsScheme;
   }
 
-  public get widescreenColumns() {
-    return SettingsService.widescreenColumns;
+  public get largeColumnSet() {
+    return SettingsService.largeColumnSet;
   }
 
-  public get smallscreenColumns() {
-    return SettingsService.smallscreenColumns;
+  public get smallColumnSet() {
+    return SettingsService.smallColumnSet;
   }
 }

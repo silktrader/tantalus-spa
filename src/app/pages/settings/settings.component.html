@@ -32,7 +32,34 @@
             </div>
             <mat-slide-toggle [color]="'primary'" [checked]="false"></mat-slide-toggle>
         </section>
+
+        <mat-divider></mat-divider>
+
+        <div class="setting-item setting-item-column">
+            <div class="setting-label">
+                <h5 class="setting-label-title">Large Column Set</h5>
+                <h6 class="setting-label-caption">The initial column set that will show initially on large screens
+                </h6>
+            </div>
+            <mat-select formControlName="largeColumnSet" required>
+                <mat-option *ngFor="let column of largeColumnSet | keyvalue" [value]="column.key">
+                    {{column.value}}
+                </mat-option>
+            </mat-select>
+        </div>
+
+        <div class="setting-item setting-item-column">
+            <div class="setting-label">
+                <h5 class="setting-label-title">Small Column Set</h5>
+                <h6 class="setting-label-caption">The initial column set that will show initially on small screens
+                </h6>
+            </div>
+            <mat-select formControlName="smallColumnSet" required>
+                <mat-option *ngFor="let column of smallColumnSet | keyvalue" [value]="column.key">
+                    {{column.value}}
+                </mat-option>
+            </mat-select>
+        </div>
     </form>
-    <mat-divider></mat-divider>
 
 </section>

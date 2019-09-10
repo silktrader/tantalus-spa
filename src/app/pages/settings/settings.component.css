@@ -14,6 +14,21 @@
   margin-bottom: 1rem;
 }
 
+.setting-item-column {
+  flex-direction: column;
+  align-items: baseline;
+}
+
+mat-select {
+  width: 18ch;
+  margin-top: 0.5rem;
+  font-size: 80%;
+}
+
+mat-divider {
+  margin-bottom: 1rem;
+}
+
 .setting-label {
   flex: 1 1 auto;
 }
