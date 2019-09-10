@@ -75,11 +75,21 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
     this.ss.summary$.subscribe(settings => {
       this.settings = settings;
 
-      // set the preferred column view depending on the client's screen
-      this.columnSelector.setValue(
-        this.ui.isDesktop
-          ? this.settings.preferredWidescreenColumn
-          : this.settings.preferredSmallscreenColumn
+      // subscribe to breakpoint notifiers only once settings are read
+      this.subscription.add(
+        this.ui.desktop.subscribe(isDesktop => {
+          if (isDesktop) {
+            this.columnSelector.setValue(this.settings.preferredWidescreenColumn);
+          }
+        })
+      );
+
+      this.subscription.add(
+        this.ui.mobile.subscribe(isMobile => {
+          if (isMobile) {
+            this.columnSelector.setValue(this.settings.preferredSmallscreenColumn);
+          }
+        })
       );
     });
 
