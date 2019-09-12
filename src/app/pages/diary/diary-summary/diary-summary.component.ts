@@ -38,10 +38,12 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
   public loading = true;
   public settings: ISummarySettings = undefined;
 
+  public selectedColumnSet: ReadonlyArray<string>;
+
   public macroData: {
     calories: ReadonlyArray<NgxChartEntry>;
     meals: ReadonlyArray<{ name: string; series: Array<NgxChartEntry> }>;
-  } = { calories: [], meals: [] };
+  };
 
   constructor(
     private ds: DiaryService,
@@ -74,13 +76,12 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
     // read display settings before all other operations
     this.ss.summary$.subscribe(settings => {
       this.settings = settings;
-      console.log(this.settings);
 
       // subscribe to breakpoint notifiers only once settings are read
       this.subscription.add(
         this.ui.desktop.subscribe(isDesktop => {
           if (isDesktop) {
-            console.log('setting column desktop');
+            this.selectedColumnSet = SettingsService.largeColumnSet;
             this.columnSelector.setValue(this.settings.largeColumnSet);
           }
         })
@@ -89,7 +90,7 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
       this.subscription.add(
         this.ui.mobile.subscribe(isMobile => {
           if (isMobile) {
-            console.log('setting column mobile: ' + this.settings.smallColumnSet);
+            this.selectedColumnSet = SettingsService.smallColumnSet;
             this.columnSelector.setValue(this.settings.smallColumnSet);
           }
         })
@@ -106,6 +107,8 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
         this.ui.goToDate(date);
       }
     });
+
+    console.log(SettingsService.smallColumnSet);
   }
 
   ngOnDestroy() {
@@ -237,5 +240,13 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
 
   public get smallColumnSet() {
     return SettingsService.smallColumnSet;
+  }
+
+  public get proteinsChartData() {
+    console.log('called chart');
+    return [
+      { name: 'Proteins', value: this.diary.proteins },
+      { name: 'Others', value: this.diary.calories }
+    ];
   }
 }

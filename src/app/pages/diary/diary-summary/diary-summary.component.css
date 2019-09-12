@@ -62,18 +62,22 @@ mat-expansion-panel {
   height: 5rem;
 }
 
-.header-macro-column {
+.total-aggregate-column {
   display: flex;
   flex-direction: column;
   width: 4ch;
-  text-align: right;
-  font-weight: bold;
+  align-items: flex-end;
+  font-weight: bolder;
 }
 
-.header-macro-label {
+.total-aggregate-label {
   font-style: italic;
-  text-align: right;
-  max-width: 5ch;
+  font-size: 80%;
+  margin-bottom: 0.5rem;
+}
+
+.total-aggregate-value {
+  /* font-family: 'Roboto Mono', monospace; */
 }
 
 /* Meal cards */
@@ -103,29 +107,45 @@ mat-expansion-panel {
 }
 
 .meal-header-macro {
-  font-weight: 500;
   width: 4ch;
   text-align: right;
 }
 
-mat-list-item a {
+/* Portion rows */
+
+mat-nav-list-item {
+  margin-bottom: 5px;
+}
+
+.largescreen-row {
   display: flex;
   width: 100%;
 }
 
-.portion {
-  margin-bottom: 5px;
+.smallscreen-row {
+  display: flex;
+  width: 100%;
+  font-family: 'Roboto Condensed', sans-serif;
+  justify-content: space-between;
+}
+
+.portion-value-smallscreen {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 90%;
 }
 
 .portion-header {
   display: flex;
   flex-direction: column;
-  flex-basis: 65%;
+  /* flex-basis: 65%; */
+  flex-grow: 1;
   margin-bottom: 10px;
 }
 
 .portion-header-quantity {
   font-style: italic;
+  font-size: 80%;
+  /* font-family: 'Roboto Mono', monospace; */
   color: gray;
 }
 
@@ -141,7 +161,12 @@ mat-list-item a {
   text-align: right;
 }
 
-/* column value, less important than others */
+/* Highlight the column by distancing it from the others */
+.important-column {
+  margin-left: 1rem;
+}
+
+/* Decrease the visibility of the colum */
 .secondary-value {
   font-size: 80%;
   font-style: italic;

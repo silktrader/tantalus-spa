@@ -19,22 +19,21 @@ export interface ISummarySettings {
   providedIn: 'root'
 })
 export class SettingsService {
-  public static largeColumnSet = new Map<string, string>([
-    ['macro', 'Macronutrients'],
-    ['fats', 'Fats']
-  ]);
+  public static largeColumnSet: ReadonlyArray<string> = ['Macronutrients', 'Fats'];
 
-  public static smallColumnSet = new Map<string, string>([
-    ['macroShort', 'Macronutrients'],
-    ['Calories', 'Calories']
-  ]);
+  public static smallColumnSet: ReadonlyArray<string> = [
+    'Calories',
+    'Proteins',
+    'Carbohydrates',
+    'Fats'
+  ];
 
   // determine a default object to fall back to when missing configuration
   private static defaultSettings = {
     summary: {
       useMacroColours: true,
-      largeColumnSet: SettingsService.largeColumnSet.keys().next().value,
-      smallColumnSet: SettingsService.smallColumnSet.keys().next().value
+      largeColumnSet: 0,
+      smallColumnSet: 0
     }
   };
 

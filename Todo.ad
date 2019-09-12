@@ -11,3 +11,4 @@
 * clean up mobile add recipe dialog
 * group calories and macros in desktop summary
 * look into automatically renovating JWT tokens
+* add option to display decimals in tables
