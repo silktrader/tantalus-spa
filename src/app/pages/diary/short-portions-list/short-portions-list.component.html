@@ -1,0 +1,115 @@
+<section class="portions-table">
+
+    <div class="header">
+        <section class="header-notes">
+            <mat-form-field class="columns-selector">
+                <mat-select [formControl]="columnSelector" required>
+                    <mat-option *ngFor="let column of columnSet; let i = index" [value]="i">
+                        {{column}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </section>
+
+        <ng-container [ngSwitch]="focusedSet">
+
+            <section *ngSwitchCase="0" class="header-columns">
+                <!-- <div style="height: 5rem; width: 5rem">
+                    <ngx-charts-pie-chart [results]="macroData.calories" [labels]="false" [legend]="false"
+                      [scheme]="macronutrientsScheme">
+                    </ngx-charts-pie-chart>
+                  </div> -->
+                <span class="total-aggregate-column" style="width: 5ch">{{diary.calories | number:'1.0-0'}}</span>
+            </section>
+
+            <section *ngSwitchCase="1" class="header-columns">
+                <!-- <div style="height: 5rem; width: 5rem">
+                    <ngx-charts-pie-chart [results]="proteinsChartData" [labels]="false" [legend]="false"
+                      [scheme]="macronutrientsScheme">
+                    </ngx-charts-pie-chart>
+                  </div> -->
+                <span class="total-aggregate-column" style="width: 5ch">{{diary.proteins | number:'1.0-0'}}</span>
+            </section>
+
+            <section *ngSwitchCase="2" class="header-columns">
+                <section class="total-aggregate-column">
+                    <span class="mat-caption total-aggregate-label">Sat</span>
+                    <span>{{diary.getTotalProperty('saturated') | number:'1.0-0'}}</span>
+                </section>
+                <section class="total-aggregate-column">
+                    <span class="mat-caption total-aggregate-label">Mono</span>
+                    <span>{{diary.getTotalProperty('monounsaturated') | number:'1.0-0'}}</span>
+                </section>
+                <section class="total-aggregate-column">
+                    <span class="mat-caption total-aggregate-label">Poly</span>
+                    <span>{{diary.getTotalProperty('polyunsaturated') | number:'1.0-0'}}</span>
+                </section>
+            </section>
+
+        </ng-container>
+
+    </div>
+
+    <mat-accordion class="meals-container" multi="true">
+        <mat-expansion-panel [expanded]="true" hideToggle *ngFor="let kvp of diary.meals | keyvalue">
+
+            <mat-expansion-panel-header>
+                <span [ngSwitch]="focusedSet" class="meal-header mat-subheading-2">
+                    <span class="meal-header-title">{{diary.getMealName(kvp.key)}}</span>
+
+                    <span *ngSwitchCase="0" class="meal-header-aggregate calories">
+                        <span class="secondary-value">{{diary.getMealCaloriesPercentage(kvp.key) | percent}}</span>
+                        <span class="tabular-value">{{diary.getMealProperty(kvp.key, 'calories') |
+                      number:'1.0-0'}}</span>
+                    </span>
+
+                    <span *ngSwitchCase="1" class="meal-header-aggregate">
+                        <span class="meal-header-macro"
+                            [ngClass]="{'proteins': settings.useMacroColours}">{{diary.getMealProperty(kvp.key, 'proteins') | number:'1.0-0'}}</span>
+                    </span>
+
+                </span>
+            </mat-expansion-panel-header>
+
+            <mat-nav-list>
+                <mat-list-item *ngFor="let portion of kvp.value">
+                    <a [ngSwitch]="focusedSet" (click)="editPortion(portion)" class="smallscreen-row">
+                        <span class="portion-header">
+                            <span>{{portion.food.name}}</span>
+                            <span class="portion-header-quantity">{{portion.quantity | number:'1.0-0'}} g.</span>
+                        </span>
+
+                        <td *ngSwitchCase="0" class="portion-value-smallscreen tabular-value">
+                            {{portion.calories | number:'1.0-0'}}
+                        </td>
+
+                        <td *ngSwitchCase="1" class="portion-value-smallscreen">
+                            {{portion.proteins | number:'1.0-0'}}
+                        </td>
+
+                        <td *ngSwitchCase="2" class="portion-value-smallscreen">
+                            {{portion.proteins | number:'1.0-0'}}
+                        </td>
+
+                        <td *ngSwitchCase="3" class="portion-value-smallscreen">
+                            {{portion.fats | number:'1.0-0'}}
+                        </td>
+
+                    </a>
+                </mat-list-item>
+            </mat-nav-list>
+            <mat-action-row>
+                <button mat-button color="warn" (click)="deletePortions(kvp.value)"
+                    [disabled]="diary.recordedMeals(kvp.key) == 0">
+                    Remove Meal
+                </button>
+                <button mat-button color="accent" (click)="addPortion(kvp.key)">
+                    Add Portions
+                </button>
+            </mat-action-row>
+
+        </mat-expansion-panel>
+
+    </mat-accordion>
+
+</section>

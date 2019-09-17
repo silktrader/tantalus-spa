@@ -15,8 +15,6 @@ import { Diary } from 'src/app/models/diary.model';
 
 export interface AddPortionDialogData {
   readonly ds: DiaryService;
-  readonly ui: UiService;
-  readonly fs: FoodsService;
   readonly meal?: number;
 }
 
@@ -47,13 +45,15 @@ export class AddPortionDialogComponent {
 
   constructor(
     public dialogRef: MatDialogRef<AddPortionDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: AddPortionDialogData
+    @Inject(MAT_DIALOG_DATA) public data: AddPortionDialogData,
+    private fs: FoodsService,
+    private ui: UiService
   ) {
     // determine whether to use state or fall back to the latest used meal
     const meal = Number.isInteger(data.meal) ? data.meal : data.ds.focusedMeal;
     this.mealSelector.setValue(meal);
 
-    this.filteredFoods$ = data.fs.getFilteredFoods(this.filterText$);
+    this.filteredFoods$ = this.fs.getFilteredFoods(this.filterText$);
     this.foodInput.valueChanges
       .pipe(
         debounceTime(300),
@@ -122,15 +122,15 @@ export class AddPortionDialogComponent {
         })
         .subscribe({
           next: value => {
-            this.data.ui.notifyAddedPortion(value.quantity, this.selectedFood.name, () => {
+            this.ui.notifyAddedPortion(value.quantity, this.selectedFood.name, () => {
               this.data.ds.removePortion(value.id).subscribe(() => {
-                this.data.ui.notifyRemovedPortion(this.selectedFood.name);
+                this.ui.notifyRemovedPortion(this.selectedFood.name);
               });
             });
             this.dialogRef.close();
           },
           error: () => {
-            this.data.ui.warnFailedAddedPortion(this.selectedFood.name);
+            this.ui.warnFailedAddedPortion(this.selectedFood.name);
             this.dialogRef.close();
           }
         });
@@ -145,13 +145,13 @@ export class AddPortionDialogComponent {
       }
       this.data.ds.addPortions(portions).subscribe(
         () => {
-          this.data.ui.notifyAddedPortions(portions.length, () => {
+          this.ui.notifyAddedPortions(portions.length, () => {
             // tk implement mass removal
           });
           this.dialogRef.close();
         },
         () => {
-          this.data.ui.warnFailedAddedPortions();
+          this.ui.warnFailedAddedPortions();
           this.dialogRef.close();
         }
       );

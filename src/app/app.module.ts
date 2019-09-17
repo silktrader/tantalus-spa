@@ -28,6 +28,8 @@ import { AddPortionDialogComponent } from './pages/diary/add-portion-dialog/add-
 import { NoticeComponent } from './ui/notice/notice.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { SettingsComponent } from './pages/settings/settings.component';
+import { LongPortionsListComponent } from './pages/diary/long-portions-list/long-portions-list.component';
+import { ShortPortionsListComponent } from './pages/diary/short-portions-list/short-portions-list.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +52,9 @@ import { SettingsComponent } from './pages/settings/settings.component';
     FocusThenSelectDirective,
     AddPortionDialogComponent,
     NoticeComponent,
-    SettingsComponent
+    SettingsComponent,
+    LongPortionsListComponent,
+    ShortPortionsListComponent
   ],
   imports: [
     BrowserModule,

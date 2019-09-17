@@ -1,0 +1,212 @@
+.container {
+  display: flex;
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+}
+
+.table {
+  flex: 5 0 auto;
+  /* min-width: 30rem; */
+  /* height: 100vh; */
+  overflow-y: scroll;
+}
+
+.header {
+  display: flex;
+  /* matches the padding of the cards below  */
+  padding-right: 24px;
+  padding-left: 24px;
+  margin: 3%;
+  margin-top: 0%;
+  align-items: center;
+}
+
+.header-notes {
+  flex-basis: 65%;
+}
+
+.columns-selector {
+  width: 16ch;
+}
+
+.header-columns {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-basis: 35%;
+  /* matches the height of the calories graph on smallscreens */
+  height: 5rem;
+}
+
+.total-aggregate-column {
+  display: flex;
+  flex-direction: column;
+  width: 4ch;
+  align-items: flex-end;
+  font-weight: bolder;
+}
+
+.total-aggregate-label {
+  font-style: italic;
+  font-size: 80%;
+  margin-bottom: 0.5rem;
+}
+
+/* Meals section */
+
+.meals-container {
+  margin: 3%;
+  margin-top: 20px;
+}
+
+mat-expansion-panel {
+  margin: 3%;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Highlight the column by distancing it from the others */
+.important-column {
+  margin-left: 1rem;
+}
+
+/* Decrease the visibility of the colum */
+.secondary-value {
+  font-size: 80%;
+  font-style: italic;
+}
+
+.meal-header {
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+
+.meal-header-title {
+  flex-wrap: nowrap;
+  flex-basis: 65%;
+  font-weight: bold;
+}
+
+.meal-header-aggregate {
+  display: flex;
+  flex-basis: 35%;
+  font-weight: bold;
+  justify-content: space-between;
+}
+
+.meal-header-macro {
+  width: 4ch;
+  text-align: right;
+}
+
+/* Portion rows */
+
+mat-nav-list-item {
+  margin-bottom: 5px;
+}
+
+.largescreen-row {
+  display: flex;
+  width: 100%;
+}
+
+.portion-header {
+  display: flex;
+  flex-direction: column;
+  /* flex-basis: 65%; */
+  flex-grow: 1;
+  margin-bottom: 10px;
+}
+
+.portion-header-quantity {
+  font-style: italic;
+  font-size: 80%;
+  /* font-family: 'Roboto Mono', monospace; */
+  color: gray;
+}
+
+.portion-column {
+  display: flex;
+  flex-basis: 35%;
+  justify-content: space-between;
+}
+
+.portion-macro {
+  /* the width's necessary to right align numbers */
+  width: 4ch;
+  text-align: right;
+}
+
+/* Sidebar section */
+
+.sidebar {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  /* width: 25rem; */
+}
+
+.chart-block {
+  display: flex;
+  flex-direction: column;
+  /* width: 100%; */
+  align-items: center;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.chart-title {
+  font-weight: 500;
+  font-style: italic;
+}
+
+.chart {
+  width: 100%;
+  height: 16rem;
+  position: relative;
+}
+
+.chart-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  z-index: -1;
+  text-align: center;
+}
+
+.doughnut-overlay {
+  margin: auto;
+  width: 4rem;
+}
+
+.doughnut-overlay em {
+  display: block;
+  font-size: 80%;
+  font-style: italic;
+}
+
+::ng-deep ngx-charts-bar-horizontal-stacked {
+  fill: white;
+}
+
+.tooltip-name {
+  text-transform: capitalize;
+}
+
+.carbs {
+  color: #ffd54f;
+}
+
+.proteins {
+  color: #64b5f6;
+}
+
+.fats {
+  color: #e57373;
+}

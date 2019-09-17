@@ -1,23 +1,25 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { UiService } from 'src/app/services/ui.service';
 import { Diary } from 'src/app/models/diary.model';
 import { DiaryService } from 'src/app/services/diary.service';
-import { EditPortionDialogComponent } from '../edit-portion-dialog/edit-portion-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
 import { Portion } from 'src/app/models/portion.model';
-import { AddPortionDialogComponent } from '../add-portion-dialog/add-portion-dialog.component';
-import { FoodsService } from 'src/app/services/foods.service';
 import { PortionAddDto } from 'src/app/models/portion-add-dto.model';
 import { DtoMapper } from 'src/app/services/dto-mapper';
-import { FoodProp } from 'src/app/models/food-prop.model';
 import { SettingsService, ISummarySettings } from 'src/app/services/settings.service';
+import { AddPortionDialogComponent } from '../add-portion-dialog/add-portion-dialog.component';
+import { Router, ActivatedRoute } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 
 export interface NgxChartEntry {
   name: string;
   value: number;
+}
+
+enum ViewType {
+  large = 1,
+  small = 2
 }
 
 @Component({
@@ -26,11 +28,10 @@ export interface NgxChartEntry {
   styleUrls: ['./diary-summary.component.css']
 })
 export class DiarySummaryComponent implements OnInit, OnDestroy {
-  public focus: string;
+  public viewType = ViewType;
+
   public diary: Diary;
 
-  public columnSelector = new FormControl();
-  public readonly commentTextarea = new FormControl();
   public readonly dateInput = new FormControl();
 
   private readonly subscription: Subscription = new Subscription();
@@ -38,7 +39,7 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
   public loading = true;
   public settings: ISummarySettings = undefined;
 
-  public selectedColumnSet: ReadonlyArray<string>;
+  public view: ViewType;
 
   public macroData: {
     calories: ReadonlyArray<NgxChartEntry>;
@@ -47,13 +48,12 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
 
   constructor(
     private ds: DiaryService,
-    private fs: FoodsService,
-    public ui: UiService,
+    private ui: UiService,
     private ss: SettingsService,
+    private mapper: DtoMapper,
     private router: Router,
     private route: ActivatedRoute,
-    private dialog: MatDialog,
-    private mapper: DtoMapper
+    private dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -62,11 +62,6 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
         this.loading = true;
         this.diary = diary;
         this.dateInput.setValue(this.ds.date);
-
-        if (diary) {
-          this.commentTextarea.reset(diary.comment);
-          this.macroData = this.calculateMacroChart();
-        }
 
         // populate chart data, tk here? what about mobile?
         this.loading = false;
@@ -81,8 +76,7 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
       this.subscription.add(
         this.ui.desktop.subscribe(isDesktop => {
           if (isDesktop) {
-            this.selectedColumnSet = SettingsService.largeColumnSet;
-            this.columnSelector.setValue(this.settings.largeColumnSet);
+            this.view = ViewType.large;
           }
         })
       );
@@ -90,25 +84,17 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
       this.subscription.add(
         this.ui.mobile.subscribe(isMobile => {
           if (isMobile) {
-            this.selectedColumnSet = SettingsService.smallColumnSet;
-            this.columnSelector.setValue(this.settings.smallColumnSet);
+            this.view = ViewType.small;
           }
         })
       );
     });
-
-    // sets up the colums selector and specify a default value
-    this.subscription.add(
-      this.columnSelector.valueChanges.subscribe(value => (this.focus = value))
-    );
 
     this.dateInput.valueChanges.subscribe((date: Date) => {
       if (date !== this.ds.date) {
         this.ui.goToDate(date);
       }
     });
-
-    console.log(SettingsService.smallColumnSet);
   }
 
   ngOnDestroy() {
@@ -117,30 +103,6 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
 
   public get date(): Date {
     return this.ds.date;
-  }
-
-  public addPortion(meal?: number) {
-    if (this.ui.isMobile) {
-      this.router.navigate(['add-portion'], { relativeTo: this.route, state: { meal } });
-    } else {
-      this.dialog.open(AddPortionDialogComponent, {
-        data: { ds: this.ds, ui: this.ui, fs: this.fs, meal }
-      });
-    }
-  }
-
-  /**
-   * Choose how to edit a portion; either with a modal or full screen dialogues.
-   * @param portion The exiting portion that will be replaced
-   */
-  public editPortion(portion: Portion) {
-    if (this.ui.isMobile) {
-      this.router.navigate([portion.id], { relativeTo: this.route });
-    } else {
-      this.dialog.open(EditPortionDialogComponent, {
-        data: { portion, ds: this.ds, ui: this.ui }
-      });
-    }
   }
 
   public deleteAll(): void {
@@ -185,62 +147,24 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
     );
   }
 
-  public editComment() {
-    this.ds
-      .editComment(this.commentTextarea.value)
-      .subscribe(
-        () => this.ui.notify(`Edited comment`),
-        error => this.ui.notify(`Couldn't edit comment ${error}`)
-      );
-  }
-
-  private calculateMacroChart(): {
-    calories: Array<NgxChartEntry>;
-    meals: Array<{ name: string; series: Array<NgxChartEntry> }>;
-  } {
-    // establish relevant macronutrients
-    const macros = [FoodProp.proteins, FoodProp.carbs, FoodProp.fats, FoodProp.alcohol];
-    const kcalMultipliers = [4, 4, 9, 7];
-
-    const mealsData: Array<{ name: string; series: Array<NgxChartEntry> }> = [];
-
-    for (const kvp of Diary.mealTypes) {
-      const series = [];
-      for (const macro of macros) {
-        series.push({ name: macro, value: 0 });
-      }
-      mealsData.push({ name: kvp[1], series });
+  public addPortion(meal?: number) {
+    if (this.ui.isMobile) {
+      this.router.navigate(['add-portion'], { relativeTo: this.route, state: { meal } });
+    } else {
+      this.dialog.open(AddPortionDialogComponent, {
+        data: { ds: this.ds, meal }
+      });
     }
-
-    const caloriesData: Array<NgxChartEntry> = macros.map(macro => ({ name: macro, value: 0 }));
-
-    // establish macronutrients aggregates in grams
-    for (let meal = 0; meal < this.diary.meals.size; meal++) {
-      let totalCalories = 0;
-      for (const portion of this.diary.meals.get(meal)) {
-        for (let m = 0; m < macros.length; m++) {
-          const calories = portion.getTotalProperty(macros[m]) * kcalMultipliers[m];
-          caloriesData[m].value += calories;
-          totalCalories += calories;
-          mealsData[meal].series[m].value += calories;
-        }
-      }
-    }
-
-    return { calories: caloriesData, meals: mealsData };
   }
 
-  public get macronutrientsScheme() {
-    return this.ui.chartsConfiguration.macronutrientsScheme;
-  }
-
-  public get largeColumnSet() {
-    return SettingsService.largeColumnSet;
-  }
-
-  public get smallColumnSet() {
-    return SettingsService.smallColumnSet;
-  }
+  // public editComment() {
+  //   this.ds
+  //     .editComment(this.commentTextarea.value)
+  //     .subscribe(
+  //       () => this.ui.notify(`Edited comment`),
+  //       error => this.ui.notify(`Couldn't edit comment ${error}`)
+  //     );
+  // }
 
   public get proteinsChartData() {
     console.log('called chart');

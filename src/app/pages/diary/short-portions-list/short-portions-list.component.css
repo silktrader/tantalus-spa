@@ -1,0 +1,111 @@
+.portions-table {
+  flex-grow: 5;
+  overflow-y: scroll;
+}
+
+/* Column selector and diary aggregates */
+
+.header {
+  display: flex;
+  /* matches the padding of the cards below  */
+  padding-right: 24px;
+  padding-left: 24px;
+  margin: 3%;
+  margin-top: 0%;
+  align-items: center;
+}
+
+.columns-selector {
+  width: 16ch;
+}
+
+.header-notes {
+  flex-basis: 65%;
+}
+
+.header-columns {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-basis: 35%;
+  /* matches the height of the calories graph on smallscreens */
+  height: 5rem;
+}
+
+.total-aggregate-column {
+  display: flex;
+  flex-direction: column;
+  width: 4ch;
+  align-items: flex-end;
+  font-weight: bolder;
+}
+
+.total-aggregate-label {
+  font-style: italic;
+  font-size: 80%;
+  margin-bottom: 0.5rem;
+}
+
+/* Meal cards */
+
+.meals-container {
+  margin: 3%;
+  margin-top: 20px;
+}
+
+.meal-header {
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+
+.meal-header-title {
+  flex-wrap: nowrap;
+  flex-basis: 65%;
+  font-weight: bold;
+}
+
+.meal-header-aggregate {
+  display: flex;
+  flex-basis: 35%;
+  font-weight: bold;
+  justify-content: space-between;
+}
+
+.meal-header-macro {
+  width: 4ch;
+  text-align: right;
+}
+
+/* Portions list */
+
+mat-nav-list-item {
+  margin-bottom: 5px;
+}
+
+.portion-header {
+  display: flex;
+  flex-direction: column;
+  /* flex-basis: 65%; */
+  flex-grow: 1;
+  margin-bottom: 10px;
+}
+
+.portion-header-quantity {
+  font-style: italic;
+  font-size: 80%;
+  /* font-family: 'Roboto Mono', monospace; */
+  color: gray;
+}
+
+.smallscreen-row {
+  display: flex;
+  width: 100%;
+  font-family: 'Roboto Condensed', sans-serif;
+  justify-content: space-between;
+}
+
+.portion-value-smallscreen {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 90%;
+}

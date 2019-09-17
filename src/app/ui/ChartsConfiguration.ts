@@ -1,5 +1,4 @@
 export class ChartsConfiguration {
-  // tslint:disable-next-line: variable-name
   private _macronutrientsScheme: { domain: ReadonlyArray<string> };
 
   public get macronutrientsScheme() {

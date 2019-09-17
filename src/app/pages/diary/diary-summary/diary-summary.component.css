@@ -9,6 +9,14 @@ mat-expansion-panel {
   margin-bottom: 1.5rem;
 }
 
+app-long-portions-list {
+  width: 100%;
+}
+
+app-short-portions-list {
+  width: 100%;
+}
+
 .container {
   display: flex;
   flex: 1 1 auto;
@@ -21,133 +29,11 @@ mat-expansion-panel {
   height: 100%;
 }
 
-.portions-table {
-  flex-grow: 5;
-  overflow-y: scroll;
-}
-
-.table-desktop {
-  width: 50rem;
-}
-
-.table-mobile {
-}
-
-/* Column selector and diary aggregates */
-
-.header {
-  display: flex;
-  /* matches the padding of the cards below  */
-  padding-right: 24px;
-  padding-left: 24px;
-  margin: 3%;
-  margin-top: 0%;
-  align-items: center;
-}
-
-.columns-selector {
-  width: 16ch;
-}
-
-.header-notes {
-  flex-basis: 65%;
-}
-
-.header-columns {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-basis: 35%;
-  /* matches the height of the calories graph on smallscreens */
-  height: 5rem;
-}
-
-.total-aggregate-column {
-  display: flex;
-  flex-direction: column;
-  width: 4ch;
-  align-items: flex-end;
-  font-weight: bolder;
-}
-
-.total-aggregate-label {
-  font-style: italic;
-  font-size: 80%;
-  margin-bottom: 0.5rem;
-}
-
 .total-aggregate-value {
   /* font-family: 'Roboto Mono', monospace; */
 }
 
-/* Meal cards */
-
-.meals-container {
-  margin: 3%;
-  margin-top: 20px;
-}
-
-.meal-header {
-  display: flex;
-  width: 100%;
-  align-items: center;
-}
-
-.meal-header-title {
-  flex-wrap: nowrap;
-  flex-basis: 65%;
-  font-weight: bold;
-}
-
-.meal-header-aggregate {
-  display: flex;
-  flex-basis: 35%;
-  font-weight: bold;
-  justify-content: space-between;
-}
-
-.meal-header-macro {
-  width: 4ch;
-  text-align: right;
-}
-
 /* Portion rows */
-
-mat-nav-list-item {
-  margin-bottom: 5px;
-}
-
-.largescreen-row {
-  display: flex;
-  width: 100%;
-}
-
-.smallscreen-row {
-  display: flex;
-  width: 100%;
-  font-family: 'Roboto Condensed', sans-serif;
-  justify-content: space-between;
-}
-
-.portion-value-smallscreen {
-  font-family: 'Roboto Mono', monospace;
-  font-size: 90%;
-}
-
-.portion-header {
-  display: flex;
-  flex-direction: column;
-  /* flex-basis: 65%; */
-  flex-grow: 1;
-  margin-bottom: 10px;
-}
-
-.portion-header-quantity {
-  font-style: italic;
-  font-size: 80%;
-  /* font-family: 'Roboto Mono', monospace; */
-  color: gray;
-}
 
 .portion-column {
   display: flex;
@@ -172,6 +58,10 @@ mat-nav-list-item {
   font-style: italic;
 }
 
+.tabular-value {
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
 mat-card.no-meals {
   display: flex;
   align-items: center;
@@ -186,60 +76,6 @@ mat-card.no-meals {
 
 ::ng-deep mat-list-item > div.mat-list-item-content {
   padding: 0px !important;
-}
-
-.sidebar {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  height: 90vh;
-  min-width: 25rem;
-  /* flex-grow: 1; */
-}
-
-.macro-chart {
-  display: flex;
-  flex-direction: column;
-  justify-self: start;
-  width: 90%;
-  /* height: 20rem; */
-}
-
-.chart {
-  width: 100%;
-  height: 16rem;
-  margin-bottom: 1.5rem;
-  position: relative;
-}
-
-.chart-title {
-  text-align: center;
-  font-weight: 500;
-  font-style: italic;
-}
-
-.chart-overlay {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  z-index: -1;
-  text-align: center;
-}
-
-.doughnut-overlay {
-  margin: auto;
-  width: 4rem;
-}
-
-.doughnut-overlay em {
-  font-size: 80%;
-  font-style: italic;
-}
-
-::ng-deep .vertical-bar-chart text {
-  fill: white;
 }
 
 .date-selection {

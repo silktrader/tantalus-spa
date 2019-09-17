@@ -11,8 +11,8 @@ export interface SettingsSchema extends DBSchema {
 
 export interface ISummarySettings {
   useMacroColours: boolean;
-  largeColumnSet: string;
-  smallColumnSet: string;
+  largeColumnSet: number;
+  smallColumnSet: number;
 }
 
 @Injectable({
