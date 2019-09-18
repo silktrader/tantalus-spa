@@ -8,14 +8,15 @@
 .header {
   display: flex;
   /* matches the padding of the cards below  */
-  padding-right: 24px;
-  padding-left: 24px;
-  margin: 3%;
+  padding-right: 1rem;
+  padding-left: 1rem;
+  margin: 1rem;
   margin-top: 0%;
   align-items: center;
 }
 
 .columns-selector {
+  font-size: 120%;
   width: 16ch;
 }
 
@@ -32,12 +33,18 @@
   height: 5rem;
 }
 
+.header-chart {
+  width: 5rem;
+  height: 5rem;
+}
+
 .total-aggregate-column {
   display: flex;
   flex-direction: column;
   width: 4ch;
   align-items: flex-end;
-  font-weight: bolder;
+  font-weight: 500;
+  font-size: 120%;
 }
 
 .total-aggregate-label {
@@ -48,28 +55,37 @@
 
 /* Meal cards */
 
-.meals-container {
-  margin: 3%;
+.meals {
+  margin: 0px;
   margin-top: 20px;
+}
+
+.meal-block {
+  margin: 1rem;
 }
 
 .meal-header {
   display: flex;
   width: 100%;
   align-items: center;
+  font-size: 120%;
+  padding-bottom: 5px;
+  background-color: rgba(255, 255, 255, 0.03);
 }
 
 .meal-header-title {
   flex-wrap: nowrap;
   flex-basis: 65%;
-  font-weight: bold;
+  font-weight: 500;
+  padding-left: 1rem;
 }
 
 .meal-header-aggregate {
   display: flex;
   flex-basis: 35%;
-  font-weight: bold;
+  font-weight: 500;
   justify-content: space-between;
+  padding-right: 1rem;
 }
 
 .meal-header-macro {
@@ -83,12 +99,15 @@ mat-nav-list-item {
   margin-bottom: 5px;
 }
 
+::ng-deep mat-list-item > div.mat-list-item-content {
+  padding: 0px !important;
+}
+
 .portion-header {
   display: flex;
   flex-direction: column;
   /* flex-basis: 65%; */
   flex-grow: 1;
-  margin-bottom: 10px;
 }
 
 .portion-header-quantity {
@@ -98,14 +117,25 @@ mat-nav-list-item {
   color: gray;
 }
 
-.smallscreen-row {
+.portion-row {
   display: flex;
   width: 100%;
   font-family: 'Roboto Condensed', sans-serif;
   justify-content: space-between;
+  padding: 0 1rem 5px 1rem;
 }
 
-.portion-value-smallscreen {
+.portion-value {
   font-family: 'Roboto Mono', monospace;
   font-size: 90%;
+}
+
+/* Decrease the visibility of the colum */
+.secondary-value {
+  font-size: 80%;
+  font-style: italic;
+}
+
+.tabular-value {
+  font-variant-numeric: lining-nums tabular-nums;
 }

@@ -12,3 +12,4 @@
 * group calories and macros in desktop summary
 * look into automatically renovating JWT tokens
 * add option to display decimals in tables
+* add chevrons to date (yesterday, tomorrow)

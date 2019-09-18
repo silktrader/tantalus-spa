@@ -3,12 +3,6 @@
   margin: auto;
 }
 
-mat-expansion-panel {
-  margin: 3%;
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-
 app-long-portions-list {
   width: 100%;
 }
@@ -29,39 +23,6 @@ app-short-portions-list {
   height: 100%;
 }
 
-.total-aggregate-value {
-  /* font-family: 'Roboto Mono', monospace; */
-}
-
-/* Portion rows */
-
-.portion-column {
-  display: flex;
-  flex-basis: 35%;
-  justify-content: space-between;
-}
-
-.portion-macro {
-  /* the width's necessary to right align numbers */
-  width: 4ch;
-  text-align: right;
-}
-
-/* Highlight the column by distancing it from the others */
-.important-column {
-  margin-left: 1rem;
-}
-
-/* Decrease the visibility of the colum */
-.secondary-value {
-  font-size: 80%;
-  font-style: italic;
-}
-
-.tabular-value {
-  font-variant-numeric: lining-nums tabular-nums;
-}
-
 mat-card.no-meals {
   display: flex;
   align-items: center;
@@ -72,10 +33,6 @@ mat-card.no-meals {
   padding: 5rem;
   font-style: italic;
   font-weight: 500;
-}
-
-::ng-deep mat-list-item > div.mat-list-item-content {
-  padding: 0px !important;
 }
 
 .date-selection {
@@ -96,20 +53,4 @@ mat-card.no-meals {
 mat-datepicker-toggle {
   margin-left: 1rem;
   color: rgba(0, 0, 0, 0.8);
-}
-
-.tooltip-name {
-  text-transform: capitalize;
-}
-
-.carbs {
-  color: #ffd54f;
-}
-
-.proteins {
-  color: #64b5f6;
-}
-
-.fats {
-  color: #e57373;
 }

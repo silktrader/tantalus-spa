@@ -8,7 +8,6 @@ export class Diary {
     [3, 'Dinner']
   ]);
 
-  // tk lock up
   public readonly meals: ReadonlyMap<number, ReadonlyArray<Portion>>;
 
   public readonly proteins = 0;
@@ -17,15 +16,16 @@ export class Diary {
   public readonly calories = 0;
 
   constructor(portions: Portion[], public readonly comment?: string) {
-    // create an ordered map from the available meals
-    const orderedMeals = new Map<number, Array<Portion>>();
-    for (const mealIndex of Diary.mealTypes.keys()) {
-      orderedMeals.set(mealIndex, []);
-    }
+    const meals = new Map<number, Array<Portion>>();
 
     // slot portions in the ordered map
     for (const portion of portions) {
-      orderedMeals.get(portion.meal).push(portion);
+      const existingMeal = meals.get(portion.meal);
+      if (existingMeal) {
+        existingMeal.push(portion);
+      } else {
+        meals.set(portion.meal, [portion]);
+      }
 
       // assign aggregates to avoid multiple iterations
       this.proteins += portion.proteins;
@@ -35,7 +35,7 @@ export class Diary {
     }
 
     // assign the cached map to a readonly collection
-    this.meals = orderedMeals;
+    this.meals = meals;
   }
 
   public getTotalProperty(propertyName: string) {
@@ -86,6 +86,16 @@ export class Diary {
       mealCalories += portion.calories;
     }
     return mealCalories / this.calories;
+  }
+
+  public getMealProteinCaloriesPercentage(meal: number): number {
+    let proteinCalories = 0;
+    let totalCalories = 0;
+    for (const portion of this.meals.get(meal)) {
+      totalCalories += portion.calories;
+      proteinCalories += portion.proteins * 4;
+    }
+    return proteinCalories / totalCalories;
   }
 
   public recordedMeals(mealNumber: number): number {

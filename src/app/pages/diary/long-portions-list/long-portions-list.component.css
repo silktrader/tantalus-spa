@@ -112,6 +112,11 @@ mat-nav-list-item {
   width: 100%;
 }
 
+/* Highlight the column by distancing it from the others */
+.important-column {
+  margin-left: 1rem;
+}
+
 .portion-header {
   display: flex;
   flex-direction: column;

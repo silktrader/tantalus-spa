@@ -6,6 +6,7 @@ import { FormControl } from '@angular/forms';
 import { DiaryService } from 'src/app/services/diary.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Portion } from 'src/app/models/portion.model';
+import { MacronutrientsChartData, ChartService } from 'src/app/services/chart.service';
 
 @Component({
   selector: 'app-short-portions-list',
@@ -14,21 +15,24 @@ import { Portion } from 'src/app/models/portion.model';
 })
 export class ShortPortionsListComponent implements OnInit {
   public diary: Diary;
-
   public subscription = new Subscription();
   public columnSelector = new FormControl();
   public focusedSet: number;
   public settings: ISummarySettings;
 
+  public chartData: MacronutrientsChartData;
+  public proteinsChartData;
+
   @Output() deletePortionsEvent = new EventEmitter<ReadonlyArray<Portion>>();
 
   public get columnSet() {
-    return SettingsService.largeColumnSet;
+    return SettingsService.smallColumnSet;
   }
 
   constructor(
     private ss: SettingsService,
     private ds: DiaryService,
+    private cs: ChartService,
     private router: Router,
     private route: ActivatedRoute
   ) {}
@@ -37,10 +41,19 @@ export class ShortPortionsListComponent implements OnInit {
     this.subscription.add(
       this.ds.diary$.subscribe(diary => {
         this.diary = diary;
+        if (diary) {
+          this.chartData = this.cs.macronutrientsData(diary);
+        }
       })
     );
 
-    this.columnSelector.valueChanges.subscribe(value => (this.focusedSet = value));
+    this.columnSelector.valueChanges.subscribe(value => {
+      switch (value) {
+        case 1:
+          this.proteinsChartData = this.cs.getProteinsChartData(this.diary);
+      }
+      this.focusedSet = value;
+    });
 
     this.subscription.add(
       this.ss.summary$.subscribe(settings => {

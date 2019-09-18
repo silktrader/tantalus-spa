@@ -52,4 +52,17 @@ export class ChartService {
       scheme: this.ui.chartsConfiguration.macronutrientsScheme
     };
   }
+
+  public getProteinsChartData(diary: Diary) {
+    return {
+      percentage: [
+        {
+          name: FoodProp.proteins,
+          value: diary.proteins * 4
+        },
+        { name: 'Others', value: diary.calories }
+      ],
+      scheme: this.ui.chartsConfiguration.proteinsScheme
+    };
+  }
 }
