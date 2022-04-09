@@ -21,7 +21,7 @@ export interface EditPortionDialogData {
   styleUrls: ['./edit-portion-dialog.component.css']
 })
 export class EditPortionDialogComponent implements OnInit {
-  @ViewChild(QuantityEditorComponent, { static: false })
+  @ViewChild(QuantityEditorComponent)
   private quantityEditor: QuantityEditorComponent;
 
   public readonly mealSelector: FormControl;

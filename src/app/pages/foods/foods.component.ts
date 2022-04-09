@@ -106,12 +106,12 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
   public columnSelector = new FormControl();
   public nameFilter = new FormControl();
 
-  @ViewChild(MatButtonToggleGroup, { static: false }) public columnToggle: MatButtonToggleGroup;
+  @ViewChild(MatButtonToggleGroup) public columnToggle: MatButtonToggleGroup;
 
   private subscription = new Subscription();
 
-  @ViewChild(MatSort, { static: false }) sort: MatSort;
-  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   @ViewChild('tableControls', { static: true }) tableControls: ElementRef;
   @ViewChild(ToolbarComponent, { static: true }) toolbar: ToolbarComponent;

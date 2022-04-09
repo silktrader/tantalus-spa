@@ -14,7 +14,7 @@ import { FormControl } from '@angular/forms';
 })
 export class MainNavigationComponent implements OnInit, OnDestroy {
   private sidenavComponent: MatSidenav;
-  @ViewChild(MatSidenav, { static: false }) set sidenav(matSidenav: MatSidenav) {
+  @ViewChild(MatSidenav) set sidenav(matSidenav: MatSidenav) {
     if (matSidenav === undefined) {
       return;
     }

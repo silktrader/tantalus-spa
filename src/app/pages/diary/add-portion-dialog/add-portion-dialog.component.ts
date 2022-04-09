@@ -24,7 +24,7 @@ export interface AddPortionDialogData {
   styleUrls: ['./add-portion-dialog.component.css']
 })
 export class AddPortionDialogComponent {
-  @ViewChild(QuantityEditorComponent, { static: false })
+  @ViewChild(QuantityEditorComponent)
   public quantityEditor: QuantityEditorComponent;
 
   public readonly foodInput = new FormControl(undefined, { validators: Validators.required });

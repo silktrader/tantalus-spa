@@ -12,7 +12,7 @@ import { MatInput } from '@angular/material/input';
 export class QuantityEditorComponent implements AfterViewInit {
   public input = new FormControl(undefined, [Validators.required, PortionValidators.quantity]);
 
-  @ViewChild(MatInput, { static: false }) matInput: MatInput;
+  @ViewChild(MatInput) matInput: MatInput;
 
   @Input() readonly initialValue: number;
 
