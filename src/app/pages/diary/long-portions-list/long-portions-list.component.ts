@@ -1,21 +1,33 @@
-import { Component, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { SettingsService, ISummarySettings } from 'src/app/services/settings.service';
-import { Diary } from 'src/app/models/diary.model';
-import { DiaryService } from 'src/app/services/diary.service';
-import { MatDialog } from '@angular/material/dialog';
-import { Portion } from 'src/app/models/portion.model';
-import { EditPortionDialogComponent } from '../edit-portion-dialog/edit-portion-dialog.component';
-import { UiService } from 'src/app/services/ui.service';
-import { AddPortionDialogComponent } from '../add-portion-dialog/add-portion-dialog.component';
-import { FoodsService } from 'src/app/services/foods.service';
-import { ChartService, MacronutrientsChartData } from 'src/app/services/chart.service';
-import { Subscription } from 'rxjs';
+import {
+  Component,
+  OnInit,
+  Output,
+  EventEmitter,
+  OnDestroy,
+} from "@angular/core";
+import { FormControl } from "@angular/forms";
+import {
+  SettingsService,
+  ISummarySettings,
+} from "src/app/services/settings.service";
+import { Diary } from "src/app/models/diary.model";
+import { DiaryService } from "src/app/services/diary.service";
+import { MatDialog } from "@angular/material/dialog";
+import { Portion } from "src/app/models/portion.model";
+import { EditPortionDialogComponent } from "../edit-portion-dialog/edit-portion-dialog.component";
+import { UiService } from "src/app/services/ui.service";
+import { AddPortionDialogComponent } from "../add-portion-dialog/add-portion-dialog.component";
+import { FoodsService } from "src/app/services/foods.service";
+import {
+  ChartService,
+  MacronutrientsChartData,
+} from "src/app/services/chart.service";
+import { Subscription } from "rxjs";
 
 @Component({
-  selector: 'app-long-portions-list',
-  templateUrl: './long-portions-list.component.html',
-  styleUrls: ['./long-portions-list.component.css']
+  selector: "app-long-portions-list",
+  templateUrl: "./long-portions-list.component.html",
+  styleUrls: ["./long-portions-list.component.css"],
 })
 export class LongPortionsListComponent implements OnInit, OnDestroy {
   public diary: Diary;
@@ -43,40 +55,44 @@ export class LongPortionsListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.subscription.add(
-      this.ds.diary$.subscribe(diary => {
+      this.ds.diary$.subscribe((diary) => {
         this.diary = diary;
 
-        if (diary) {
-          this.chartData = this.cs.macronutrientsData(diary);
-        }
+        // tk check: not working
+        // if (diary) {
+        //   this.chartData = this.cs.macronutrientsData(diary);
+        //   console.log(this.chartData);
+        // }
       })
     );
 
-    this.columnSelector.valueChanges.subscribe(value => (this.focusedSet = value));
+    this.columnSelector.valueChanges.subscribe(
+      (value) => (this.focusedSet = value)
+    );
 
     this.subscription.add(
-      this.ss.summary$.subscribe(settings => {
+      this.ss.summary$.subscribe((settings) => {
         this.settings = settings;
         this.columnSelector.setValue(settings.largeColumnSet);
       })
     );
   }
-  
+
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
 
   public addPortion(meal?: number) {
     this.dialog.open(AddPortionDialogComponent, {
-      data: { ds: this.ds, ui: this.ui, fs: this.fs, meal }
+      data: { ds: this.ds, ui: this.ui, fs: this.fs, meal },
     });
   }
-  
-    public editPortion(portion: Portion) {
-      this.dialog.open(EditPortionDialogComponent, {
-        data: { portion, ds: this.ds, ui: this.ui }
-      });
-    }
+
+  public editPortion(portion: Portion) {
+    this.dialog.open(EditPortionDialogComponent, {
+      data: { portion, ds: this.ds, ui: this.ui },
+    });
+  }
 
   public deletePortions(portions: ReadonlyArray<Portion>) {
     this.deletePortionsEvent.next(portions);
