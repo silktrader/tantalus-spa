@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AddPortionDialogComponent } from './add-portion-dialog.component';
 
@@ -6,7 +6,7 @@ describe('AddPortionDialogComponent', () => {
   let component: AddPortionDialogComponent;
   let fixture: ComponentFixture<AddPortionDialogComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ AddPortionDialogComponent ]
     })

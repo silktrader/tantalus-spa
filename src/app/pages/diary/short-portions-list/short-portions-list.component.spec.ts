@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ShortPortionsListComponent } from './short-portions-list.component';
 
@@ -6,7 +6,7 @@ describe('ShortPortionsListComponent', () => {
   let component: ShortPortionsListComponent;
   let fixture: ComponentFixture<ShortPortionsListComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ShortPortionsListComponent ]
     })

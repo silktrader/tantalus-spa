@@ -66,7 +66,7 @@ const routes: Routes = [
 
 @NgModule({
   // onSameUrlNavigation allows pages refresh when lacking live connections
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
   exports: [RouterModule]
 })
 export class AppRoutingModule {}
