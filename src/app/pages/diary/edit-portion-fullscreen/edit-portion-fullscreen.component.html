@@ -43,34 +43,8 @@
 
     </section>
     <section class="summary">
-      <section class="calories-chart">
-        <ngx-charts-pie-chart [results]="chartData.calories" [labels]="false" [legendTitle]="''" [doughnut]="true"
-          [arcWidth]="0.25" [scheme]="macronutrientsScheme">
-          <ng-template #tooltipTemplate let-model="model">
-            <h3 class="tooltip-name">
-              {{ model.name }}
-            </h3>
-            <h4>{{ model.value | number:'1.0-0'}} kcal.</h4>
-          </ng-template>
-        </ngx-charts-pie-chart>
-        <div class="calories-chart-overlay">
-          <span class="doughnut-overlay">{{previewedPortion.calories | number:'1.0-0'}} <em>kcal</em></span>
-        </div>
-      </section>
-      <section class="macro-overview">
-        <section class="macro-group">
-          <span class="macro-grams">{{previewedPortion.proteins | number:'1.0-0'}}</span>
-          <span class="macro-label">Proteins</span>
-        </section>
-        <section class="macro-group">
-          <span class="macro-grams">{{previewedPortion.carbs | number:'1.0-0'}}</span>
-          <span class="macro-label">Carbs</span>
-        </section>
-        <section class="macro-group">
-          <span class="macro-grams">{{previewedPortion.fats | number:'1.0-0'}}</span>
-          <span class="macro-label">Fats</span>
-        </section>
-      </section>
+
+
     </section>
 
     <section class="inputs">

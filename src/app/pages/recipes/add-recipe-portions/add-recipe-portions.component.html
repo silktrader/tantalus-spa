@@ -10,7 +10,7 @@
 <ng-container *ngIf="originalRecipe">
   <form [formGroup]="ingredientsForm" class="main-form">
 
-    <mat-form-field class="meal-selector mat-body">
+    <!-- <mat-form-field class="meal-selector mat-body">
       <mat-select [formControl]="mealSelector" required>
         <mat-select-trigger>
           <span>{{ds.getMealName(mealSelector.value)}}</span>
@@ -20,7 +20,7 @@
             matBadgeSize="small">{{ds.getMealName(availableMeal)}}</span>
         </mat-option>
       </mat-select>
-    </mat-form-field>
+    </mat-form-field> -->
 
     <section formArrayName="ingredients" class="ingredients-container">
       <section *ngFor="let ingredient of ingredientsControls.controls; let i = index" class="ingredient-row">

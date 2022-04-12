@@ -13,7 +13,7 @@
 
         <ng-container [ngSwitch]="focusedSet">
 
-            <section *ngSwitchCase="0" class="header-columns">
+            <!-- <section *ngSwitchCase="0" class="header-columns">
                 <div class="header-chart">
                     <ngx-charts-pie-chart [results]="chartData.calories" [labels]="false" [legend]="false"
                         [gradient]="true" [scheme]="chartData.scheme">
@@ -29,7 +29,7 @@
                     </ngx-charts-pie-chart>
                 </div>
                 <span class="total-aggregate-column" style="width: 5ch">{{diary.proteins | number:'1.0-0'}}</span>
-            </section>
+            </section> -->
 
             <section *ngSwitchCase="2" class="header-columns">
                 <section class="total-aggregate-column">
@@ -76,13 +76,14 @@
                 <span *ngSwitchCase="0" class="meal-header-aggregate">
                     <span class="secondary-value">{{diary.getMealCaloriesPercentage(kvp.key) | percent}}</span>
                     <span class="tabular-value">{{diary.getMealProperty(kvp.key, 'calories') |
-                      number:'1.0-0'}}</span>
+                        number:'1.0-0'}}</span>
                 </span>
 
                 <span *ngSwitchCase="1" class="meal-header-aggregate">
                     <span class="secondary-value">{{diary.getMealProteinCaloriesPercentage(kvp.key) | percent}}</span>
                     <span class="tabular-value"
-                        [ngClass]="{'proteins': settings.useMacroColours}">{{diary.getMealProperty(kvp.key, 'proteins') | number:'1.0-0'}}</span>
+                        [ngClass]="{'proteins': settings.useMacroColours}">{{diary.getMealProperty(kvp.key, 'proteins')
+                        | number:'1.0-0'}}</span>
                 </span>
 
             </header>

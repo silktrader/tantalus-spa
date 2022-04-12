@@ -14,7 +14,7 @@
   </section>
 </app-toolbar>
 
-<mat-progress-spinner class="spinner" *ngIf="dataSource.loading$ | async" mode="intedeterminate"></mat-progress-spinner>
+<mat-progress-spinner class="spinner" *ngIf="dataSource.loading$ | async" mode="indeterminate"></mat-progress-spinner>
 
 <mat-table [dataSource]="dataSource" matSort class="mat-elevation-z6">
   <ng-container matColumnDef="name">

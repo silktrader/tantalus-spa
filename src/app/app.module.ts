@@ -26,53 +26,50 @@ import { QuantityEditorComponent } from './ui/quantity-editor/quantity-editor.co
 import { FocusThenSelectDirective } from './directives/focus-then-select.directive';
 import { AddPortionDialogComponent } from './pages/diary/add-portion-dialog/add-portion-dialog.component';
 import { NoticeComponent } from './ui/notice/notice.component';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { SettingsComponent } from './pages/settings/settings.component';
 import { LongPortionsListComponent } from './pages/diary/long-portions-list/long-portions-list.component';
 import { ShortPortionsListComponent } from './pages/diary/short-portions-list/short-portions-list.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    AuthenticationComponent,
-    DashboardComponent,
-    ToolbarComponent,
-    FoodsComponent,
-    EditFoodComponent,
-    MainNavigationComponent,
-    DiaryComponent,
-    DiarySummaryComponent,
-    EditPortionFullscreenComponent,
-    SelectPortionComponent,
-    RecipesSummaryComponent,
-    EditRecipeComponent,
-    AddRecipePortionsComponent,
-    EditPortionDialogComponent,
-    QuantityEditorComponent,
-    FocusThenSelectDirective,
-    AddPortionDialogComponent,
-    NoticeComponent,
-    SettingsComponent,
-    LongPortionsListComponent,
-    ShortPortionsListComponent
-  ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    HttpClientModule,
-    MaterialModule,
-    AppRoutingModule,
-    NgxChartsModule
-  ],
-  providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: UnauthorisedErrorInterceptor,
-      multi: true
-    }
-  ],
-  entryComponents: [EditPortionDialogComponent, AddPortionDialogComponent],
-  bootstrap: [AppComponent]
+    declarations: [
+        AppComponent,
+        AuthenticationComponent,
+        DashboardComponent,
+        ToolbarComponent,
+        FoodsComponent,
+        EditFoodComponent,
+        MainNavigationComponent,
+        DiaryComponent,
+        DiarySummaryComponent,
+        EditPortionFullscreenComponent,
+        SelectPortionComponent,
+        RecipesSummaryComponent,
+        EditRecipeComponent,
+        AddRecipePortionsComponent,
+        EditPortionDialogComponent,
+        QuantityEditorComponent,
+        FocusThenSelectDirective,
+        AddPortionDialogComponent,
+        NoticeComponent,
+        SettingsComponent,
+        LongPortionsListComponent,
+        ShortPortionsListComponent
+    ],
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        HttpClientModule,
+        MaterialModule,
+        AppRoutingModule,
+    ],
+    providers: [
+        { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: UnauthorisedErrorInterceptor,
+            multi: true
+        }
+    ],
+    bootstrap: [AppComponent]
 })
 export class AppModule {}

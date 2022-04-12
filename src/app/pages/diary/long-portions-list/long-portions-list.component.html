@@ -69,26 +69,29 @@
 
                         <span *ngSwitchCase="0" class="meal-header-aggregate">
                             <span class="meal-header-macro"
-                                [ngClass]="{'proteins': settings.useMacroColours}">{{diary.getMealProperty(kvp.key, 'proteins') | number:'1.0-0'}}</span>
+                                [ngClass]="{'proteins': settings.useMacroColours}">{{diary.getMealProperty(kvp.key,
+                                'proteins') | number:'1.0-0'}}</span>
                             <span class="meal-header-macro"
-                                [ngClass]="{'carbs': settings.useMacroColours}">{{diary.getMealProperty(kvp.key, 'carbs') | number:'1.0-0'}}</span>
+                                [ngClass]="{'carbs': settings.useMacroColours}">{{diary.getMealProperty(kvp.key,
+                                'carbs') | number:'1.0-0'}}</span>
                             <span class="meal-header-macro"
-                                [ngClass]="{'fats': settings.useMacroColours}">{{diary.getMealProperty(kvp.key, 'fats') | number:'1.0-0'}}</span>
-                            <span
-                                class="meal-header-macro important-column">{{diary.getMealProperty(kvp.key, 'calories') | number:'1.0-0'}}</span>
+                                [ngClass]="{'fats': settings.useMacroColours}">{{diary.getMealProperty(kvp.key, 'fats')
+                                | number:'1.0-0'}}</span>
+                            <span class="meal-header-macro important-column">{{diary.getMealProperty(kvp.key,
+                                'calories') | number:'1.0-0'}}</span>
                         </span>
 
                         <span *ngSwitchCase="1" class="meal-header-aggregate">
-                            <span
-                                class="meal-header-macro">{{diary.getMealProperty(kvp.key, 'trans') | number:'1.0-0'}}</span>
-                            <span
-                                class="meal-header-macro">{{diary.getMealProperty(kvp.key, 'monounsaturated') | number:'1.0-0'}}</span>
-                            <span
-                                class="meal-header-macro">{{diary.getMealProperty(kvp.key, 'polyunsaturated') | number:'1.0-0'}}</span>
-                            <span
-                                class="meal-header-macro">{{diary.getMealProperty(kvp.key, 'saturated') | number:'1.0-0'}}</span>
-                            <span
-                                class="meal-header-macro important-column">{{diary.getMealProperty(kvp.key, 'fats') | number:'1.0-0'}}</span>
+                            <span class="meal-header-macro">{{diary.getMealProperty(kvp.key, 'trans') |
+                                number:'1.0-0'}}</span>
+                            <span class="meal-header-macro">{{diary.getMealProperty(kvp.key, 'monounsaturated') |
+                                number:'1.0-0'}}</span>
+                            <span class="meal-header-macro">{{diary.getMealProperty(kvp.key, 'polyunsaturated') |
+                                number:'1.0-0'}}</span>
+                            <span class="meal-header-macro">{{diary.getMealProperty(kvp.key, 'saturated') |
+                                number:'1.0-0'}}</span>
+                            <span class="meal-header-macro important-column">{{diary.getMealProperty(kvp.key, 'fats') |
+                                number:'1.0-0'}}</span>
                         </span>
                     </span>
                 </mat-expansion-panel-header>
@@ -103,25 +106,28 @@
 
                             <span *ngSwitchCase="0" class="portion-column">
                                 <span class="portion-macro"
-                                    [ngClass]="{'proteins': settings.useMacroColours}">{{portion.proteins | number:'1.0-0'}}</span>
+                                    [ngClass]="{'proteins': settings.useMacroColours}">{{portion.proteins |
+                                    number:'1.0-0'}}</span>
                                 <span class="portion-macro"
-                                    [ngClass]="{'carbs': settings.useMacroColours}">{{portion.carbs | number:'1.0-0'}}</span>
+                                    [ngClass]="{'carbs': settings.useMacroColours}">{{portion.carbs |
+                                    number:'1.0-0'}}</span>
                                 <span class="portion-macro"
-                                    [ngClass]="{'fats': settings.useMacroColours}">{{portion.fats | number:'1.0-0'}}</span>
-                                <span
-                                    class="portion-macro important-column">{{portion.calories | number:'1.0-0'}}</span>
+                                    [ngClass]="{'fats': settings.useMacroColours}">{{portion.fats |
+                                    number:'1.0-0'}}</span>
+                                <span class="portion-macro important-column">{{portion.calories |
+                                    number:'1.0-0'}}</span>
                             </span>
 
                             <span *ngSwitchCase="1" class="portion-column">
 
-                                <span
-                                    class="portion-macro">{{portion.getTotalProperty('trans') | number:'1.0-0'}}</span>
-                                <span
-                                    class="portion-macro">{{portion.getTotalProperty('monounsaturated') | number:'1.0-0'}}</span>
-                                <span
-                                    class="portion-macro">{{portion.getTotalProperty('polyunsaturated') | number:'1.0-0'}}</span>
-                                <span
-                                    class="portion-macro">{{portion.getTotalProperty('saturated') | number:'1.0-0'}}</span>
+                                <span class="portion-macro">{{portion.getTotalProperty('trans') |
+                                    number:'1.0-0'}}</span>
+                                <span class="portion-macro">{{portion.getTotalProperty('monounsaturated') |
+                                    number:'1.0-0'}}</span>
+                                <span class="portion-macro">{{portion.getTotalProperty('polyunsaturated') |
+                                    number:'1.0-0'}}</span>
+                                <span class="portion-macro">{{portion.getTotalProperty('saturated') |
+                                    number:'1.0-0'}}</span>
                                 <span class="portion-macro important-column">{{portion.fats | number:'1.0-0'}}</span>
 
                             </span>
@@ -148,7 +154,7 @@
     <aside class="sidebar">
 
         <!-- tk check whether ngIf is needed -->
-        <ng-container *ngIf="chartData">
+        <!-- <ng-container *ngIf="chartData">
             <div class="chart-block">
                 <h4 class="chart-title">Calories per macronutrient</h4>
                 <div class="chart">
@@ -177,7 +183,7 @@
                     </ngx-charts-bar-horizontal-stacked>
                 </div>
             </div>
-        </ng-container>
+        </ng-container> -->
     </aside>
 
     <!-- <section class="comment">
