@@ -28,7 +28,7 @@ export class AuthenticationComponent implements OnInit {
 
   public noticeRoles = NoticeRoles;
 
-  constructor(private auth: AuthenticationService, private ui: UiService) {}
+  constructor(private auth: AuthenticationService, private ui: UiService) { }
 
   ngOnInit() {
     this.loginForm = new FormGroup({
@@ -68,7 +68,7 @@ export class AuthenticationComponent implements OnInit {
     return registerPassword && confirmPassword && registerPassword.value !== confirmPassword.value
       ? { passwordsMistmatch: true }
       : null;
-  }
+  };
 
   get passwordsMismatch() {
     return (
@@ -81,8 +81,8 @@ export class AuthenticationComponent implements OnInit {
     return this.loginPassword.hasError('required')
       ? 'You must provide a password'
       : this.loginPassword.hasError('minlength')
-      ? 'Longer password expected'
-      : '';
+        ? 'Longer password expected'
+        : '';
   }
 
   handleLogin() {

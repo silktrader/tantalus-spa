@@ -1,47 +1,56 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { AuthenticationService } from 'src/app/services/authentication.service';
 import { UiService } from 'src/app/services/ui.service';
 import { MatSidenav } from '@angular/material/sidenav';
-import { User } from 'src/app/models/user';
 import { delay } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
+import { AuthService } from 'src/app/auth/auth.service';
+import { UserInfo } from 'src/app/auth/user-info.model';
 
 @Component({
   selector: 'app-main-navigation',
   templateUrl: './main-navigation.component.html',
   styleUrls: ['./main-navigation.component.css']
 })
-export class MainNavigationComponent implements OnInit, OnDestroy {
-  private sidenavComponent: MatSidenav;
-  @ViewChild(MatSidenav) set sidenav(matSidenav: MatSidenav) {
-    if (matSidenav === undefined) {
-      return;
-    }
+export class MainNavigationComponent implements OnInit, OnDestroy, AfterViewInit {
 
-    // the setter allows the sidenav to be registered during the ngIf evaluation
-    this.sidenavComponent = matSidenav;
-    this.ui.sidenav = matSidenav;
+  @ViewChild(MatSidenav) public sidenav: MatSidenav;
 
-    // the breakpoint observer might not trigger a change after a login
-    if (this.ui.isMobile) {
-      setTimeout(() => this.setMobileSidenav(), 0);
-    } else {
-      setTimeout(() => this.setDesktopSidenav(), 0);
-    }
-  }
+  // private sidenavComponent: MatSidenav;
+  // @ViewChild(MatSidenav) set sidenav(matSidenav: MatSidenav) {
+  //   if (matSidenav === undefined) {
+  //     console.log('called');
+  //     return;
+  //   }
 
-  public authenticatedUser: User;
+  //   // the setter allows the sidenav to be registered during the ngIf evaluation
+  //   this.sidenavComponent = matSidenav;
+  //   this.ui.sidenav = matSidenav;
+
+  //   // the breakpoint observer might not trigger a change after a login
+  //   if (this.ui.isMobile) {
+  //     setTimeout(() => this.setMobileSidenav(), 0);
+  //   } else {
+  //     setTimeout(() => this.setDesktopSidenav(), 0);
+  //   }
+  // }
+
+  public authenticatedUser: UserInfo;
   private subscription = new Subscription();
 
   public dateInput = new FormControl();
 
-  constructor(private auth: AuthenticationService, private ui: UiService) {}
+  constructor(private as: AuthService, private ui: UiService) { }
+
+  ngAfterViewInit(): void {
+    this.ui.sidenav = this.sidenav;
+  }
 
   ngOnInit(): void {
+
     // avoid `expression checked after it's been checked` error
     this.subscription.add(
-      this.auth.currentUser.pipe(delay(0)).subscribe(user => {
+      this.as.user$.pipe(delay(0)).subscribe(user => {
         this.authenticatedUser = user;
       })
     );
@@ -71,19 +80,19 @@ export class MainNavigationComponent implements OnInit, OnDestroy {
   }
 
   private setDesktopSidenav(): void {
-    if (this.sidenavComponent) {
-      this.sidenavComponent.disableClose = true;
-      this.sidenavComponent.mode = 'side';
-      this.sidenavComponent.open();
-    }
+    // if (this.sidenavComponent) {
+    //   this.sidenavComponent.disableClose = true;
+    //   this.sidenavComponent.mode = 'side';
+    //   this.sidenavComponent.open();
+    // }
   }
 
   private setMobileSidenav(): void {
-    if (this.sidenavComponent) {
-      this.sidenavComponent.disableClose = false;
-      this.sidenavComponent.mode = 'over';
-      this.sidenavComponent.close();
-    }
+    // if (this.sidenavComponent) {
+    //   this.sidenavComponent.disableClose = false;
+    //   this.sidenavComponent.mode = 'over';
+    //   this.sidenavComponent.close();
+    // }
   }
 
   ngOnDestroy(): void {
@@ -108,7 +117,7 @@ export class MainNavigationComponent implements OnInit, OnDestroy {
   }
 
   public handleLogout(): void {
-    this.auth.logout();
+    this.as.signout();
     this.ui.goLogin();
   }
 

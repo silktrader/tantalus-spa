@@ -78,7 +78,7 @@ export class UiService {
 
   public sidenav: MatSidenav;
 
-  private notificationsDuration = 3000;
+  private notificationsDuration = 5000;
 
   public notify(message: string, actionName?: string, actionFunction?: () => void): void {
     const snackbarRef = this.snackBar.open(message, actionName || '', {

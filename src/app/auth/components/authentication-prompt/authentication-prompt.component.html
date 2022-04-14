@@ -1,0 +1,64 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Authentication</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <mat-tab-group mat-align-tabs="center" mat-stretch-tabs>
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon>person</mat-icon>
+          <h3>Sign in</h3>
+        </ng-template>
+
+        <form [formGroup]="signInForm" (ngSubmit)="signIn()">
+          <mat-form-field appearance="outline">
+            <mat-label>User Name</mat-label>
+            <input matInput type="text" formControlName="username" autocomplete="off" />
+            <mat-error>Invalid User Name</mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Password</mat-label>
+            <input matInput [type]="passwordVisible ? 'text' : 'password'" formControlName="password"
+              autocomplete="current-password" />
+            <mat-icon *ngIf="signInPassword.dirty || signInPassword.touched" matSuffix
+              (click)="passwordVisible = !passwordVisible">
+              {{ passwordVisible ? 'visibility_off' : 'visibility' }}</mat-icon>
+            <mat-error>Invalid User Name or Password Provided</mat-error>
+          </mat-form-field>
+          <button mat-raised-button color="primary" [disabled]="!signInForm.valid || (loading$ | async)">
+            <mat-spinner *ngIf="loading$ | async else signInLabel" [diameter]="35"></mat-spinner>
+            <ng-template #signInLabel>Sign In</ng-template>
+          </button>
+        </form>
+
+      </mat-tab>
+      <mat-tab label="Register">
+        <ng-template mat-tab-label>
+          <mat-icon>person_add</mat-icon>
+          <h3>Register</h3>
+        </ng-template>
+
+        <form [formGroup]="registerForm" (ngSubmit)="register()">
+          <mat-form-field appearance="outline">
+            <mat-label>User Name</mat-label>
+            <input matInput type="text" formControlName="username" autocomplete="off" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input matInput type="text" formControlName="email" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Password</mat-label>
+            <input matInput type="text" formControlName="password" />
+          </mat-form-field>
+          <button mat-raised-button color="primary" [disabled]="!registerForm.valid || (loading$ | async)">
+            <mat-spinner *ngIf="loading$ | async else registerLabel" [diameter]="35"></mat-spinner>
+            <ng-template #registerLabel>Register</ng-template>
+          </button>
+        </form>
+
+      </mat-tab>
+    </mat-tab-group>
+  </mat-card-content>
+</mat-card>

@@ -18,8 +18,8 @@ import { environment } from 'src/environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class FoodsService {
-  constructor(private readonly http: HttpClient, private ui: UiService) {}
-  private url = environment.baseUrl + 'foods/';
+  constructor(private readonly http: HttpClient, private ui: UiService) { }
+  private url = environment.apiUrl + 'foods/';
 
   public static isRecipeDto(dto: any): dto is RecipeDto {
     return (dto as RecipeDto).ingredients !== undefined;
@@ -66,11 +66,9 @@ export class FoodsService {
       .set('sortProperty', sortProperty)
       .set('sortOrder', sortOrder);
 
-    if (nameFilter) {
-      params = params.set('nameFilter', nameFilter);
-    }
+    if (nameFilter) params = params.set('nameFilter', nameFilter);
 
-    return this.http.get<{ foods: FoodDto[]; count: number }>(this.url, { params }).pipe(
+    return this.http.get<{ foods: FoodDto[]; count: number }>(this.url, { params, withCredentials: true }).pipe(
       catchError(error => {
         this.ui.warn(error);
         return of({ foods: [], count: 0 });

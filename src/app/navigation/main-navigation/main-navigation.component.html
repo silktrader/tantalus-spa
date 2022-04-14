@@ -1,10 +1,11 @@
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav class="sidenav" fixedInViewport="true" *ngIf="authenticatedUser">
-    <mat-toolbar color="primary">
+  <!-- don't position the `ngIf` on the sidenav, to ensure its assignment -->
+  <mat-sidenav #sidenav class="sidenav" fixedInViewport="true">
+    <mat-toolbar color="primary" *ngIf="authenticatedUser">
 
       <button mat-icon-button [matMenuTriggerFor]="profileMenu" class="avatar" aria-label="Profile actions">
         <mat-icon>account_circle</mat-icon>
-        <span>{{authenticatedUser.name }}</span>
+        <span>{{authenticatedUser.username}}</span>
       </button>
       <mat-menu #profileMenu="matMenu">
         <button mat-menu-item>

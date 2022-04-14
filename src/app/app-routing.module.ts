@@ -1,9 +1,7 @@
 import { NgModule } from '@angular/core';
 
 import { RouterModule, Routes } from '@angular/router';
-import { AuthenticationComponent } from './authentication/authentication.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { AuthGuard } from './auth.guard';
 import { FoodsComponent } from './pages/foods/foods.component';
 import { EditFoodComponent } from './pages/edit-food/edit-food.component';
 import { DiaryComponent } from './pages/diary/diary.component';
@@ -14,10 +12,12 @@ import { RecipesSummaryComponent } from './pages/recipes/recipe-summary/recipes-
 import { EditRecipeComponent } from './pages/recipes/edit-recipe/edit-recipe.component';
 import { AddRecipePortionsComponent } from './pages/recipes/add-recipe-portions/add-recipe-portions.component';
 import { SettingsComponent } from './pages/settings/settings.component';
+import { AuthGuard } from './auth/auth.guard';
+import { AuthenticationPromptComponent } from './auth/components/authentication-prompt/authentication-prompt.component';
 
 const routes: Routes = [
-  { path: 'login', component: AuthenticationComponent },
-  { path: 'register', component: AuthenticationComponent },
+  { path: 'login', component: AuthenticationPromptComponent },
+  { path: 'register', component: AuthenticationPromptComponent },
   {
     path: 'diary/:date',
     component: DiaryComponent,
@@ -60,13 +60,12 @@ const routes: Routes = [
     path: 'settings',
     component: SettingsComponent,
     canActivate: [AuthGuard]
-  }
-  // { path: '**', redirectTo: 'dashboard' }
+  },
+  { path: '**', redirectTo: 'dashboard' }
 ];
 
 @NgModule({
-  // onSameUrlNavigation allows pages refresh when lacking live connections
-  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
+  imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

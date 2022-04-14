@@ -5,6 +5,7 @@ export class FoodDto {
   public readonly id: number;
 
   public readonly name: string;
+  public readonly shortUrl: string;
   public readonly proteins: number;
   public readonly carbs: number;
   public readonly fats: number;
@@ -32,4 +33,6 @@ export class FoodDto {
   public readonly iron?: number;
 
   public readonly alcohol?: number;
+
+  public readonly created: Date;
 }
