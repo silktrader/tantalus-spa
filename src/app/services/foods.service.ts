@@ -19,7 +19,7 @@ import { environment } from 'src/environments/environment';
 @Injectable({ providedIn: 'root' })
 export class FoodsService {
   constructor(private readonly http: HttpClient, private ui: UiService) { }
-  private url = environment.apiUrl + 'foods/';
+  private readonly url = environment.apiUrl + 'foods/';
 
   public static isRecipeDto(dto: any): dto is RecipeDto {
     return (dto as RecipeDto).ingredients !== undefined;
@@ -38,12 +38,12 @@ export class FoodsService {
     return this.http.put<FoodDto>(this.url + food.id, food);
   }
 
-  public deleteFood(id: number): Observable<FoodDto> {
+  public deleteFood(id: string): Observable<FoodDto> {
     return this.http.delete<FoodDto>(this.url + id);
   }
 
-  public getFood(id: number): Observable<Food | undefined> {
-    return this.http.get<FoodDto>(this.url + id).pipe(
+  public getFood(foodUrl: string): Observable<Food | undefined> {
+    return this.http.get<FoodDto>(this.url + foodUrl, { withCredentials: true }).pipe(
       map(data => new Food(data)),
       catchError(error => {
         this.ui.warn(error);

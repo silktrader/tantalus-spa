@@ -17,5 +17,5 @@ export interface EditRecipeDto extends SaveRecipeDto {
 
 export interface RecipeFoodDto {
   name: string;
-  id: number;
+  id: string;
 }

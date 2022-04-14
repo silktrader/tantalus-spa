@@ -116,8 +116,8 @@ export class DiaryService {
   /** Remove duplicate food DTOs to avoid the diary state growing in size */
   private removeDuplicateFoods(portions: PortionDto[], foods: FoodDto[]): FoodDto[] {
     // tk might be slow
-    const foodsMap = new Map(foods.map(food => [food.id, food] as [number, FoodDto]));
-    const addedFoodsIds = new Set<number>();
+    const foodsMap = new Map(foods.map(food => [food.id, food] as [string, FoodDto]));
+    const addedFoodsIds = new Set<string>();
     const foodsDtos = [];
 
     for (const portion of portions) {

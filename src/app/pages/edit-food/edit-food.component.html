@@ -253,7 +253,7 @@
   <mat-card *ngSwitchCase="editFoodStatus.InvalidID" class="error-notice">
     <mat-card-title class="error-title">Invalid Food</mat-card-title>
     <mat-card-content>
-      The food identifier was malformed: <em>{{IdString}}</em>.
+      The food identifier was malformed: <em>{{FoodIdentifier}}</em>.
     </mat-card-content>
     <mat-card-actions>
       <button mat-stroked-button (click)="ui.goToAddFood()">Create New Food</button>
@@ -263,7 +263,7 @@
   <mat-card *ngSwitchCase="editFoodStatus.NotFound" class="error-notice">
     <mat-card-title class="error-title">Missing Food</mat-card-title>
     <mat-card-content>
-      The server couldn't find a food with the identifier <em>{{IdString}}</em>.
+      The server couldn't find a food with the identifier <em>{{FoodIdentifier}}</em>.
     </mat-card-content>
     <mat-card-actions>
       <button mat-stroked-button (click)="ui.goToAddFood()">Create New Food</button>

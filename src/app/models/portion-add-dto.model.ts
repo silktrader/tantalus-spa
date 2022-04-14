@@ -1,5 +1,5 @@
 export interface PortionAddDto {
   meal: number;
-  foodId: number;
+  foodId: string;
   quantity: number;
 }

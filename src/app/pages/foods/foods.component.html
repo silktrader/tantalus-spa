@@ -44,9 +44,8 @@
     <ng-container [matColumnDef]="column" *ngFor="let column of selectedColumns">
       <mat-header-cell mat-sort-header *matHeaderCellDef class="cell" [ngClass]="column">
         {{ columnNames.get(column) || column }}</mat-header-cell>
-      <mat-cell class="cell" [ngClass]="column" *matCellDef="let element">{{
-          format(column, element[column])
-        }}</mat-cell>
+      <mat-cell class="cell" [ngClass]="column" *matCellDef="let element">{{ format(column, element[column]) }}
+      </mat-cell>
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="selectedColumns"></mat-header-row>

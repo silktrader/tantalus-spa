@@ -24,7 +24,7 @@ export class EditFoodComponent implements OnInit, OnDestroy {
     public ui: UiService,
     private fb: FormBuilder,
     private route: ActivatedRoute
-  ) {}
+  ) { }
 
   public editFoodStatus = EditFoodStatus;
   public status: EditFoodStatus = undefined;
@@ -47,7 +47,7 @@ export class EditFoodComponent implements OnInit, OnDestroy {
 
   private subscription = new Subscription();
 
-  public get IdString(): string {
+  public get FoodIdentifier(): string {
     return this.route.snapshot.params.id;
   }
 
@@ -61,7 +61,7 @@ export class EditFoodComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     // adding a new food since there's no ID
-    if (this.IdString === undefined) {
+    if (this.FoodIdentifier === undefined) {
       this.setupForm();
 
       // check if a name was supplied
@@ -71,32 +71,31 @@ export class EditFoodComponent implements OnInit, OnDestroy {
 
       this.status = EditFoodStatus.Editing;
     } else {
-      const id = Number(this.IdString);
+      // attempt to parse the food's identifier or url
 
-      // attempting to edit a food with an invalid ID
-      if (isNaN(id) || id <= 0) {
-        this.status = EditFoodStatus.InvalidID;
-      } else {
-        // finally attempt to fetch the food
-        this.foodsService.getFood(id).subscribe(food => {
-          // handles the not found result
-          if (food === undefined) {
-            this.status = EditFoodStatus.NotFound;
-            return;
-          }
+      const shortUrl = this.FoodIdentifier;
 
-          this.food = food;
-          this.setupForm();
+      // one could get the food from the store, or the history's state but fetching a new copy seems safer
 
-          // the status triggers the form's presence
-          this.status = EditFoodStatus.Editing;
-          this.addFoodForm.patchValue(food);
-          this.unmodifiedState = JSON.stringify(this.addFoodForm.value);
-        });
-      }
+      this.foodsService.getFood(shortUrl).subscribe(food => {
+        // handles the not found result
+        if (food === undefined) {
+          this.status = EditFoodStatus.NotFound;
+          return;
+        }
+
+        this.food = food;
+        this.setupForm();
+
+        // the status triggers the form's presence
+        this.status = EditFoodStatus.Editing;
+        this.addFoodForm.patchValue(food);
+        this.unmodifiedState = JSON.stringify(this.addFoodForm.value);
+      });
     }
   }
 
+  // tk is it necessary to create a new group each time? isn't a reset sufficient?
   private setupForm() {
     this.addFoodForm = this.fb.group({
       name: undefined,
@@ -160,7 +159,7 @@ export class EditFoodComponent implements OnInit, OnDestroy {
   }
 
   private editFood(values: FoodDto): void {
-    this.foodsService.editFood({ ...values, id: this.food.id }).subscribe(
+    this.foodsService.editFood({ ...values }).subscribe(
       (food: FoodDto) => {
         this.ui.notify(`Updated ${food.name}`);
         this.ui.goToFoods();
@@ -175,8 +174,8 @@ export class EditFoodComponent implements OnInit, OnDestroy {
   private addFood(values: FoodDto): void {
     this.foodsService.addFood(values).subscribe(
       (food: FoodDto) => {
-        this.ui.notify(`Added ${food.name} (#${food.id})`, 'View', () => {
-          this.ui.goToFood(food.id);
+        this.ui.notify(`Added ${food.name}`, 'View', () => {
+          this.ui.goToFood(food.shortUrl);
         });
         this.ui.goToFoods();
       },

@@ -1,8 +1,7 @@
 import { FoodDto } from './food-dto.model';
 import { FoodProp } from './food-prop.model';
-import { IPortion } from './portion.interface';
 
-export class Food extends FoodDto implements IPortion {
+export class Food extends FoodDto {
   constructor(data: FoodDto) {
     super();
 

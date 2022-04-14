@@ -2,7 +2,7 @@
  * Model class substituting interface to remove duplication of fields in children classes: stores data, can't feature properties
  */
 export class FoodDto {
-  public readonly id: number;
+  public readonly id: string;
 
   public readonly name: string;
   public readonly shortUrl: string;

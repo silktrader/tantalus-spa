@@ -4,13 +4,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { Diary } from '../models/diary.model';
 import { DiaryService } from './diary.service';
 import { FoodProp } from '../models/food-prop.model';
 import { ChartsConfiguration } from '../ui/ChartsConfiguration';
-import { AddPortionDialogComponent } from '../pages/diary/add-portion-dialog/add-portion-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
 
 export enum Breakpoints {
   mobile = '(max-width: 959px)',
@@ -203,8 +201,8 @@ export class UiService {
     this.router.navigate(['/foods']);
   }
 
-  public goToFood(id: number) {
-    this.router.navigate([`/foods/${id}`]);
+  public goToFood(foodUrl: string) {
+    this.router.navigate([`/foods/${foodUrl}`]);
   }
 
   public goToAddFood() {

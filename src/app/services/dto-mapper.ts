@@ -11,9 +11,7 @@ import { PortionAddDto } from '../models/portion-add-dto.model';
  * Ideally this service should implement various interfaces which are then injected into components.
  * Angular requires additional code and a token though.
  */
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class DtoMapper {
   public mapPortionDto(portion: Portion): PortionDto {
     return {
@@ -38,7 +36,7 @@ export class DtoMapper {
 
   public mapDiary(dto: DiaryEntryDto): Diary {
     // build foods map
-    const foods = new Map<number, Food>();
+    const foods = new Map<string, Food>();
     for (const foodDto of dto.foods) {
       if (foods.get(foodDto.id)) {
         continue;
@@ -60,7 +58,7 @@ export class DtoMapper {
 
   public mapDiaryDto(diary: Diary): DiaryEntryDto {
     const portions = new Array<PortionDto>();
-    const foodIds = new Set<number>();
+    const foodIds = new Set<string>();
     const foods = new Array<FoodDto>();
 
     for (const meal of diary.meals.values()) {

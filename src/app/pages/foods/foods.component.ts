@@ -32,7 +32,7 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
     public ui: UiService,
     private router: Router,
     private changeDetector: ChangeDetectorRef
-  ) {}
+  ) { }
 
   public selectedColumns: Array<FoodProp> = new Array<FoodProp>();
 
@@ -243,7 +243,7 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   edit(food: Food): void {
-    this.router.navigate(['/foods', food.id]);
+    this.router.navigate(['/foods', food.shortUrl]);
   }
 
   public format(prop: FoodProp, item: any): string {
@@ -285,7 +285,7 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
     const paginatorHeight = 56;
     return Math.floor(
       (availableHeight - tableControlsHeight - toolbarHeight - headerHeight - paginatorHeight) /
-        rowHeight
+      rowHeight
     );
   }
 }

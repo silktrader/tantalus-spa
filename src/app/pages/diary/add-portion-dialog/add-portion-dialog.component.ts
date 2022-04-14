@@ -7,11 +7,12 @@ import { QuantityEditorComponent } from 'src/app/ui/quantity-editor/quantity-edi
 import { FoodDto } from 'src/app/models/food-dto.model';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { FoodsService } from 'src/app/services/foods.service';
-import { IPortion } from 'src/app/models/portion.interface';
 import { Observable, Subject } from 'rxjs';
 import { RecipeDto } from 'src/app/models/recipe-autocomplete.model';
 import { PortionAddDto } from 'src/app/models/portion-add-dto.model';
 import { Diary } from 'src/app/models/diary.model';
+import { Recipe } from 'src/app/models/recipe.model';
+import { Food } from 'src/app/models/food.model';
 
 export interface AddPortionDialogData {
   readonly ds: DiaryService;
@@ -35,7 +36,7 @@ export class AddPortionDialogComponent {
     foodInput: this.foodInput
   });
 
-  public readonly filteredFoods$: Observable<ReadonlyArray<IPortion>>;
+  public readonly filteredFoods$: Observable<ReadonlyArray<Food | Recipe>>;
   private readonly filterText$ = new Subject<string>();
 
   private selectedFood: FoodDto;
