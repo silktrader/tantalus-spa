@@ -1,0 +1,37 @@
+.inputs {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+}
+
+.description {
+  flex-direction: column;
+}
+
+.details-column {
+  display: flex;
+  flex-direction: column;
+}
+
+mat-stepper {
+  max-width: min-content;
+}
+
+mat-form-field {
+   margin-right: 1rem;
+}
+
+::ng-deep div.mat-form-field-infix {
+  min-width: 5rem;
+  width: auto;
+}
+
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+}

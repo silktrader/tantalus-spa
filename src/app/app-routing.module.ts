@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { FoodsComponent } from './pages/foods/foods.component';
-import { EditFoodComponent } from './pages/edit-food/edit-food.component';
+import { EditFoodComponent } from './foods/edit-food/edit-food.component';
 import { DiaryComponent } from './pages/diary/diary.component';
 import { DiarySummaryComponent } from './pages/diary/diary-summary/diary-summary.component';
 import { EditPortionFullscreenComponent } from './pages/diary/edit-portion-fullscreen/edit-portion-fullscreen.component';
@@ -14,6 +14,7 @@ import { AddRecipePortionsComponent } from './pages/recipes/add-recipe-portions/
 import { SettingsComponent } from './pages/settings/settings.component';
 import { AuthGuard } from './auth/auth.guard';
 import { AuthenticationPromptComponent } from './auth/components/authentication-prompt/authentication-prompt.component';
+import { AddFoodComponent } from './foods/add-food/add-food.component';
 
 const routes: Routes = [
   { path: 'login', component: AuthenticationPromptComponent },
@@ -40,11 +41,9 @@ const routes: Routes = [
     component: FoodsComponent,
     canActivate: [AuthGuard]
   },
-  { path: 'foods/add', component: EditFoodComponent, canActivate: [AuthGuard] },
+  { path: 'foods/add', component: AddFoodComponent, canActivate: [AuthGuard] },
   {
-    path: 'foods/:id',
-    component: EditFoodComponent,
-    canActivate: [AuthGuard]
+    path: 'foods/:id', component: EditFoodComponent, canActivate: [AuthGuard]
   },
   {
     path: 'recipes',

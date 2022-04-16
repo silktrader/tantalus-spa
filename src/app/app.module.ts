@@ -9,7 +9,7 @@ import { AppRoutingModule } from "./app-routing.module";
 import { DashboardComponent } from "./dashboard/dashboard.component";
 import { ToolbarComponent } from "./ui/toolbar/toolbar.component";
 import { FoodsComponent } from "./pages/foods/foods.component";
-import { EditFoodComponent } from "./pages/edit-food/edit-food.component";
+import { EditFoodComponent } from "./foods/edit-food/edit-food.component";
 import { MainNavigationComponent } from "./navigation/main-navigation/main-navigation.component";
 import { DiaryComponent } from "./pages/diary/diary.component";
 import { DiarySummaryComponent } from "./pages/diary/diary-summary/diary-summary.component";
@@ -29,6 +29,7 @@ import { ShortPortionsListComponent } from "./pages/diary/short-portions-list/sh
 import { appInitializerFactory } from "./auth/app.initializer";
 import { AuthService } from "./auth/auth.service";
 import { AuthModule } from "./auth/auth.module";
+import { AddFoodComponent } from './foods/add-food/add-food.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { AuthModule } from "./auth/auth.module";
     SettingsComponent,
     LongPortionsListComponent,
     ShortPortionsListComponent,
+    AddFoodComponent,
   ],
   imports: [
     BrowserModule,

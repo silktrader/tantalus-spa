@@ -31,11 +31,12 @@ export class FoodsService {
   }
 
   public addFood(food: FoodDto): Observable<FoodDto> {
-    return this.http.post<FoodDto>(this.url, food);
+    return this.http.post<FoodDto>(this.url, food, { withCredentials: true });
   }
 
   public editFood(food: FoodDto): Observable<FoodDto> {
-    return this.http.put<FoodDto>(this.url + food.id, food);
+    return this.http.put<unknown>(this.url + food.id, food, { withCredentials: true })
+      .pipe(map(() => food));
   }
 
   public deleteFood(id: string): Observable<FoodDto> {
@@ -70,7 +71,8 @@ export class FoodsService {
 
     return this.http.get<{ foods: FoodDto[]; count: number }>(this.url, { params, withCredentials: true }).pipe(
       catchError(error => {
-        this.ui.warn(error);
+        this.ui.warn("Error while loading foods");
+        console.error(error);
         return of({ foods: [], count: 0 });
       })
     );
