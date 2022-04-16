@@ -7,6 +7,7 @@ export function appInitializerFactory(authService: AuthService) {
   return () =>
     authService.user$.pipe(
       take(1),
-      map((user) => (user ? authService.refreshToken() : EMPTY))
+      //map((user) => (user ? authService.refreshToken() : EMPTY))
+      map((user) => (EMPTY))
     );
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map, first, flatMap, tap } from 'rxjs/operators';
+import { map, first, flatMap, tap, catchError } from 'rxjs/operators';
 import { UserInfo } from './user-info.model';
 import { AuthConfig } from './auth-config.model';
 import { Router } from '@angular/router';
@@ -57,7 +57,7 @@ export class AuthService {
 
   signout() {
     this.http
-      .post<void>(`${this.backendUrl}/revoke-token`, { withCredentials: true })
+      .post<void>(`${this.backendUrl}/revoke-token`, {}, { withCredentials: true })
       .subscribe(); // tk handle errors
     this.stopRefreshTokenTimer();
     this.userSubject$.next(null);
@@ -80,13 +80,13 @@ export class AuthService {
 
   refreshToken() {
     return this.http
-      .post<UserInfo>(`${this.backendUrl}/refresh-token`, { withCredentials: true })
+      .post<UserInfo>(`${this.backendUrl}/refresh-token`, {}, { withCredentials: true })  // must leave empty body
       .pipe(
         tap(user => {
           console.log('refreshing');
           this.userSubject$.next(user);     // fetches new access token
           this.startRefreshTokenTimer(user.accessToken);
-        })
+        }),
       );
   }
 

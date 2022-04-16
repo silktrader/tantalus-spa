@@ -10,7 +10,6 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthenticationPromptComponent } from './components/authentication-prompt/authentication-prompt.component';
 import { MaterialModule } from '../material/material.module';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ErrorInterceptor } from './auth-error.interceptor';
 import { CommonModule } from '@angular/common';
 
 @NgModule({
@@ -35,11 +34,6 @@ export class AuthModule {
         {
           provide: HTTP_INTERCEPTORS,
           useClass: AuthInterceptor,
-          multi: true,
-        },
-        {
-          provide: HTTP_INTERCEPTORS,
-          useClass: ErrorInterceptor,
           multi: true,
         },
         { provide: AuthConfig, useValue: config },

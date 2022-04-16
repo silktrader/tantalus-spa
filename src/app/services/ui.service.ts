@@ -87,7 +87,8 @@ export class UiService {
     }
   }
 
-  public warn(message: string) {
+  public warn(message: string, error?: unknown) {
+    if (error) console.log(error);
     this.snackBar.open(message, '', { duration: this.notificationsDuration });
   }
 

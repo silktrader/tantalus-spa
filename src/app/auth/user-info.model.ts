@@ -1,5 +1,6 @@
-export class UserInfo {
-  readonly id!: string;
-  readonly username!: string;
-  readonly accessToken: string;
+export interface UserInfo {
+  id: string;
+  name: string;
+  fullName: string;
+  accessToken: string;
 }

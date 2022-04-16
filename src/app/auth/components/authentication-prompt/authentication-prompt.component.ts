@@ -52,7 +52,7 @@ export class AuthenticationPromptComponent implements OnInit {
       .subscribe({
         next: (user) => {
           this.loading$.next(false);
-          this.ui.notify(`Signed in as ${user.username}`);
+          this.ui.notify(`Signed in as ${user.name}`);
           if (user) this.router.navigate([this.returnUrl]);
         },
         error: error => {
