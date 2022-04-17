@@ -1,18 +1,21 @@
 <app-toolbar>
-  <a routerLink="/foods">Foods</a>
-  <a *ngIf="isAddingFood">Add Food</a>
-  <a *ngIf="isChangingFood">{{food.name}}</a>
-  <a *ngIf="status !== editFoodStatus.Editing">Error</a>
-  <button mat-icon-button [disabled]="!isResettable" *ngIf="isAddingFood || isChangingFood" (click)="undoChanges()">
-    <mat-icon aria-label="Reset changes">undo</mat-icon>
-  </button>
-  <button mat-icon-button (click)="onDelete()" *ngIf="isChangingFood">
-    <mat-icon>delete_sweep</mat-icon>
-  </button>
+  <span title>
+    <a routerLink="/foods">Foods</a>
+    <a *ngIf="isEditing">{{food.name}}</a>
+    <a *ngIf="!isEditing">Error</a>
+  </span>
+  <section desktop-actions>
+    <button mat-icon-button [disabled]="!isResettable" *ngIf="isEditing" (click)="undoChanges()">
+      <mat-icon aria-label="Reset changes">undo</mat-icon>
+    </button>
+    <button mat-icon-button (click)="onDelete()">
+      <mat-icon>delete_sweep</mat-icon>
+    </button>
+  </section>
 </app-toolbar>
 
 <ng-container [ngSwitch]="status">
-  <form *ngSwitchCase="editFoodStatus.Editing" [formGroup]="addFoodForm" (ngSubmit)="onSubmit()">
+  <form *ngSwitchCase="editFoodStatus.Editing" [formGroup]="editForm" (ngSubmit)="saveEdit()">
 
     <section class="edit-body">
 

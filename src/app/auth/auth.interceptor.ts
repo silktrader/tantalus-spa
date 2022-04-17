@@ -17,7 +17,6 @@ export class AuthInterceptor implements HttpInterceptor {
 
     // capture requests to the API endpoint, not the others
     if (user?.accessToken && request.url.startsWith(environment.apiUrl)) {
-      console.log("intercepted" + request.url + " " + request.withCredentials);
       const authenticatedRequest = request.clone({ setHeaders: { Authorization: `Bearer ${user.accessToken}` } });
       return next.handle(authenticatedRequest).pipe(
         catchError(error => {
@@ -45,7 +44,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
     return this.as.refreshToken().pipe(
       switchMap(user => {
-        return next.handle(request.clone({ withCredentials: true }));
+        return next.handle(request.clone({ setHeaders: { Authorization: `Bearer ${user.accessToken}` }, withCredentials: true }));
       }),
       catchError(error => {
         this.handleError(error);

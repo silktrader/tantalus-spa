@@ -83,9 +83,8 @@ export class AuthService {
       .post<UserInfo>(`${this.backendUrl}/refresh-token`, {}, { withCredentials: true })  // must leave empty body
       .pipe(
         tap(user => {
-          console.log('refreshing');
           this.userSubject$.next(user);     // fetches new access token
-          this.startRefreshTokenTimer(user.accessToken);
+          //this.startRefreshTokenTimer(user.accessToken);
         }),
       );
   }

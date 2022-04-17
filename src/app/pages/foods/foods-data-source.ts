@@ -15,7 +15,7 @@ export class FoodsDataSource implements DataSource<Food> {
     return this.count;
   }
 
-  constructor(private fs: FoodsService) {}
+  constructor(private fs: FoodsService) { }
 
   connect(collectionViewer: CollectionViewer): Observable<Food[]> {
     return this.foodsSubject.asObservable();
@@ -40,7 +40,7 @@ export class FoodsDataSource implements DataSource<Food> {
       .pipe(finalize(() => this.loadingSubject.next(false)))
       .subscribe(response => {
         this.foodsSubject.next(response.foods.map(dto => new Food(dto)));
-        this.count = response.count;
+        this.count = response.count; // tk no need for this
       });
   }
 }

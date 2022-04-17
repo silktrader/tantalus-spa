@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { FoodsService } from 'src/app/services/foods.service';
@@ -26,6 +26,8 @@ export class EditFoodComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute
   ) { }
 
+  public get isEditing() { return this.status === EditFoodStatus.Editing; } // turn into observable tk?
+
   public editFoodStatus = EditFoodStatus;
   public status: EditFoodStatus = undefined;
 
@@ -39,11 +41,11 @@ export class EditFoodComponent implements OnInit, OnDestroy {
     return this.isResettableFlag;
   }
 
-  public addFoodForm: FormGroup;
+  public editForm: FormGroup;
+
   private unmodifiedState;
 
-  // undefined when the food is being added
-  public food: Food | undefined;
+  public food: Food;
 
   private subscription = new Subscription();
 
@@ -51,91 +53,61 @@ export class EditFoodComponent implements OnInit, OnDestroy {
     return this.route.snapshot.params.id;
   }
 
-  public get isAddingFood(): boolean {
-    return this.food === undefined && this.status === EditFoodStatus.Editing;
-  }
-
-  public get isChangingFood(): boolean {
-    return this.food !== undefined && this.status === EditFoodStatus.Editing;
-  }
-
   ngOnInit() {
-    // adding a new food since there's no ID
-    if (this.FoodIdentifier === undefined) {
-      this.setupForm();
-
-      // check if a name was supplied
-      if (history.state && history.state.foodName) {
-        this.addFoodForm.get('name').setValue(history.state.foodName);
+    // one could get the food from the store, or the history's state but fetching a new copy seems safer
+    this.foodsService.getFood(this.FoodIdentifier).subscribe(food => {
+      // handles the not found result
+      if (food === undefined) {
+        this.status = EditFoodStatus.NotFound;
+        return;
       }
 
+      this.food = food;
+      this.setupForm(food);
+
+      // the status triggers the form's presence
       this.status = EditFoodStatus.Editing;
-    } else {
-      // attempt to parse the food's identifier or url
-
-      const shortUrl = this.FoodIdentifier;
-
-      // one could get the food from the store, or the history's state but fetching a new copy seems safer
-
-      this.foodsService.getFood(shortUrl).subscribe(food => {
-        // handles the not found result
-        if (food === undefined) {
-          this.status = EditFoodStatus.NotFound;
-          return;
-        }
-
-        this.food = food;
-        this.setupForm();
-
-        // the status triggers the form's presence
-        this.status = EditFoodStatus.Editing;
-        this.addFoodForm.patchValue(food);
-        this.unmodifiedState = JSON.stringify(this.addFoodForm.value);
-      });
-    }
+      this.unmodifiedState = JSON.stringify(this.editForm.value);
+    });
   }
 
-  // tk is it necessary to create a new group each time? isn't a reset sufficient?
-  private setupForm() {
-    this.addFoodForm = this.fb.group({
-      name: undefined,
-      proteins: 0,
-      carbs: 0,
-      fats: 0,
-
-      fibres: undefined,
-      sugar: undefined,
-      starch: undefined,
-
-      saturated: undefined,
-      monounsaturated: undefined,
-      polyunsaturated: undefined,
-      trans: undefined,
-      cholesterol: undefined,
-      omega3: undefined,
-      omega6: undefined,
-
-      sodium: undefined,
-      potassium: undefined,
-      calcium: undefined,
-      magnesium: undefined,
-      zinc: undefined,
-      iron: undefined,
-      alcohol: undefined,
-      notes: undefined,
-      source: undefined
+  private setupForm(food: Food) {
+    this.editForm = new FormGroup({
+      name: new FormControl(food.name, [Validators.required, Validators.minLength(4), Validators.maxLength(100)]),
+      proteins: new FormControl(food.proteins, [Validators.required, Validators.max(100)]),
+      carbs: new FormControl(food.carbs, [Validators.required, Validators.max(100)]),
+      fats: new FormControl(food.fats, [Validators.required, Validators.max(100)]),
+      fibres: new FormControl(food.fibres, [Validators.max(100)]),
+      sugar: new FormControl(food.sugar, [Validators.max(100)]),
+      starch: new FormControl(food.starch),
+      saturated: new FormControl(food.saturated),
+      monounsaturated: new FormControl(food.monounsaturated),
+      polyunsaturated: new FormControl(food.polyunsaturated),
+      trans: new FormControl(food.trans),
+      cholesterol: new FormControl(food.cholesterol),
+      omega3: new FormControl(food.omega3),
+      omega6: new FormControl(food.omega6),
+      alcohol: new FormControl(food.alcohol),
+      sodium: new FormControl(food.sodium),
+      potassium: new FormControl(food.potassium),
+      calcium: new FormControl(food.calcium),
+      magnesium: new FormControl(food.magnesium),
+      zinc: new FormControl(food.zinc),
+      iron: new FormControl(food.iron),
+      source: new FormControl(food.source),
+      notes: new FormControl(food.notes)
     });
 
     this.subscription.add(
-      this.addFoodForm.valueChanges.subscribe(newValue => {
+      this.editForm.valueChanges.subscribe(newValue => {
         // the form can be reset when no food's being edited or when there the food's values and the fields contents differ
-        if (this.unmodifiedState === undefined && this.addFoodForm.dirty) {
+        if (this.unmodifiedState === undefined && this.editForm.dirty) {
           this.isResettableFlag = true;
         } else if (this.unmodifiedState !== JSON.stringify(newValue)) {
           // store the form's saveable state to avoid unnecessary calls from multiple elements
           this.isResettableFlag = true;
         }
-        this.isSaveableFlag = this.addFoodForm.valid && this.isResettableFlag;
+        this.isSaveableFlag = this.editForm.valid && this.isResettableFlag;
       })
     );
   }
@@ -146,40 +118,14 @@ export class EditFoodComponent implements OnInit, OnDestroy {
     }
   }
 
-  onSubmit(): void {
-    // read new values, including name
-    const form = this.addFoodForm.value;
-
-    // changing the food entails different notifications
-    if (this.food) {
-      this.editFood(form);
-    } else {
-      this.addFood(form);
-    }
-  }
-
-  private editFood(values: FoodDto): void {
-    this.foodsService.editFood({ ...values, id: this.food.id }).subscribe(
-      (food: FoodDto) => {
-        this.ui.notify(`Updated ${food.name}`);
+  public saveEdit() {
+    this.foodsService.editFood({ ...this.editForm.value, id: this.food.id }).subscribe(
+      () => {
+        this.ui.notify(`Updated ${this.editForm.value.name}`);
         this.ui.goToFoods();
       },
       error => {
-        this.ui.warn(`Couldn't update ${values.name}`);
-        console.log(error);
-      }
-    );
-  }
-
-  private addFood(values: FoodDto): void {
-    this.foodsService.addFood(values).subscribe(
-      (food: FoodDto) => {
-        this.ui.notify(`Added ${food.name}`, 'View', () => {
-          this.ui.goToFood(food.shortUrl);
-        });
-        this.ui.goToFoods();
-      },
-      error => {
+        this.ui.warn(`Couldn't update ${this.editForm.value.name}`);
         console.log(error);
       }
     );
@@ -195,9 +141,9 @@ export class EditFoodComponent implements OnInit, OnDestroy {
 
   public undoChanges() {
     if (this.unmodifiedState) {
-      this.addFoodForm.patchValue(JSON.parse(this.unmodifiedState));
+      this.editForm.patchValue(JSON.parse(this.unmodifiedState));
     } else {
-      this.addFoodForm.reset();
+      this.editForm.reset();
     }
   }
 }
