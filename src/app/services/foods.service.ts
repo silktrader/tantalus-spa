@@ -34,9 +34,8 @@ export class FoodsService {
     return this.http.post<FoodDto>(this.url, food, { withCredentials: true });
   }
 
-  public editFood(food: FoodDto): Observable<FoodDto> {
-    return this.http.put<unknown>(this.url + food.id, food, { withCredentials: true })
-      .pipe(map(() => food));
+  public editFood(food: FoodDto): Observable<unknown> {
+    return this.http.put<unknown>(this.url + food.id, food, { withCredentials: true });
   }
 
   public deleteFood(id: string): Observable<FoodDto> {

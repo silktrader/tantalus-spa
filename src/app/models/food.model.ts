@@ -11,7 +11,7 @@ export class Food extends FoodDto {
   }
 
   get calories(): number {
-    return this.proteins * 4 + this.carbs * 4 + this.fats * 9 + this.alcohol * 7;
+    return this.proteins * 4 + this.carbs * 4 + this.fats * 9 + (this.alcohol || 0) * 7;    // covers falsy cases, such as 0 or undefined
   }
 
   get proteinsPercentage(): number {
