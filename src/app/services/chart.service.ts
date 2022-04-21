@@ -14,44 +14,44 @@ export interface MacronutrientsChartData {
   providedIn: 'root'
 })
 export class ChartService {
-  constructor(private ui: UiService) {}
+  constructor(private ui: UiService) { }
 
-  public macronutrientsData(diary: Diary): MacronutrientsChartData {
-    // establish relevant macronutrients
-    const macros = [FoodProp.proteins, FoodProp.carbs, FoodProp.fats, FoodProp.alcohol];
-    const kcalMultipliers = [4, 4, 9, 7];
+  // public macronutrientsData(diary: Diary): MacronutrientsChartData {
+  //   // establish relevant macronutrients
+  //   const macros = [FoodProp.proteins, FoodProp.carbs, FoodProp.fats, FoodProp.alcohol];
+  //   const kcalMultipliers = [4, 4, 9, 7];
 
-    const mealsData: Array<{ name: string; series: Array<NgxChartEntry> }> = [];
+  //   const mealsData: Array<{ name: string; series: Array<NgxChartEntry> }> = [];
 
-    for (const kvp of Diary.mealTypes) {
-      const series = [];
-      for (const macro of macros) {
-        series.push({ name: macro, value: 0 });
-      }
-      mealsData.push({ name: kvp[1], series });
-    }
+  //   for (const kvp of Diary.mealTypes) {
+  //     const series = [];
+  //     for (const macro of macros) {
+  //       series.push({ name: macro, value: 0 });
+  //     }
+  //     mealsData.push({ name: kvp[1], series });
+  //   }
 
-    const caloriesData: Array<NgxChartEntry> = macros.map(macro => ({ name: macro, value: 0 }));
+  //   const caloriesData: Array<NgxChartEntry> = macros.map(macro => ({ name: macro, value: 0 }));
 
-    // establish macronutrients aggregates in grams
-    for (let meal = 0; meal < diary.meals.size; meal++) {
-      let totalCalories = 0;
-      for (const portion of diary.meals.get(meal)) {
-        for (let m = 0; m < macros.length; m++) {
-          const calories = portion.getTotalProperty(macros[m]) * kcalMultipliers[m];
-          caloriesData[m].value += calories;
-          totalCalories += calories;
-          mealsData[meal].series[m].value += calories;
-        }
-      }
-    }
+  //   // establish macronutrients aggregates in grams
+  //   for (let meal = 0; meal < diary.meals.size; meal++) {
+  //     let totalCalories = 0;
+  //     for (const portion of diary.meals.get(meal)) {
+  //       for (let m = 0; m < macros.length; m++) {
+  //         const calories = portion.getTotalProperty(macros[m]) * kcalMultipliers[m];
+  //         caloriesData[m].value += calories;
+  //         totalCalories += calories;
+  //         mealsData[meal].series[m].value += calories;
+  //       }
+  //     }
+  //   }
 
-    return {
-      calories: caloriesData,
-      meals: mealsData,
-      scheme: this.ui.chartsConfiguration.macronutrientsScheme
-    };
-  }
+  //   return {
+  //     calories: caloriesData,
+  //     meals: mealsData,
+  //     scheme: this.ui.chartsConfiguration.macronutrientsScheme
+  //   };
+  // }
 
   public getProteinsChartData(diary: Diary) {
     return {

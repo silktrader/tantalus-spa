@@ -19,11 +19,11 @@
   <mat-form-field class="meal-selector mat-body">
     <mat-select [formControl]="mealSelector" required>
       <mat-select-trigger>
-        <span>{{mealTypes.get(mealSelector.value)}}</span>
+        <span>{{mealSelector.value}}</span>
       </mat-select-trigger>
-      <mat-option *ngFor="let kvp of mealTypes | keyvalue" [value]="kvp.key">
-        <span *ngIf="diary" [matBadge]="diary.recordedMeals(kvp.key)" matBadgeOverlap="false"
-          matBadgeSize="small">{{kvp.value}}</span>
+      <mat-option *ngFor="let meal of PossibleMeals" [value]="meal">
+        <span *ngIf="diary" [matBadge]="diary.recordedMeals(meal)" matBadgeOverlap="false"
+          matBadgeSize="small">{{meal}}</span>
       </mat-option>
     </mat-select>
   </mat-form-field>

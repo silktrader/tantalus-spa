@@ -1,14 +1,14 @@
-import { Portion } from './portion.model';
+import { Meal, Portion } from './portion.model';
 
 export class Diary {
-  public static mealTypes = new Map<number, string>([
-    [0, 'Breakfast'],
-    [1, 'Lunch'],
-    [2, 'Snacks'],
-    [3, 'Dinner']
-  ]);
+  // public static mealTypes = new Map<number, string>([
+  //   [0, 'Breakfast'],
+  //   [1, 'Lunch'],
+  //   [2, 'Snacks'],
+  //   [3, 'Dinner']
+  // ]);
 
-  public readonly meals: ReadonlyMap<number, ReadonlyArray<Portion>>;
+  public readonly meals: ReadonlyMap<string, ReadonlyArray<Portion>>;
 
   public readonly proteins = 0;
   public readonly carbs = 0;
@@ -16,7 +16,7 @@ export class Diary {
   public readonly calories = 0;
 
   constructor(portions: Portion[], public readonly comment?: string) {
-    const meals = new Map<number, Array<Portion>>();
+    const meals = new Map<Meal, Array<Portion>>();
 
     // slot portions in the ordered map
     for (const portion of portions) {
@@ -48,10 +48,10 @@ export class Diary {
     return total;
   }
 
-  public get latestMeal(): number {
-    let latestMeal = 0;
+  public get latestMeal(): string {
+    let latestMeal: string = Meal.Breakfast;
     for (const kvp of this.meals) {
-      if (kvp[1].length > 0 && kvp[0] > latestMeal) {
+      if (kvp[1].length > 0 && kvp[0] > latestMeal) {   // tk review ordering!
         latestMeal = kvp[0];
       }
     }
@@ -67,11 +67,11 @@ export class Diary {
     return false;
   }
 
-  public getMealName(meal: number): string {
-    return Diary.mealTypes.get(meal);
-  }
+  // public getMealName(meal: number): string {
+  //   return Diary.mealTypes.get(meal);
+  // }
 
-  public getMealProperty(meal: number, property: string): number {
+  public getMealProperty(meal: string, property: string): number {
     const portions = this.meals.get(meal);
     let total = 0;
     for (const portion of portions) {
@@ -80,7 +80,7 @@ export class Diary {
     return total;
   }
 
-  public getMealCaloriesPercentage(meal: number): number {
+  public getMealCaloriesPercentage(meal: string): number {
     let mealCalories = 0;
     for (const portion of this.meals.get(meal)) {
       mealCalories += portion.calories;
@@ -88,7 +88,7 @@ export class Diary {
     return mealCalories / this.calories;
   }
 
-  public getMealProteinCaloriesPercentage(meal: number): number {
+  public getMealProteinCaloriesPercentage(meal: string): number {
     let proteinCalories = 0;
     let totalCalories = 0;
     for (const portion of this.meals.get(meal)) {
@@ -98,15 +98,15 @@ export class Diary {
     return proteinCalories / totalCalories;
   }
 
-  public recordedMeals(mealNumber: number): number {
-    const meal = this.meals.get(mealNumber);
+  public recordedMeals(mealType: Meal | string): number {
+    const meal = this.meals.get(mealType);
     if (meal === undefined) {
       return 0;
     }
     return meal.length;
   }
 
-  public getPortion(id: number): Portion | undefined {
+  public getPortion(id: string): Portion | undefined {
     for (const meal of this.meals.values()) {
       for (const portion of meal) {
         if (portion.id === id) {

@@ -13,6 +13,7 @@ import { PortionAddDto } from 'src/app/models/portion-add-dto.model';
 import { Diary } from 'src/app/models/diary.model';
 import { Recipe } from 'src/app/models/recipe.model';
 import { Food } from 'src/app/models/food.model';
+import { PossibleMeals } from 'src/app/models/portion.model';
 
 export interface AddPortionDialogData {
   readonly ds: DiaryService;
@@ -95,8 +96,8 @@ export class AddPortionDialogComponent {
     return this.selectedRecipe !== undefined;
   }
 
-  public get mealTypes() {
-    return Diary.mealTypes;
+  public get PossibleMeals() {
+    return PossibleMeals;
   }
 
   public displayFood(foodDto: FoodDto): string | undefined {

@@ -12,8 +12,8 @@
         </mat-form-field>
         <app-quantity-editor [disabled]="addingRecipe" [initialValue]="0"></app-quantity-editor>
         <mat-select [formControl]="mealSelector" class="meal-selector">
-            <mat-option *ngFor="let kvp of mealTypes | keyvalue" [value]="kvp.key">
-                {{kvp.value}}
+            <mat-option *ngFor="let meal of PossibleMeals" [value]="meal">
+                {{meal}}
             </mat-option>
         </mat-select>
     </section>

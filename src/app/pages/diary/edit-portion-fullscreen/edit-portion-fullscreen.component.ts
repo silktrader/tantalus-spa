@@ -4,7 +4,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { Subscription, of } from 'rxjs';
 import { Food } from 'src/app/models/food.model';
-import { Portion } from 'src/app/models/portion.model';
+import { Portion, PossibleMeals } from 'src/app/models/portion.model';
 import { DiaryService } from 'src/app/services/diary.service';
 import { FoodsService } from 'src/app/services/foods.service';
 import { UiService } from 'src/app/services/ui.service';
@@ -47,7 +47,7 @@ export class EditPortionFullscreenComponent implements OnInit, OnDestroy {
     private fs: FoodsService,
     private ui: UiService,
     private mapper: DtoMapper
-  ) {}
+  ) { }
 
   ngOnInit() {
     // check which route is triggered
@@ -55,7 +55,7 @@ export class EditPortionFullscreenComponent implements OnInit, OnDestroy {
     if (portionId === null) {
       this.initAddPortion();
     } else {
-      this.initEditPortion(+portionId);
+      this.initEditPortion(portionId);
     }
 
     // create a new preview each time the value is changed
@@ -115,7 +115,7 @@ export class EditPortionFullscreenComponent implements OnInit, OnDestroy {
     this.subscription.add(this.ds.diary$.subscribe(diary => (this.diary = diary)));
   }
 
-  private initEditPortion(id: number) {
+  private initEditPortion(id: string) {
     this.subscription.add(
       this.ds.diary$.subscribe(diary => {
         // tk pass portion with route state
@@ -177,7 +177,7 @@ export class EditPortionFullscreenComponent implements OnInit, OnDestroy {
     this.ds.addPortion(portionData).subscribe({
       next: () => {
         // tk add save undo
-        this.ui.notifyAddedPortion(portionData.quantity, this.previewedPortion.food.name, () => {});
+        this.ui.notifyAddedPortion(portionData.quantity, this.previewedPortion.food.name, () => { console.log('implement me'); });
         this.back();
       },
       error: () => {
@@ -236,7 +236,7 @@ export class EditPortionFullscreenComponent implements OnInit, OnDestroy {
   }
 
   public get mealTypes() {
-    return Diary.mealTypes;
+    return PossibleMeals;
   }
 
   public get quantityError(): string {

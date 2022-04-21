@@ -11,9 +11,9 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class RecipesService {
-  private url = environment.baseUrl + 'recipes/';
+  private url = environment.apiUrl + 'recipes/';
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient) { }
 
   public saveRecipe(recipeDto: SaveRecipeDto): Observable<RecipeDto> {
     return this.http.post<RecipeDto>(this.url, recipeDto);

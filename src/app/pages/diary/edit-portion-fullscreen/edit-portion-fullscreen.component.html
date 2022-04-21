@@ -76,9 +76,8 @@
 
     <section class="meals-controls">
       <mat-button-toggle-group [vertical]="true" class="meal-toggle-group" [formControl]="mealSelector" required>
-        <mat-button-toggle class="meal-toggle" *ngFor="let kvp of mealTypes | keyvalue" [value]="kvp.key">
-          <span [matBadge]="diary?.recordedMeals(kvp.key)" matBadgeOverlap="false"
-            matBadgeSize="medium">{{kvp.value}}</span>
+        <mat-button-toggle class="meal-toggle" *ngFor="let meal of mealTypes" [value]="meal">
+          <span [matBadge]="diary?.recordedMeals(meal)" matBadgeOverlap="false" matBadgeSize="medium">{{meal}}</span>
         </mat-button-toggle>
       </mat-button-toggle-group>
 

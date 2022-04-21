@@ -55,7 +55,7 @@
 
             <header [ngSwitch]="focusedSet" class="meal-header">
                 <span class="meal-header-title">
-                    {{diary.getMealName(kvp.key)}}
+                    {{kvp.key}}
                     <button mat-icon-button color="primary" [matMenuTriggerFor]="menu" aria-label="Actions Menu">
                         <mat-icon>expand_more</mat-icon>
                     </button>

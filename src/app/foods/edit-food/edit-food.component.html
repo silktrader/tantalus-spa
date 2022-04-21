@@ -8,7 +8,7 @@
     <button mat-icon-button [disabled]="!isResettable" *ngIf="isEditing" (click)="undoChanges()">
       <mat-icon aria-label="Reset changes">undo</mat-icon>
     </button>
-    <button mat-icon-button (click)="onDelete()">
+    <button mat-icon-button (click)="delete()">
       <mat-icon>delete_sweep</mat-icon>
     </button>
   </section>

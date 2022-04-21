@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { DiaryService } from 'src/app/services/diary.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Portion } from 'src/app/models/portion.model';
+import { Meal, Portion } from 'src/app/models/portion.model';
 import { MacronutrientsChartData, ChartService } from 'src/app/services/chart.service';
 
 @Component({
@@ -35,15 +35,15 @@ export class ShortPortionsListComponent implements OnInit {
     private cs: ChartService,
     private router: Router,
     private route: ActivatedRoute
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.subscription.add(
       this.ds.diary$.subscribe(diary => {
         this.diary = diary;
-        if (diary) {
-          this.chartData = this.cs.macronutrientsData(diary);
-        }
+        // if (diary) {
+        //   this.chartData = this.cs.macronutrientsData(diary);
+        // }
       })
     );
 
@@ -63,7 +63,7 @@ export class ShortPortionsListComponent implements OnInit {
     );
   }
 
-  public addPortion(meal?: number) {
+  public addPortion(meal?: string) {
     this.router.navigate(['add-portion'], { relativeTo: this.route, state: { meal } });
   }
 

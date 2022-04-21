@@ -1,6 +1,8 @@
+import { Meal } from "./portion.model";
+
 export interface PortionDto {
-  readonly id: number;
-  readonly meal: number;
+  readonly id: string;
+  readonly meal: Meal;
   readonly foodId: string;
   readonly quantity: number;
 }

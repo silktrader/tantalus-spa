@@ -1,5 +1,7 @@
+import { Meal } from "./portion.model";
+
 export interface PortionAddDto {
-  meal: number;
+  meal: Meal;
   foodId: string;
   quantity: number;
 }

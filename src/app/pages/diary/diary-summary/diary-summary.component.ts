@@ -54,7 +54,7 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private dialog: MatDialog
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.subscription.add(
@@ -126,7 +126,7 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
   }
 
   public deletePortions(portions: ReadonlyArray<Portion>): void {
-    const ids: Array<number> = [];
+    const ids: Array<string> = [];
     const restoreDtos: Array<PortionAddDto> = [];
 
     // create dtos of portions

@@ -38,8 +38,8 @@ export class FoodsService {
     return this.http.put<unknown>(this.url + food.id, food, { withCredentials: true });
   }
 
-  public deleteFood(id: string): Observable<FoodDto> {
-    return this.http.delete<FoodDto>(this.url + id);
+  public deleteFood(id: string): Observable<unknown> {
+    return this.http.delete<unknown>(this.url + id, { withCredentials: true });   // tk no need for credentials!! check
   }
 
   public getFood(foodUrl: string): Observable<Food | undefined> {

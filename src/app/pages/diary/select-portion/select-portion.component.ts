@@ -9,6 +9,7 @@ import { Diary } from 'src/app/models/diary.model';
 import { Recipe } from 'src/app/models/recipe.model';
 import { IPortion } from 'src/app/models/portion.interface';
 import { Food } from 'src/app/models/food.model';
+import { Meal, PossibleMeals } from 'src/app/models/portion.model';
 
 @Component({
   selector: 'app-select-portion',
@@ -103,8 +104,8 @@ export class SelectPortionComponent implements OnInit, OnDestroy {
     }
   }
 
-  public get mealTypes() {
-    return Diary.mealTypes;
+  public get PossibleMeals() {
+    return PossibleMeals;
   }
 
   public isRecipe(portion: Food | Recipe): portion is Recipe {

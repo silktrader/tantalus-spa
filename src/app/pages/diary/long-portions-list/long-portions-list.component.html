@@ -65,7 +65,7 @@
 
                 <mat-expansion-panel-header>
                     <span [ngSwitch]="focusedSet" class="meal-header mat-subheading-2">
-                        <span class="meal-header-title">{{diary.getMealName(kvp.key)}}</span>
+                        <span class="meal-header-title">{{kvp.key}}</span>
 
                         <span *ngSwitchCase="0" class="meal-header-aggregate">
                             <span class="meal-header-macro"

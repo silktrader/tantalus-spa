@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Portion } from 'src/app/models/portion.model';
+import { Meal, Portion, PossibleMeals } from 'src/app/models/portion.model';
 import { FormControl } from '@angular/forms';
 import { DiaryService } from 'src/app/services/diary.service';
 import { UiService } from 'src/app/services/ui.service';
@@ -34,15 +34,15 @@ export class EditPortionDialogComponent implements OnInit {
     this.mealSelector = new FormControl(data.portion.meal);
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
-  public get mealTypes(): ReadonlyMap<number, string> {
-    return Diary.mealTypes;
+  public get PossibleMeals(): ReadonlyArray<string> {
+    return PossibleMeals;
   }
 
   private changePortion(oldPortion: PortionDto, newPortion: PortionDto): void {
-    this.data.ds.changePortion(newPortion).subscribe(
-      () => {
+    this.data.ds.changePortion(newPortion).subscribe({
+      complete: () => {
         this.data.ui.notifyChangePortion(
           {
             quantity: oldPortion.quantity,
@@ -50,14 +50,12 @@ export class EditPortionDialogComponent implements OnInit {
             foodName: this.data.portion.food.name
           },
           newPortion,
-          () => {
-            this.changePortion(newPortion, oldPortion);
-          }
+          () => { this.changePortion(newPortion, oldPortion); }
         );
         this.dialogRef.close();
       },
-      () => this.data.ui.warnFailedChangePortion(oldPortion.id)
-    );
+      error: () => this.data.ui.warnFailedChangePortion(oldPortion.id)
+    });
   }
 
   public deletePortion(): void {

@@ -4,7 +4,6 @@ import { UiService } from 'src/app/services/ui.service';
 import { Recipe } from 'src/app/models/recipe.model';
 import { FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
 import { Ingredient } from 'src/app/models/ingredient.interface';
-import { Observable, forkJoin } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RecipesService } from 'src/app/services/recipes.service';
 
@@ -40,7 +39,7 @@ export class AddRecipePortionsComponent implements OnInit {
     }
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   get ingredientsControls(): FormArray {
     return this.ingredientsForm.get('ingredients') as FormArray;

@@ -51,7 +51,7 @@ export class LongPortionsListComponent implements OnInit, OnDestroy {
     private fs: FoodsService,
     private dialog: MatDialog,
     private ss: SettingsService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.subscription.add(
@@ -82,7 +82,7 @@ export class LongPortionsListComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  public addPortion(meal?: number) {
+  public addPortion(meal?: string) {
     this.dialog.open(AddPortionDialogComponent, {
       data: { ds: this.ds, ui: this.ui, fs: this.fs, meal },
     });

@@ -131,7 +131,7 @@ export class EditFoodComponent implements OnInit, OnDestroy {
     );
   }
 
-  onDelete() {
+  delete() {
     this.foodsService.deleteFood(this.food.id).subscribe(() => {
       // this.ui.warn(`Deleted ${food.name} and its ${result.portions.length} portions`);
       this.ui.warn(`Deleted ${this.food.name}`);

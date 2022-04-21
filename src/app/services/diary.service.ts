@@ -10,6 +10,7 @@ import { PortionAddDto } from '../models/portion-add-dto.model';
 import { FoodDto } from '../models/food-dto.model';
 import { environment } from 'src/environments/environment';
 import { DtoMapper } from './dto-mapper';
+import { Meal } from '../models/portion.model';
 
 @Injectable()
 export class DiaryService {
@@ -21,9 +22,8 @@ export class DiaryService {
   private readonly state$ = new ReplaySubject<DiaryEntryDto>(1);
   public state: Readonly<DiaryEntryDto>; // tk expose as readonly
 
-  public focusedMeal = 0;
+  public focusedMeal: string = Meal.Breakfast;
 
-  // tslint:disable-next-line: variable-name
   private _date: Date;
 
   public get date(): Date {
@@ -76,7 +76,7 @@ export class DiaryService {
       } else {
         // tk handle this better
         this.diarySubject$.next(undefined);
-        this.focusedMeal = 0;
+        this.focusedMeal = Meal.Breakfast;
       }
     });
   }
@@ -101,7 +101,7 @@ export class DiaryService {
 
   private setDate(date: Date) {
     this._date = date;
-    this.baseUrl = environment.baseUrl + 'diary/' + DiaryService.toDateUrl(date);
+    this.baseUrl = environment.apiUrl + 'diary/' + DiaryService.toDateUrl(date);
   }
 
   private getDiaryData(): Observable<DiaryEntryDto> {
@@ -133,7 +133,7 @@ export class DiaryService {
   /** Adds multiple portions when subscribed to and updates the diary with the new additions. */
   public addPortions(portionDtos: PortionAddDto[]): Observable<PortionDto[]> {
     return this.http
-      .post<{ portions: PortionDto[]; foods: FoodDto[] }>(this.baseUrl + '/portions', portionDtos)
+      .post<{ portions: PortionDto[]; foods: FoodDto[] }>(`${this.baseUrl}/portions`, portionDtos)
       .pipe(
         map(response => {
           // the first portions of a new diary don't need to be added to a previous state
@@ -154,21 +154,22 @@ export class DiaryService {
       );
   }
 
-  public changePortion(dto: PortionDto): Observable<PortionDto> {
-    return this.http.put<PortionDto>(this.baseUrl + '/portions/' + dto.id, dto).pipe(
-      map(responseDto => {
+  public changePortion(dto: PortionDto): Observable<null> {
+    return this.http.put<null>(`${this.baseUrl}/portions/${dto.id}`, dto).pipe(
+      tap(() => {
         // create a new portion array and substitute the relevant entry
-        const portions = this.state.portions.map(portion =>
-          portion.id === responseDto.id ? responseDto : portion
-        );
-
-        this.state$.next({ ...this.state, portions });
-        return responseDto;
+        this.state$.next({
+          ...this.state,
+          portions: [
+            ...this.state.portions.filter(portion => portion.id !== dto.id),
+            dto
+          ]
+        });
       })
     );
   }
 
-  public removePortions(ids: Array<number>): Observable<void> {
+  public removePortions(ids: Array<string>): Observable<void> {
     // build the parameters list
     let params = new HttpParams();
     for (const id of ids) {
@@ -183,7 +184,7 @@ export class DiaryService {
     );
   }
 
-  public removePortion(id: number): Observable<void> {
+  public removePortion(id: string): Observable<void> {
     return this.removePortions([id]);
   }
 

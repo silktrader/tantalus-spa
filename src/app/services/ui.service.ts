@@ -113,15 +113,15 @@ export class UiService {
   }
 
   public notifyChangePortion(
-    initial: { quantity: number; meal: number; foodName: string },
-    final: { quantity: number; meal: number },
+    initial: { quantity: number; meal: string; foodName: string },
+    final: { quantity: number; meal: string },
     undoAction: () => void
   ): void {
     const quantityDifference = final.quantity - initial.quantity;
     let message = `${initial.foodName}`;
 
     if (initial.meal !== final.meal) {
-      message += ` moved to ${Diary.mealTypes.get(final.meal)}`;
+      message += ` moved to ${final.meal}`;
       if (quantityDifference !== 0) {
         message += `, `;
       }
@@ -136,7 +136,7 @@ export class UiService {
     this.notify(message, 'Undo', undoAction);
   }
 
-  public warnFailedChangePortion(id: number) {
+  public warnFailedChangePortion(id: string) {
     this.warn(`Couldn't change portion #${id}`);
   }
 
@@ -162,11 +162,11 @@ export class UiService {
     this.notify(`Restored ${foodName}'s portion`);
   }
 
-  public warnFailedRemoval(id: number) {
-    this.warn(`Couldn't delete portion #${id}`);
+  public warnFailedRemoval(id: string) {
+    this.warn(`Couldn't delete portion ${id}`);
   }
 
-  public warnFailedRemovals(ids: Array<number>) {
+  public warnFailedRemovals(ids: Array<string>) {
     this.warn(`Couldn't delete ${ids.length} portions`);
   }
 

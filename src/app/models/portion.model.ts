@@ -1,12 +1,22 @@
 import { Food } from './food.model';
 
+export enum Meal {
+  Breakfast = 'breakfast',
+  Morning = 'morning',
+  Lunch = 'lunch',
+  Afternoon = 'afternoon',
+  Dinner = 'dinner'
+}
+
+export const PossibleMeals = ['breakfast', 'morning', 'lunch', 'afternoon', 'dinner'];    // tk tie to enum, seal
+
 export class Portion {
   constructor(
-    public readonly id: number,
+    public readonly id: string,
     public quantity: number,
     public readonly food: Food,
-    public meal: number
-  ) {}
+    public meal: Meal
+  ) { }
 
   get proteins(): number {
     return (this.food.proteins * this.quantity) / 100;
