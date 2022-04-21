@@ -6,7 +6,6 @@ import { FormControl } from '@angular/forms';
 import { DiaryService } from 'src/app/services/diary.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Meal, Portion } from 'src/app/models/portion.model';
-import { MacronutrientsChartData, ChartService } from 'src/app/services/chart.service';
 
 @Component({
   selector: 'app-short-portions-list',
@@ -20,7 +19,6 @@ export class ShortPortionsListComponent implements OnInit {
   public focusedSet: number;
   public settings: ISummarySettings;
 
-  public chartData: MacronutrientsChartData;
   public proteinsChartData;
 
   @Output() deletePortionsEvent = new EventEmitter<ReadonlyArray<Portion>>();
@@ -32,7 +30,6 @@ export class ShortPortionsListComponent implements OnInit {
   constructor(
     private ss: SettingsService,
     private ds: DiaryService,
-    private cs: ChartService,
     private router: Router,
     private route: ActivatedRoute
   ) { }
@@ -41,17 +38,10 @@ export class ShortPortionsListComponent implements OnInit {
     this.subscription.add(
       this.ds.diary$.subscribe(diary => {
         this.diary = diary;
-        // if (diary) {
-        //   this.chartData = this.cs.macronutrientsData(diary);
-        // }
       })
     );
 
     this.columnSelector.valueChanges.subscribe(value => {
-      switch (value) {
-        case 1:
-          this.proteinsChartData = this.cs.getProteinsChartData(this.diary);
-      }
       this.focusedSet = value;
     });
 

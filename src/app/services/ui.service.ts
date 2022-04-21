@@ -5,10 +5,8 @@ import { Location } from '@angular/common';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
-import { Diary } from '../models/diary.model';
 import { DiaryService } from './diary.service';
 import { FoodProp } from '../models/food-prop.model';
-import { ChartsConfiguration } from '../ui/ChartsConfiguration';
 
 export enum Breakpoints {
   mobile = '(max-width: 959px)',
@@ -29,8 +27,6 @@ export class UiService {
     [FoodProp.fats, '#e57373']
   ]);
 
-  public readonly chartsConfiguration = new ChartsConfiguration();
-
   constructor(
     private router: Router,
     private snackBar: MatSnackBar,
@@ -46,12 +42,6 @@ export class UiService {
       this.mobileSubject.next(result.breakpoints[Breakpoints.mobile]);
       this.desktopSubject.next(result.breakpoints[Breakpoints.desktop]);
     });
-
-    this.chartsConfiguration.setMacronutrientsScheme(
-      this.colours.get(FoodProp.proteins),
-      this.colours.get(FoodProp.carbs),
-      this.colours.get(FoodProp.fats)
-    );
   }
 
   public get sidenavOpened(): boolean {

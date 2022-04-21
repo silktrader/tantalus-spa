@@ -1,5 +1,5 @@
 <section class="dialog" mat-dialog-content>
-    <a class="food-name" tabindex="-1" [routerLink]="['../foods/', data.portion.food.id]"
+    <a class="food-name" tabindex="-1" [routerLink]="['../foods/', data.portion.food.shortUrl]"
         (click)="dismiss()">{{data.portion.food.name}}</a>
     <app-quantity-editor [initialValue]="data.portion.quantity"></app-quantity-editor>
     <mat-select [formControl]="mealSelector" class="meal-selector">

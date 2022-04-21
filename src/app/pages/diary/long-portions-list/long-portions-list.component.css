@@ -156,50 +156,6 @@ mat-nav-list-item {
   /* width: 25rem; */
 }
 
-.chart-block {
-  display: flex;
-  flex-direction: column;
-  /* width: 100%; */
-  align-items: center;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-}
-
-.chart-title {
-  font-weight: 500;
-  font-style: italic;
-}
-
-.chart {
-  width: 100%;
-  height: 16rem;
-  position: relative;
-}
-
-.chart-overlay {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  z-index: -1;
-  text-align: center;
-}
-
-.doughnut-overlay {
-  margin: auto;
-  width: 4rem;
-}
-
-.doughnut-overlay em {
-  display: block;
-  font-size: 80%;
-  font-style: italic;
-}
-
-::ng-deep ngx-charts-bar-horizontal-stacked {
-  fill: white;
-}
-
 .tooltip-name {
   text-transform: capitalize;
 }

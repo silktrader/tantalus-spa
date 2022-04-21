@@ -153,45 +153,14 @@
 
     <aside class="sidebar">
 
-        <!-- tk check whether ngIf is needed -->
-        <!-- <ng-container *ngIf="chartData">
-            <div class="chart-block">
-                <h4 class="chart-title">Calories per macronutrient</h4>
-                <div class="chart">
-                    <ngx-charts-pie-chart [results]="chartData.calories" [labels]="false" [legend]="false"
-                        [legendPosition]="'below'" [legendTitle]="''" [doughnut]="true" [arcWidth]="0.6"
-                        [scheme]="chartData.scheme" [gradient]="true">
-                        <ng-template #tooltipTemplate let-model="model">
-                            <h3 class="tooltip-name">
-                                {{ model.name }}
-                            </h3>
-                            <h4>{{ model.value | number:'1.0-0'}} kcal.</h4>
-                        </ng-template>
-                    </ngx-charts-pie-chart>
-                    <div class="chart-overlay">
-                        <span class="doughnut-overlay">{{diary.calories | number:'1.0-0'}} <em>kcal</em></span>
-                    </div>
-                </div>
-            </div>
 
-            <div class="chart-block">
-                <h4 class="chart-title">Calories distribution across meals</h4>
-                <div class="chart">
-                    <ngx-charts-bar-horizontal-stacked [results]="chartData.meals" [scheme]="chartData.scheme"
-                        [xAxis]="true" [yAxis]="true" [showGridLines]="true" [noBarWhenZero]="false" [gradient]="true"
-                        [xAxisTicks]="[300, 600]">
-                    </ngx-charts-bar-horizontal-stacked>
-                </div>
-            </div>
-        </ng-container> -->
     </aside>
 
     <!-- <section class="comment">
-            <mat-form-field appearance="outline">
-                <mat-label>Comment</mat-label>
-                <textarea matInput autocomplete="off" [formControl]="commentTextarea"
-                    (change)="editComment()"></textarea>
-            </mat-form-field>
-        </section> -->
+        <mat-form-field appearance="outline">
+            <mat-label>Comment</mat-label>
+            <textarea matInput autocomplete="off" [formControl]="commentTextarea" (change)="editComment()"></textarea>
+        </mat-form-field>
+    </section> -->
 
 </div>

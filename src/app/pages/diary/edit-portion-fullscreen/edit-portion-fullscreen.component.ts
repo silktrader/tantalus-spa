@@ -257,8 +257,4 @@ export class EditPortionFullscreenComponent implements OnInit, OnDestroy {
       ]
     };
   }
-
-  public get macronutrientsScheme() {
-    return this.ui.chartsConfiguration.macronutrientsScheme;
-  }
 }

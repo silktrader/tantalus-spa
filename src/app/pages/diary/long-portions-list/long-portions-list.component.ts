@@ -18,10 +18,6 @@ import { EditPortionDialogComponent } from "../edit-portion-dialog/edit-portion-
 import { UiService } from "src/app/services/ui.service";
 import { AddPortionDialogComponent } from "../add-portion-dialog/add-portion-dialog.component";
 import { FoodsService } from "src/app/services/foods.service";
-import {
-  ChartService,
-  MacronutrientsChartData,
-} from "src/app/services/chart.service";
 import { Subscription } from "rxjs";
 
 @Component({
@@ -31,7 +27,6 @@ import { Subscription } from "rxjs";
 })
 export class LongPortionsListComponent implements OnInit, OnDestroy {
   public diary: Diary;
-  public chartData: MacronutrientsChartData;
   public focusedSet: number;
   public settings: ISummarySettings;
 
@@ -46,7 +41,6 @@ export class LongPortionsListComponent implements OnInit, OnDestroy {
 
   constructor(
     private ds: DiaryService,
-    private cs: ChartService,
     private ui: UiService,
     private fs: FoodsService,
     private dialog: MatDialog,
@@ -57,12 +51,6 @@ export class LongPortionsListComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.ds.diary$.subscribe((diary) => {
         this.diary = diary;
-
-        // tk check: not working
-        // if (diary) {
-        //   this.chartData = this.cs.macronutrientsData(diary);
-        //   console.log(this.chartData);
-        // }
       })
     );
 
