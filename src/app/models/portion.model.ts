@@ -1,14 +1,14 @@
 import { Food } from './food.model';
 
 export enum Meal {
-  Breakfast = 'breakfast',
-  Morning = 'morning',
-  Lunch = 'lunch',
-  Afternoon = 'afternoon',
-  Dinner = 'dinner'
+  Breakfast = 'Breakfast',
+  Morning = 'Morning',
+  Lunch = 'Lunch',
+  Afternoon = 'Afternoon',
+  Dinner = 'Dinner'
 }
 
-export const PossibleMeals = ['breakfast', 'morning', 'lunch', 'afternoon', 'dinner'];    // tk tie to enum, seal
+export const PossibleMeals = Object.values(Meal);
 
 export class Portion {
   constructor(

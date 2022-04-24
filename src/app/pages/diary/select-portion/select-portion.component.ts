@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { DiaryService } from 'src/app/services/diary.service';
 import { UiService } from 'src/app/services/ui.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FoodsService } from 'src/app/services/foods.service';
+import { FoodsService, PortionResource } from 'src/app/services/foods.service';
 import { Diary } from 'src/app/models/diary.model';
 import { Recipe } from 'src/app/models/recipe.model';
 import { IPortion } from 'src/app/models/portion.interface';
@@ -17,7 +17,7 @@ import { Meal, PossibleMeals } from 'src/app/models/portion.model';
   styleUrls: ['./select-portion.component.css']
 })
 export class SelectPortionComponent implements OnInit, OnDestroy {
-  public filteredFoods$: Observable<ReadonlyArray<Food | Recipe>>;
+  public filteredFoods$: Observable<ReadonlyArray<PortionResource>>;
   nameFilter: BehaviorSubject<string> = new BehaviorSubject('');
 
   public mealSelector: FormControl = new FormControl();
@@ -90,8 +90,8 @@ export class SelectPortionComponent implements OnInit, OnDestroy {
    * Leads to the dialog which allows editing quantities and which meal the portion(s) belong to
    * @param selection Either a `Food` or a `Recipe`
    */
-  public proceedWithSelection(selection: Food | Recipe): void {
-    if (this.isRecipe(selection)) {
+  public proceedWithSelection(selection: PortionResource): void {
+    if (selection.isRecipe) {
       this.router.navigate(['../add-recipe', selection.id], {
         relativeTo: this.route,
         state: { recipe: selection, meal: this.mealSelector.value }
@@ -108,7 +108,7 @@ export class SelectPortionComponent implements OnInit, OnDestroy {
     return PossibleMeals;
   }
 
-  public isRecipe(portion: Food | Recipe): portion is Recipe {
-    return (portion as Recipe).ingredients !== undefined;
+  public isRecipe(portion: PortionResource) {
+    return portion.isRecipe;
   }
 }

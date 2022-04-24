@@ -30,13 +30,13 @@ export class FoodsDataSource implements DataSource<Food> {
     pageIndex: number,
     pageSize: number,
     sortProperty: string,
-    sortDirection: 'asc' | 'desc',
+    ascending: boolean,
     nameFilter: string
   ) {
     this.loadingSubject.next(true);
 
     this.fs
-      .getPaginatedFoods(pageIndex, pageSize, sortProperty, sortDirection, nameFilter)
+      .getPaginatedFoods(pageIndex, pageSize, sortProperty.toLowerCase(), ascending, nameFilter)
       .pipe(finalize(() => this.loadingSubject.next(false)))
       .subscribe(response => {
         this.foodsSubject.next(response.foods.map(dto => new Food(dto)));

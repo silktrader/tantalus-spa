@@ -36,7 +36,7 @@ export class EditPortionDialogComponent implements OnInit {
 
   ngOnInit() { }
 
-  public get PossibleMeals(): ReadonlyArray<string> {
+  public get PossibleMeals() {
     return PossibleMeals;
   }
 

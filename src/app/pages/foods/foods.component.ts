@@ -176,7 +176,7 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.columnSelector.setValue('Calories');
 
     // final call to populate the table and set the loading state
-    this.datasource.loadFoods(0, this.pageSizeOptions[1], 'Name', 'asc', undefined);
+    this.datasource.loadFoods(0, this.pageSizeOptions[1], 'name', true, undefined);
   }
 
   ngAfterViewInit(): void {
@@ -231,13 +231,11 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private loadFoods(): void {
-    const sortOrder = this.sort.direction === 'asc' ? 'asc' : 'desc';
-
     this.datasource.loadFoods(
       this.paginator.pageIndex,
       this.paginator.pageSize,
       this.columnNames.get(this.sort.active),
-      sortOrder,
+      this.sort.direction === 'asc',
       this.nameFilter.value
     );
   }

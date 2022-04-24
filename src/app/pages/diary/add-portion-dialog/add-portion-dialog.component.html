@@ -6,7 +6,7 @@
                 (blur)="checkMissingPortion()">
             <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFood"
                 (optionSelected)="quantityEditor.focus()">
-                <mat-option *ngFor="let foodData of (filteredFoods$ | async)" [value]="foodData">{{foodData.name}}
+                <mat-option *ngFor="let resource of (filteredFoods$ | async)" [value]="resource">{{resource.name}}
                 </mat-option>
             </mat-autocomplete>
         </mat-form-field>

@@ -11,8 +11,7 @@ import {
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Food } from '../models/food.model';
 import { FoodDto } from '../models/food-dto.model';
-import { RecipeFoodDto, RecipeDto } from '../models/recipe-autocomplete.model';
-import { Recipe } from '../models/recipe.model';
+import { RecipeFoodDto } from '../models/recipe-autocomplete.model';
 import { UiService } from './ui.service';
 import { environment } from 'src/environments/environment';
 
@@ -20,15 +19,6 @@ import { environment } from 'src/environments/environment';
 export class FoodsService {
   constructor(private readonly http: HttpClient, private ui: UiService) { }
   private readonly url = environment.apiUrl + 'foods/';
-
-  public static isRecipeDto(dto: any): dto is RecipeDto {
-    return (dto as RecipeDto).ingredients !== undefined;
-  }
-
-  // tk not very solid since source is nullable
-  public static isFoodDto(dto: any): dto is FoodDto {
-    return (dto as FoodDto).source !== undefined;
-  }
 
   public addFood(food: FoodDto): Observable<FoodDto> {
     return this.http.post<FoodDto>(this.url, food, { withCredentials: true });
@@ -56,7 +46,7 @@ export class FoodsService {
     pageNumber: number,
     pageSize: number,
     sortProperty: string,
-    sortOrder: 'asc' | 'desc',
+    ascending: boolean,
     nameFilter: string
   ): Observable<{ foods: FoodDto[]; count: number }> {
     // draft a list of parameters
@@ -64,10 +54,11 @@ export class FoodsService {
       .set('pageIndex', pageNumber.toString())
       .set('pageSize', pageSize.toString())
       .set('sortProperty', sortProperty)
-      .set('sortOrder', sortOrder);
+      .set('ascending', ascending);
 
     if (nameFilter) params = params.set('nameFilter', nameFilter);
 
+    // tk remove credentials
     return this.http.get<{ foods: FoodDto[]; count: number }>(this.url, { params, withCredentials: true }).pipe(
       catchError(error => {
         this.ui.warn("Error while loading foods");
@@ -77,25 +68,14 @@ export class FoodsService {
     );
   }
 
-  public getFilteredFoods(filter: Observable<string>): Observable<Array<Food | Recipe>> {
+  public getFilteredFoods(filter: Observable<string>): Observable<Array<PortionResource>> {
     return filter.pipe(
       switchMap(filterText => {
         const text = filterText.toLowerCase();
-        return this.http.get<Array<FoodDto | RecipeDto>>(`${this.url}filter?name=${text}`);
+        return this.http.get<Array<PortionResource>>(`${this.url}filter?name=${text}`);
       }),
       debounceTime(300),
       distinctUntilChanged(),
-      map(data => {
-        const portions: Array<Food | Recipe> = [];
-        for (const dto of data) {
-          if (FoodsService.isRecipeDto(dto)) {
-            portions.push(new Recipe(dto));
-          } else if (FoodsService.isFoodDto(dto)) {
-            portions.push(new Food(dto));
-          }
-        }
-        return portions;
-      })
     );
   }
 
@@ -103,6 +83,13 @@ export class FoodsService {
   public getAutocompleteFoods(filter: string): Observable<RecipeFoodDto[]> {
     return this.http
       .get<RecipeFoodDto[]>(`${this.url}autocomplete?filter=${filter}`)
-      .pipe(tap(value => console.log('fetching ' + filter + ' ')));
+      .pipe(tap(() => console.log('fetching ' + filter + ' ')));
   }
+}
+
+export interface PortionResource {
+  id: string;
+  name: string;
+  isRecipe: boolean;
+  priority: number;
 }
