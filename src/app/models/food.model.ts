@@ -15,15 +15,15 @@ export class Food extends FoodDto {
   }
 
   get proteinsPercentage(): number {
-    return (this.proteins * 4) / this.calories;
+    return this.proteins * 4 / Math.max(this.calories, 0.01);
   }
 
   get carbsPercentage(): number {
-    return (this.carbs * 4) / this.calories;
+    return this.carbs * 4 / Math.max(this.calories, 0.01);
   }
 
   get fatsPercentage(): number {
-    return (this.fats * 9) / this.calories;
+    return this.fats * 9 / Math.max(this.calories, 0.01);
   }
 
   get detailsPercentage(): number {

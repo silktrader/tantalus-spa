@@ -63,7 +63,7 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
         FoodProp.saturated,
         FoodProp.trans,
         FoodProp.cholesterol,
-        FoodProp.fatPercentage
+        FoodProp.fatsPercentage
       ]
     ],
     [
@@ -88,9 +88,9 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
     [FoodProp.fibres, 'Fibres'],
     [FoodProp.sugar, 'Sugar'],
     [FoodProp.starch, 'Starch'],
-    [FoodProp.carbsPercentage, 'Calories %'],
-    [FoodProp.fatPercentage, 'Calories %'],
-    [FoodProp.proteinsPercentage, 'Calories %'],
+    [FoodProp.carbsPercentage, 'Carbs %'],
+    [FoodProp.fatsPercentage, 'Fats %'],
+    [FoodProp.proteinsPercentage, 'Proteins %'],
     [FoodProp.detailsPercentage, 'Details %'],
     [FoodProp.cholesterol, 'Cholesterol'],
     [FoodProp.saturated, 'Saturated'],
@@ -126,7 +126,7 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly percentageProperties = new Set([
     FoodProp.proteinsPercentage,
     FoodProp.carbsPercentage,
-    FoodProp.fatPercentage,
+    FoodProp.fatsPercentage,
     FoodProp.detailsPercentage
   ]);
 
@@ -184,7 +184,7 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
       .pipe(
         debounceTime(300),
         distinctUntilChanged(),
-        tap(value => {
+        tap(() => {
           this.paginator.pageIndex = 0;
           this.loadFoods();
         })
@@ -193,9 +193,7 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     merge(this.paginator.page, this.sort.sortChange)
       .pipe(
-        tap(() => {
-          this.loadFoods();
-        })
+        tap(() => this.loadFoods())
       )
       .subscribe();
 
@@ -234,7 +232,7 @@ export class FoodsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.datasource.loadFoods(
       this.paginator.pageIndex,
       this.paginator.pageSize,
-      this.columnNames.get(this.sort.active),
+      this.sort.active,
       this.sort.direction === 'asc',
       this.nameFilter.value
     );

@@ -21,7 +21,7 @@ export enum FoodProp {
   zinc = 'zinc',
   iron = 'iron',
   alcohol = 'alcohol',
-  fatPercentage = 'fatsPercentage',
+  fatsPercentage = 'fatsPercentage',
   carbsPercentage = 'carbsPercentage',
   proteinsPercentage = 'proteinsPercentage',
   detailsPercentage = 'detailsPercentage'
