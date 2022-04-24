@@ -47,7 +47,7 @@ export class AuthInterceptor implements HttpInterceptor {
         return next.handle(request.clone({ setHeaders: { Authorization: `Bearer ${user.accessToken}` }, withCredentials: true }));
       }),
       catchError(error => {
-        this.handleError(error);
+        if (error.status === 401 || error.status === 403) this.handleError(error);
         return throwError(error);
       })
     );
