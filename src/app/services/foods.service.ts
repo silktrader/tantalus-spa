@@ -58,8 +58,7 @@ export class FoodsService {
 
     if (nameFilter) params = params.set('nameFilter', nameFilter);
 
-    // tk remove credentials
-    return this.http.get<{ foods: FoodDto[]; count: number }>(this.url, { params, withCredentials: true }).pipe(
+    return this.http.get<{ foods: FoodDto[]; count: number }>(this.url, { params }).pipe(
       catchError(error => {
         this.ui.warn("Error while loading foods");
         console.error(error);

@@ -173,7 +173,7 @@ export class DiaryService {
     // build the parameters list
     let params = new HttpParams();
     for (const id of ids) {
-      params = params.append('ids', id.toString());
+      params = params.append('ids', id);
     }
 
     return this.http.delete<void>(this.baseUrl + '/portions', { params }).pipe(

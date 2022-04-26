@@ -1,12 +1,6 @@
 import { Meal, Portion } from './portion.model';
 
 export class Diary {
-  // public static mealTypes = new Map<number, string>([
-  //   [0, 'Breakfast'],
-  //   [1, 'Lunch'],
-  //   [2, 'Snacks'],
-  //   [3, 'Dinner']
-  // ]);
 
   public readonly meals: ReadonlyMap<string, ReadonlyArray<Portion>>;
 
@@ -66,10 +60,6 @@ export class Diary {
     }
     return false;
   }
-
-  // public getMealName(meal: number): string {
-  //   return Diary.mealTypes.get(meal);
-  // }
 
   public getMealProperty(meal: string, property: string): number {
     const portions = this.meals.get(meal);

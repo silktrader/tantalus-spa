@@ -11,7 +11,6 @@ import { UiService } from 'src/app/services/ui.service';
 import { Diary } from 'src/app/models/diary.model';
 import { PortionAddDto } from 'src/app/models/portion-add-dto.model';
 import { PortionValidators } from 'src/app/validators/portion-quantity.validator';
-import { NgxChartEntry } from '../diary-summary/diary-summary.component';
 import { FoodProp } from 'src/app/models/food-prop.model';
 import { DtoMapper } from 'src/app/services/dto-mapper';
 
@@ -33,13 +32,10 @@ export class EditPortionFullscreenComponent implements OnInit, OnDestroy {
   public set previewedPortion(portion: Portion) {
     this._previewedPortion = portion;
     // populate new chart data every time the preview changes
-    this.chartData = this.getChartData();
   }
 
   public mealSelector = new FormControl(undefined);
   public quantityInput = new FormControl(100, [Validators.required, PortionValidators.quantity]);
-
-  public chartData: { calories: ReadonlyArray<NgxChartEntry> };
 
   constructor(
     private route: ActivatedRoute,
@@ -245,16 +241,5 @@ export class EditPortionFullscreenComponent implements OnInit, OnDestroy {
 
   public addGrams(quantity: number) {
     this.quantityInput.setValue(this.quantityInput.value + quantity);
-  }
-
-  public getChartData(): { calories: Array<NgxChartEntry> } {
-    return {
-      calories: [
-        { name: FoodProp.proteins, value: this.previewedPortion.proteins },
-        { name: FoodProp.carbs, value: this.previewedPortion.carbs },
-        { name: FoodProp.fats, value: this.previewedPortion.fats },
-        { name: FoodProp.alcohol, value: this.previewedPortion.alcohol }
-      ]
-    };
   }
 }

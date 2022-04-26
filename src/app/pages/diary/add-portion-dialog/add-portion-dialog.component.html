@@ -18,7 +18,7 @@
         </mat-select>
     </section>
     <section class="errors">
-        <mat-error *ngIf="hasQuantityError">{{quantityEditor.error}}</mat-error>
+        <!-- <mat-error *ngIf="hasQuantityError">{{quantityEditor.error}}</mat-error> -->
         <mat-error *ngIf="isMissingPortion">No such food, create <a [routerLink]="['/foods/add']"
                 (click)="dialogRef.close()" [state]="{ foodName: foodInput.value }">{{foodInput.value}}</a></mat-error>
     </section>

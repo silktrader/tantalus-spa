@@ -12,11 +12,6 @@ import { AddPortionDialogComponent } from '../add-portion-dialog/add-portion-dia
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 
-export interface NgxChartEntry {
-  name: string;
-  value: number;
-}
-
 enum ViewType {
   large = 1,
   small = 2
@@ -40,11 +35,6 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
   public settings: ISummarySettings = undefined;
 
   public view: ViewType;
-
-  public macroData: {
-    calories: ReadonlyArray<NgxChartEntry>;
-    meals: ReadonlyArray<{ name: string; series: Array<NgxChartEntry> }>;
-  };
 
   constructor(
     private ds: DiaryService,
@@ -165,12 +155,4 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
   //       error => this.ui.notify(`Couldn't edit comment ${error}`)
   //     );
   // }
-
-  public get proteinsChartData() {
-    console.log('called chart');
-    return [
-      { name: 'Proteins', value: this.diary.proteins },
-      { name: 'Others', value: this.diary.calories }
-    ];
-  }
 }

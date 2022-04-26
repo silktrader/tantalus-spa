@@ -68,25 +68,20 @@ export class AddPortionDialogComponent {
   }
 
   public get saveable(): boolean {
+    if (this.selectedResource === undefined) return false;
     if (this.selectedResource.isRecipe) return true;
-    if (this.selectedResource.isRecipe === false && this.quantityEditor && this.quantityEditor.valid) return true;
-    return false;
+    return (this.quantityEditor && this.quantityEditor.valid);
   }
 
   public get hasQuantityError(): boolean {
-    if (this.quantityEditor && this.quantityEditor.dirty && !this.quantityEditor.valid) {
-      return true;
-    }
-    return false;
+    return this.quantityEditor && this.quantityEditor.dirty && !this.quantityEditor.valid;
   }
 
   public get addingRecipe(): boolean {
-    return this.selectedResource.isRecipe;
+    return this.selectedResource !== undefined && this.selectedResource.isRecipe;
   }
 
-  public get PossibleMeals() {
-    return PossibleMeals;
-  }
+  public get PossibleMeals() { return PossibleMeals; }
 
   public displayFood(foodDto: FoodDto): string | undefined {
     if (foodDto) {

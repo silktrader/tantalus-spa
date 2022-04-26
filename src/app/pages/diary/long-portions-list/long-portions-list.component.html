@@ -61,7 +61,8 @@
         </div>
 
         <mat-accordion class="meals-container" multi="true">
-            <mat-expansion-panel [expanded]="true" hideToggle *ngFor="let kvp of diary.meals | keyvalue">
+            <mat-expansion-panel [expanded]="true" hideToggle
+                *ngFor="let kvp of diary.meals | keyvalue: chronologicalMeals">
 
                 <mat-expansion-panel-header>
                     <span [ngSwitch]="focusedSet" class="meal-header mat-subheading-2">
