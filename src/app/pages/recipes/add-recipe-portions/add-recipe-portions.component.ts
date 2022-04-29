@@ -31,7 +31,7 @@ export class AddRecipePortionsComponent implements OnInit {
       this.mealSelector.setValue(history.state.meal);
       this.reset();
     } else {
-      this.rs.findRecipe(+this.route.snapshot.paramMap.get('recipeId')).subscribe(recipe => {
+      this.rs.findRecipe(this.route.snapshot.paramMap.get('recipeId')).subscribe(recipe => {
         this.originalRecipe = recipe;
         this.mealSelector.setValue(this.ds.focusedMeal);
         this.reset();

@@ -1,18 +1,15 @@
 import { FoodDto } from './food-dto.model';
 
-export interface RecipeDto {
-  id: number;
+export interface RecipeGetResponse {
+  id: string;
   name: string;
   ingredients: Array<{ food: FoodDto; quantity: number }>;
 }
 
-export interface SaveRecipeDto {
+export interface RecipePostRequest {
+  id: string;
   name: string;
-  ingredients: Array<{ foodId: number; quantity: number }>;
-}
-
-export interface EditRecipeDto extends SaveRecipeDto {
-  id: number;
+  ingredients: Array<{ foodId: string; quantity: number }>;
 }
 
 export interface RecipeFoodDto {

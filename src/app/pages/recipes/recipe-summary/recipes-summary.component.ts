@@ -4,7 +4,7 @@ import { RecipesDataSource } from '../recipes-data-source';
 import { RecipesService } from 'src/app/services/recipes.service';
 import { UiService } from 'src/app/services/ui.service';
 import { MatPaginator } from '@angular/material/paginator';
-import { RecipeDto } from 'src/app/models/recipe-autocomplete.model';
+import { RecipeGetResponse } from 'src/app/models/recipe-autocomplete.model';
 
 @Component({
   selector: 'app-recipes-summary',
@@ -15,15 +15,11 @@ export class RecipesSummaryComponent implements OnInit, AfterViewInit {
   dataSource: RecipesDataSource;
   selectedColumns = ['name', 'ingredientsCount', 'calories'];
 
-  pageSizeOptions = [3, 20, 30];
+  pageSizeOptions = [10, 20, 30];
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
-  constructor(
-    private router: Router,
-    private rs: RecipesService,
-    private ui: UiService
-  ) {}
+  constructor(private router: Router, private rs: RecipesService, private ui: UiService) { }
 
   ngOnInit() {
     this.dataSource = new RecipesDataSource(this.rs, this.ui);
@@ -43,7 +39,7 @@ export class RecipesSummaryComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/recipes/new']);
   }
 
-  public edit(recipeDto: RecipeDto) {
-    this.router.navigate([`recipes/${recipeDto.id}`]);
+  public edit(recipe: RecipeGetResponse) {
+    this.router.navigate([`recipes/${recipe.id}`]);
   }
 }

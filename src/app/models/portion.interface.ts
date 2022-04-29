@@ -1,5 +1,5 @@
 export interface IPortion {
-  id: number;
+  id: string;
   name: string;
   calories: number;
 }

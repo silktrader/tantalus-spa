@@ -1,6 +1,6 @@
-import { RecipeDto } from './recipe-autocomplete.model';
+import { RecipeGetResponse } from './recipe-autocomplete.model';
 
 export interface RecipesPaginationDto {
-  recipes: RecipeDto[];
-  recipesCount: number;
+  recipes: RecipeGetResponse[];
+  count: number;
 }

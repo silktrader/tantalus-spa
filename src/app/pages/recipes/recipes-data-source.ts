@@ -17,7 +17,7 @@ export class RecipesDataSource implements DataSource<Recipe> {
     return this.count;
   }
 
-  constructor(private rs: RecipesService, private ui: UiService) {}
+  constructor(private rs: RecipesService, private ui: UiService) { }
 
   connect(collectionViewer: CollectionViewer): Observable<Recipe[]> {
     return this.recipesSubject.asObservable();
@@ -46,7 +46,7 @@ export class RecipesDataSource implements DataSource<Recipe> {
           recipes.push(new Recipe(recipe));
         }
         this.recipesSubject.next(recipes);
-        this.count = response.recipesCount;
+        this.count = response.count;
       });
   }
 }

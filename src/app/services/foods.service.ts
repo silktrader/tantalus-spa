@@ -1,13 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import {
-  map,
-  switchMap,
-  debounceTime,
-  distinctUntilChanged,
-  tap,
-  catchError
-} from 'rxjs/operators';
+import { map, switchMap, debounceTime, distinctUntilChanged, tap, catchError } from 'rxjs/operators';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Food } from '../models/food.model';
 import { FoodDto } from '../models/food-dto.model';
@@ -71,7 +64,7 @@ export class FoodsService {
     return filter.pipe(
       switchMap(filterText => {
         const text = filterText.toLowerCase();
-        return this.http.get<Array<PortionResource>>(`${this.url}filter?name=${text}`);
+        return this.http.get<Array<PortionResource>>(`${this.url}names?filter=${text}`);
       }),
       debounceTime(300),
       distinctUntilChanged(),
@@ -79,9 +72,10 @@ export class FoodsService {
   }
 
   // tk check whether this belongs here
-  public getAutocompleteFoods(filter: string): Observable<RecipeFoodDto[]> {
+  public getAutocompleteFoods(filter: string): Observable<ReadonlyArray<PortionResource>> {
     return this.http
-      .get<RecipeFoodDto[]>(`${this.url}autocomplete?filter=${filter}`)
+      //.get<RecipeFoodDto[]>(`${this.url}autocomplete?filter=${filter}`)
+      .get<Array<PortionResource>>(`${this.url}names?filter=${filter}`)
       .pipe(tap(() => console.log('fetching ' + filter + ' ')));
   }
 }

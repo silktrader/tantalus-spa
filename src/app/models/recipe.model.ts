@@ -1,4 +1,4 @@
-import { RecipeDto } from './recipe-autocomplete.model';
+import { RecipeGetResponse } from './recipe-autocomplete.model';
 import { Food } from './food.model';
 import { IPortion } from './portion.interface';
 import { Ingredient } from './ingredient.interface';
@@ -6,18 +6,18 @@ import { Ingredient } from './ingredient.interface';
 export class Recipe implements IPortion {
   public ingredients: ReadonlyArray<Ingredient>;
 
-  public id: Readonly<number>;
+  public id: Readonly<string>;
   public name: Readonly<string>;
   public calories: Readonly<number> = 0;
   public proteins: Readonly<number> = 0;
   public carbs: Readonly<number> = 0;
   public fats: Readonly<number> = 0;
 
-  constructor(recipeDto: RecipeDto) {
-    this.name = recipeDto.name;
-    this.id = recipeDto.id;
+  constructor(recipeResponse: RecipeGetResponse) {
+    this.name = recipeResponse.name;
+    this.id = recipeResponse.id;
     const tmpIngredients: Array<Ingredient> = [];
-    for (const ingredient of recipeDto.ingredients) {
+    for (const ingredient of recipeResponse.ingredients) {
       const food = new Food(ingredient.food);
       tmpIngredients.push({ food, quantity: ingredient.quantity });
       this.calories += (food.calories * ingredient.quantity) / 100;
@@ -29,4 +29,9 @@ export class Recipe implements IPortion {
     // assign array to a readonly field
     this.ingredients = tmpIngredients;
   }
+
+  get ingredientsCount(): number {
+    return this.ingredients.length;
+  }
+
 }
