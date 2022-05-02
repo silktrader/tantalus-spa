@@ -28,12 +28,10 @@ export class RecipesService {
   }
 
   public findRecipe(id: string): Observable<Recipe> {
-    return this.http
-      .get<RecipeGetResponse>(this.url + id)
-      .pipe(map(recipeDto => new Recipe(recipeDto)));
+    return this.http.get<RecipeGetResponse>(this.url + id).pipe(map(recipeDto => new Recipe(recipeDto)));
   }
 
-  public editRecipe(recipe: RecipePostRequest): Observable<any> {
+  public editRecipe(recipe: RecipePostRequest): Observable<unknown> {
     return this.http.put<RecipeGetResponse>(this.url + recipe.id, recipe);
   }
 }

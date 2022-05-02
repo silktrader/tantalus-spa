@@ -1,11 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, Validators, FormControl } from '@angular/forms';
+import { BehaviorSubject, map, Observable, of, shareReplay, startWith, switchMap, tap } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { FoodsService } from 'src/app/services/foods.service';
+import { FoodsService, GetFoodStatsResponse } from 'src/app/services/foods.service';
 import { Food } from 'src/app/models/food.model';
 import { UiService } from 'src/app/services/ui.service';
-import { FoodDto } from 'src/app/models/food-dto.model';
+import { FoodProp } from 'src/app/models/food-prop.model';
 
 enum EditFoodStatus {
   Editing,
@@ -18,132 +18,130 @@ enum EditFoodStatus {
   templateUrl: './edit-food.component.html',
   styleUrls: ['./edit-food.component.css']
 })
-export class EditFoodComponent implements OnInit, OnDestroy {
-  constructor(
-    private foodsService: FoodsService,
-    public ui: UiService,
-    private fb: FormBuilder,
-    private route: ActivatedRoute
-  ) { }
+export class EditFoodComponent implements OnInit {
 
   public get isEditing() { return this.status === EditFoodStatus.Editing; } // turn into observable tk?
 
   public editFoodStatus = EditFoodStatus;
   public status: EditFoodStatus = undefined;
 
-  private isSaveableFlag = false;
-  public get isSaveable() {
-    return this.isSaveableFlag;
-  }
 
-  private isResettableFlag = false;
-  public get isResettable() {
-    return this.isResettableFlag;
-  }
+  FoodProp = FoodProp;
 
-  public editForm: FormGroup;
+  editForm = new FormGroup({
+    name: new FormControl(undefined, [Validators.required, Validators.minLength(4), Validators.maxLength(100)]),
+    proteins: new FormControl(undefined, [Validators.required, Validators.max(100)]),
+    carbs: new FormControl(undefined, [Validators.required, Validators.max(100)]),
+    fats: new FormControl(undefined, [Validators.required, Validators.max(100)]),
+    fibres: new FormControl(undefined, [Validators.max(100)]),
+    sugar: new FormControl(undefined, [Validators.max(100)]),
+    starch: new FormControl(undefined),
+    saturated: new FormControl(undefined),
+    monounsaturated: new FormControl(undefined),
+    polyunsaturated: new FormControl(undefined),
+    omega3: new FormControl(undefined),
+    omega6: new FormControl(undefined),
+    trans: new FormControl(undefined),
+    cholesterol: new FormControl(undefined),
+    alcohol: new FormControl(undefined),
+    sodium: new FormControl(undefined),
+    potassium: new FormControl(undefined),
+    calcium: new FormControl(undefined),
+    magnesium: new FormControl(undefined),
+    zinc: new FormControl(undefined),
+    iron: new FormControl(undefined),
+    source: new FormControl(undefined),
+    notes: new FormControl(undefined)
+  });
 
-  private unmodifiedState;
+  private food: Readonly<Food>;
+  private originalFormValues: Readonly<string>;
 
-  public food: Food;
+  id$: Observable<string> = this.route.params.pipe(map(parameters => parameters.id));
 
-  private subscription = new Subscription();
+  food$: Observable<Food | undefined> = this.id$.pipe(
+    switchMap(id => this.fs.getFood(id)),
+    shareReplay(),
+    tap(food => {
+      this.food = food;       // set food value for resets
+      this.editForm.patchValue(food);
+      this.originalFormValues = JSON.stringify(this.editForm.value);
+      this.disableEdit();
+    }));
 
-  public get FoodIdentifier(): string {
-    return this.route.snapshot.params.id;
-  }
+  foodStats$: Observable<GetFoodStatsResponse> = this.food$.pipe(
+    switchMap(food => food === undefined ? of(undefined) : this.fs.foodStats(food.id))
+  );
+
+  disabled$: BehaviorSubject<boolean> = new BehaviorSubject(true);
+
+  private formChanges$ = this.editForm.valueChanges.pipe(
+    shareReplay()
+  );
+
+  changedForm$: Observable<boolean> = this.formChanges$.pipe(
+    startWith(false),
+    map(() => this.editForm.dirty),
+    shareReplay()     // prevent multiple template subscriptions from triggering the tap and map
+  );
+
+  saveable$: Observable<boolean> = this.formChanges$.pipe(
+    map(() => this.editForm.valid && this.editForm.dirty)
+  );
+
+  resettable$: Observable<boolean>;
+
+  constructor(private fs: FoodsService, public ui: UiService, private route: ActivatedRoute) { }
 
   ngOnInit() {
-    // one could get the food from the store, or the history's state but fetching a new copy seems safer
-    this.foodsService.getFood(this.FoodIdentifier).subscribe(food => {
-      // handles the not found result
-      if (food === undefined) {
-        this.status = EditFoodStatus.NotFound;
-        return;
-      }
-
-      this.food = food;
-      this.setupForm(food);
-
-      // the status triggers the form's presence
-      this.status = EditFoodStatus.Editing;
-      this.unmodifiedState = JSON.stringify(this.editForm.value);
-    });
-  }
-
-  private setupForm(food: Food) {
-    this.editForm = new FormGroup({
-      name: new FormControl(food.name, [Validators.required, Validators.minLength(4), Validators.maxLength(100)]),
-      proteins: new FormControl(food.proteins, [Validators.required, Validators.max(100)]),
-      carbs: new FormControl(food.carbs, [Validators.required, Validators.max(100)]),
-      fats: new FormControl(food.fats, [Validators.required, Validators.max(100)]),
-      fibres: new FormControl(food.fibres, [Validators.max(100)]),
-      sugar: new FormControl(food.sugar, [Validators.max(100)]),
-      starch: new FormControl(food.starch),
-      saturated: new FormControl(food.saturated),
-      monounsaturated: new FormControl(food.monounsaturated),
-      polyunsaturated: new FormControl(food.polyunsaturated),
-      trans: new FormControl(food.trans),
-      cholesterol: new FormControl(food.cholesterol),
-      omega3: new FormControl(food.omega3),
-      omega6: new FormControl(food.omega6),
-      alcohol: new FormControl(food.alcohol),
-      sodium: new FormControl(food.sodium),
-      potassium: new FormControl(food.potassium),
-      calcium: new FormControl(food.calcium),
-      magnesium: new FormControl(food.magnesium),
-      zinc: new FormControl(food.zinc),
-      iron: new FormControl(food.iron),
-      source: new FormControl(food.source),
-      notes: new FormControl(food.notes)
-    });
-
-    this.subscription.add(
-      this.editForm.valueChanges.subscribe(newValue => {
-        // the form can be reset when no food's being edited or when there the food's values and the fields contents differ
-        if (this.unmodifiedState === undefined && this.editForm.dirty) {
-          this.isResettableFlag = true;
-        } else if (this.unmodifiedState !== JSON.stringify(newValue)) {
-          // store the form's saveable state to avoid unnecessary calls from multiple elements
-          this.isResettableFlag = true;
-        }
-        this.isSaveableFlag = this.editForm.valid && this.isResettableFlag;
-      })
+    this.resettable$ = this.changedForm$.pipe(
+      map(changed => changed && JSON.stringify(this.editForm.value) !== this.originalFormValues)
     );
   }
 
-  ngOnDestroy(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
+  enableEdit() {
+    this.editForm.enable();
+    this.disabled$.next(false);
   }
 
-  public saveEdit() {
-    this.foodsService.editFood({ ...this.editForm.value, id: this.food.id }).subscribe(
-      () => {
+  disableEdit() {
+    this.reset();
+    this.editForm.disable();
+    this.disabled$.next(true);
+  }
+
+  reset() {
+    this.editForm.patchValue(this.food);
+  }
+
+  save() {
+    this.fs.editFood({ ...this.editForm.value, id: this.food.id }).subscribe({
+      next: () => {
         this.ui.notify(`Updated ${this.editForm.value.name}`);
         this.ui.goToFoods();
       },
-      error => {
+      error: error => {
         this.ui.warn(`Couldn't update ${this.editForm.value.name}`);
         console.log(error);
       }
-    );
+    });
   }
 
+
   delete() {
-    this.foodsService.deleteFood(this.food.id).subscribe(() => {
+    this.fs.deleteFood(this.food.id).subscribe(() => {
       // this.ui.warn(`Deleted ${food.name} and its ${result.portions.length} portions`);
       this.ui.warn(`Deleted ${this.food.name}`);
       this.ui.goToFoods();
     });
   }
 
-  public undoChanges() {
-    if (this.unmodifiedState) {
-      this.editForm.patchValue(JSON.parse(this.unmodifiedState));
-    } else {
-      this.editForm.reset();
-    }
+  undoChanges() {
+    this.editForm.patchValue(this.food);
+  }
+
+  public getDRV(property: FoodProp): number {
+    const value: number = +(this.editForm.get(property).value ?? 0);
+    return this.fs.getDRV(property, value);
   }
 }

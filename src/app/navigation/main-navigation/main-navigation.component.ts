@@ -16,25 +16,6 @@ export class MainNavigationComponent implements OnInit, OnDestroy, AfterViewInit
 
   @ViewChild(MatSidenav) public sidenav: MatSidenav;
 
-  // private sidenavComponent: MatSidenav;
-  // @ViewChild(MatSidenav) set sidenav(matSidenav: MatSidenav) {
-  //   if (matSidenav === undefined) {
-  //     console.log('called');
-  //     return;
-  //   }
-
-  //   // the setter allows the sidenav to be registered during the ngIf evaluation
-  //   this.sidenavComponent = matSidenav;
-  //   this.ui.sidenav = matSidenav;
-
-  //   // the breakpoint observer might not trigger a change after a login
-  //   if (this.ui.isMobile) {
-  //     setTimeout(() => this.setMobileSidenav(), 0);
-  //   } else {
-  //     setTimeout(() => this.setDesktopSidenav(), 0);
-  //   }
-  // }
-
   public authenticatedUser: UserInfo;
   private subscription = new Subscription();
 
@@ -56,43 +37,11 @@ export class MainNavigationComponent implements OnInit, OnDestroy, AfterViewInit
     );
 
     this.subscription.add(
-      this.ui.mobile.subscribe(isMobile => {
-        if (isMobile) {
-          this.setMobileSidenav();
-        }
-      })
-    );
-
-    this.subscription.add(
-      this.ui.desktop.subscribe(isDesktop => {
-        if (isDesktop) {
-          this.setDesktopSidenav();
-        }
-      })
-    );
-
-    this.subscription.add(
       this.dateInput.valueChanges.subscribe((date: Date) => {
         this.ui.goToDate(date);
         this.navigateAway();
       })
     );
-  }
-
-  private setDesktopSidenav(): void {
-    // if (this.sidenavComponent) {
-    //   this.sidenavComponent.disableClose = true;
-    //   this.sidenavComponent.mode = 'side';
-    //   this.sidenavComponent.open();
-    // }
-  }
-
-  private setMobileSidenav(): void {
-    // if (this.sidenavComponent) {
-    //   this.sidenavComponent.disableClose = false;
-    //   this.sidenavComponent.mode = 'over';
-    //   this.sidenavComponent.close();
-    // }
   }
 
   ngOnDestroy(): void {

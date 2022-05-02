@@ -108,25 +108,26 @@ export class EditRecipeComponent implements OnInit {
     for (const field of this.editRecipeForm.get('ingredients').value) {
       ingredients.push({ foodId: field.food.id, quantity: field.quantity });
     }
-    const recipeDto: RecipePostRequest = {
-      id: self.crypto.randomUUID(),
+    const recipeUpdate = {
       name: this.editRecipeForm.get('name').value,
       ingredients
     };
 
-    // tk review this!!
     if (this.originalRecipe === undefined) {
-      this.rs.saveRecipe(recipeDto).subscribe(
-        () => { this.ui.notify(`Saved recipe ${recipeDto.name}`); },
-        errorResponse => { this.ui.warn(`Error: ${errorResponse}`); }
-      );
+      const newRecipe = { ...recipeUpdate, id: self.crypto.randomUUID() };
+      this.rs.saveRecipe(newRecipe).subscribe({
+        next: () => {
+          this.ui.notify(`Saved recipe ${recipeUpdate.name}`);
+          this.ui.goBack();
+        },
+        error: error => { this.ui.warn(`Error: ${error}`); }
+      });
     } else {
-      this.rs
-        .editRecipe(recipeDto)
-        .subscribe(
-          () => this.ui.notify(`Edited recipe ${recipeDto.name}`),
-          error => this.ui.warn(`Error: ${error}`)
-        );
+      const editedRecipe = { ...recipeUpdate, id: this.originalRecipe.id };
+      this.rs.editRecipe(editedRecipe).subscribe({
+        next: () => this.ui.notify(`Edited recipe ${recipeUpdate.name}`),
+        error: error => this.ui.warn(`Error: ${error}`)
+      });
     }
   }
 

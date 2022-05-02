@@ -42,9 +42,7 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   { path: 'foods/add', component: AddFoodComponent, canActivate: [AuthGuard] },
-  {
-    path: 'foods/:id', component: EditFoodComponent, canActivate: [AuthGuard]
-  },
+  { path: 'foods/:id', component: EditFoodComponent, canActivate: [AuthGuard] },
   {
     path: 'recipes',
     component: RecipesSummaryComponent,

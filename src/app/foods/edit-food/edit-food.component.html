@@ -1,275 +1,325 @@
-<app-toolbar>
-  <span title>
-    <a routerLink="/foods">Foods</a>
-    <a *ngIf="isEditing">{{food.name}}</a>
-    <a *ngIf="!isEditing">Error</a>
-  </span>
-  <section desktop-actions>
-    <button mat-icon-button [disabled]="!isResettable" *ngIf="isEditing" (click)="undoChanges()">
-      <mat-icon aria-label="Reset changes">undo</mat-icon>
-    </button>
-    <button mat-icon-button (click)="delete()">
-      <mat-icon>delete_sweep</mat-icon>
-    </button>
-  </section>
-</app-toolbar>
-
-<ng-container [ngSwitch]="status">
-  <form *ngSwitchCase="editFoodStatus.Editing" [formGroup]="editForm" (ngSubmit)="saveEdit()">
+<ng-container *ngIf="food$ | async as food; else missingFood">
+  <form [formGroup]="editForm">
 
     <section class="edit-body">
 
       <section class="edit-grid">
 
-        <mat-card>
-          <span class="editable-card-header mat-typography">
-            <h4>Identifiers</h4>
-          </span>
-          <mat-card-content class="edit-card-content">
-            <mat-form-field>
+        <!-- first column -->
+        <section>
+
+          <h1>{{food.name}}</h1>
+
+          <mat-card>
+            <span class="editable-card-header mat-typography">
+              <h4>Identifiers</h4>
+            </span>
+            <mat-card-content class="edit-card-content">
+              <!-- <mat-form-field>
               <mat-label>Name</mat-label>
               <input type="text" matInput required placeholder="Bananas, Ripe" maxlength="50" minlength="4"
                 autocomplete="off" formControlName="name">
-            </mat-form-field>
+            </mat-form-field> -->
 
-            <mat-form-field>
+              <!-- <mat-form-field>
               <mat-label>Category</mat-label>
               <mat-select>
                 <mat-option>None</mat-option>
                 <mat-option>Something Else</mat-option>
               </mat-select>
-            </mat-form-field>
+            </mat-form-field> -->
 
-            <mat-form-field>
-              <mat-chip-list #chipList aria-label="Tags selection">
-                <mat-chip selectable="true" removable="true">
-                  Example
-                  <mat-icon matChipRemove>cancel</mat-icon>
-                </mat-chip>
-                <input placeholder="Tags" [matChipInputFor]="chipList">
-              </mat-chip-list>
-            </mat-form-field>
+              <mat-form-field>
+                <mat-chip-list #chipList aria-label="Tags selection">
+                  <mat-chip selectable="true" removable="true">
+                    Example
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                  </mat-chip>
+                  <input placeholder="Tags" [matChipInputFor]="chipList">
+                </mat-chip-list>
+              </mat-form-field>
+
+              <mat-form-field>
+                <mat-label>Source</mat-label>
+                <input type="text" matInput autocomplete="off" formControlName="source">
+              </mat-form-field>
+
+              <mat-form-field>
+                <mat-label>Notes</mat-label>
+                <input type="text" matInput autocomplete="off" formControlName="notes">
+              </mat-form-field>
+            </mat-card-content>
+          </mat-card>
+
+          <aside class="edit-controls">
+            <ng-container *ngIf="disabled$ | async; else editControls">
+              <button mat-raised-button class="left-aligned" color="primary" (click)="enableEdit()"> Edit </button>
+            </ng-container>
+
+            <ng-template #editControls>
+              <button mat-button class="left-aligned" (click)="disableEdit()">Dismiss</button>
+              <button mat-button (click)="reset()" [disabled]="!(resettable$ | async)">Reset</button>
+              <button mat-raised-button (click)="save()" color="primary" type="submit"
+                [disabled]="!(saveable$ | async)">
+                Save
+              </button>
+            </ng-template>
+          </aside>
+
+        </section>
+
+        <mat-card>
+          <mat-card-title>Macronutrients</mat-card-title>
+          <mat-card-subtitle>per 100 grams, in g.</mat-card-subtitle>
+          <mat-card-content class="edit-card-content">
+
+            <dl>
+              <dt>
+                <h3>Proteins</h3>
+                <mat-form-field appearance="standard">
+                  <input type="number" matInput step="1" min="0" max="100" autocomplete="off"
+                    formControlName="proteins">
+                </mat-form-field>
+              </dt>
+            </dl>
+
+            <dl>
+              <dt>
+                <h3>Carbohydrates</h3>
+                <mat-form-field appearance="standard">
+                  <input type="number" matInput placeholder="∅" step="1" min="0" max="100" autocomplete="off"
+                    formControlName="carbs">
+                </mat-form-field>
+              </dt>
+
+              <dt>
+                <h4>Fibres</h4>
+                <mat-form-field appearance="standard">
+                  <input type="number" matInput placeholder="∅" step="1" min="0" max="100" autocomplete="off"
+                    formControlName="fibres">
+                </mat-form-field>
+              </dt>
+
+              <dt>
+                <h4>Sugar</h4>
+                <mat-form-field appearance="standard">
+                  <input type="number" matInput placeholder="∅" step="1" min="0" max="100" autocomplete="off"
+                    formControlName="sugar">
+                </mat-form-field>
+              </dt>
+
+              <dt>
+                <h4>Starch</h4>
+                <mat-form-field appearance="standard">
+                  <input type="number" matInput placeholder="∅" step="1" min="0" max="100" autocomplete="off"
+                    formControlName="starch">
+                </mat-form-field>
+              </dt>
+            </dl>
+
+            <dl>
+              <dt>
+                <h3>Fats</h3>
+                <mat-form-field appearance="standard">
+                  <input type="number" matInput placeholder="∅" step="1" min="0" max="100" autocomplete="off"
+                    formControlName="fats">
+                </mat-form-field>
+              </dt>
+
+              <dt>
+                <h4>Saturated</h4>
+                <mat-form-field appearance="standard">
+                  <input type="number" matInput placeholder="∅" step="1" min="0" max="100" autocomplete="off"
+                    formControlName="saturated">
+                </mat-form-field>
+              </dt>
+
+              <dt>
+                <h4>Monounsaturated</h4>
+                <mat-form-field appearance="standard">
+                  <input type="number" matInput placeholder="∅" step="1" min="0" max="100" autocomplete="off"
+                    formControlName="monounsaturated">
+                </mat-form-field>
+              </dt>
+
+              <dt>
+                <h4>Polyunsaturated</h4>
+                <mat-form-field appearance="standard">
+                  <input type="number" matInput placeholder="∅" step="1" min="0" max="100" autocomplete="off"
+                    formControlName="polyunsaturated">
+                </mat-form-field>
+              </dt>
+
+              <dt>
+                <h5>Omega-3</h5>
+                <mat-form-field appearance="standard">
+                  <input type="number" matInput placeholder="∅" step="1" min="0" max="10000" autocomplete="off"
+                    formControlName="omega3">
+                </mat-form-field>
+              </dt>
+
+              <dt>
+                <h5>Omega-6</h5>
+                <mat-form-field appearance="standard">
+                  <input type="number" matInput placeholder="∅" step="1" min="0" max="10000" autocomplete="off"
+                    formControlName="omega6">
+                </mat-form-field>
+              </dt>
+
+              <dt>
+                <h4>Cholesterol</h4>
+                <mat-form-field appearance="standard">
+                  <input type="number" matInput placeholder="∅" step="1" min="0" max="100" autocomplete="off"
+                    formControlName="cholesterol">
+                </mat-form-field>
+              </dt>
+
+              <dt>
+                <h4>Trans</h4>
+                <mat-form-field appearance="standard">
+                  <input type="number" matInput placeholder="∅" step="1" min="0" max="100" autocomplete="off"
+                    formControlName="trans">
+                </mat-form-field>
+              </dt>
+            </dl>
+
+            <dl>
+              <dt>
+                <h3>Alcohol</h3>
+                <mat-form-field appearance="standard">
+                  <input type="number" matInput placeholder="∅" step="1" min="0" max="100" autocomplete="off"
+                    formControlName="alcohol">
+                </mat-form-field>
+              </dt>
+            </dl>
+
+          </mat-card-content>
+        </mat-card>
+
+
+        <mat-card>
+          <mat-card-title><span>Micronutrients</span><span class="column-header">RDA %</span></mat-card-title>
+          <mat-card-subtitle>per 100 grams, in mg.</mat-card-subtitle>
+
+          <mat-card-content class="edit-card-content">
+            <dl>
+              <dt>
+                <h3>Sodium</h3>
+                <mat-form-field appearance="standard">
+                  <input type="number" matInput placeholder="∅" min="0" max="10000" autocomplete="off"
+                    formControlName="sodium" />
+                </mat-form-field>
+                <span>{{getDRV(FoodProp.sodium) | percent}}</span>
+              </dt>
+              <dt>
+                <h3>Calcium</h3>
+                <mat-form-field appearance="standard">
+                  <input type="number" matInput placeholder="∅" min="0" max="10000" autocomplete="off"
+                    formControlName="calcium">
+                </mat-form-field>
+                <span>{{getDRV(FoodProp.calcium) | percent}}</span>
+              </dt>
+              <dt>
+                <h3>Potassium</h3>
+                <mat-form-field appearance="standard">
+                  <input type="number" matInput placeholder="∅" min="0" max="10000" autocomplete="off"
+                    formControlName="potassium">
+                </mat-form-field>
+                <span>{{getDRV(FoodProp.potassium) | percent}}</span>
+              </dt>
+              <dt>
+                <h3>Magnesium</h3>
+                <mat-form-field appearance="standard">
+                  <input type="number" matInput placeholder="∅" autocomplete="off" min="0" max="10000"
+                    formControlName="magnesium">
+                </mat-form-field>
+                <span>{{getDRV(FoodProp.magnesium) | percent}}</span>
+              </dt>
+              <dt>
+                <h3>Zinc</h3>
+                <mat-form-field appearance="standard">
+                  <input type="number" matInput placeholder="∅" min="0" max="10000" autocomplete="off"
+                    formControlName="zinc">
+                </mat-form-field>
+                <span>{{getDRV(FoodProp.zinc) | percent}}</span>
+              </dt>
+              <dt>
+                <h3>Iron</h3>
+                <mat-form-field appearance="standard">
+                  <input type="number" matInput placeholder="∅" min="0" max="10000" autocomplete="off"
+                    formControlName="iron">
+                </mat-form-field>
+                <span>{{getDRV(FoodProp.iron) | percent}}</span>
+              </dt>
+
+            </dl>
           </mat-card-content>
         </mat-card>
 
         <mat-card>
-          <span class="editable-card-header mat-typography">
-            <h4>Macronutrients</h4>
-            <i>in g.</i>
-          </span>
-          <mat-card-content class="edit-card-content">
-            <mat-form-field appearance="fill" class="column-item">
-              <mat-label>Proteins</mat-label>
-              <input type="number" matInput required placeholder="ex. 12.25" step="1" min="0" max="99"
-                autocomplete="off" formControlName="proteins">
-            </mat-form-field>
+          <mat-card-title>Statistics</mat-card-title>
+          <mat-card-subtitle>all time</mat-card-subtitle>
 
-            <mat-form-field appearance="fill" class="column-item">
-              <mat-label>Carbs</mat-label>
-              <input type="number" matInput required placeholder="ex. 20" step="1" min="0" max="99" autocomplete="off"
-                formControlName="carbs">
-            </mat-form-field>
-
-            <mat-form-field appearance="fill" class="column-item">
-              <mat-label>Fats</mat-label>
-              <input type="number" matInput required placeholder="ex. 8.8" step="1" min="0" max="99" autocomplete="off"
-                formControlName="fats">
-            </mat-form-field>
-          </mat-card-content>
-        </mat-card>
-
-        <mat-card>
-          <span class="editable-card-header mat-typography">
-            <h4>Carbohydrates</h4>
-            <i>in g.</i>
-          </span>
-          <mat-card-content class="edit-card-content">
-            <mat-form-field appearance="fill" class="column-item">
-              <mat-label>Fibres</mat-label>
-              <input type="number" matInput placeholder="ex. 2.10" step="1" min="0" max="99" autocomplete="off"
-                formControlName="fibres">
-            </mat-form-field>
-
-            <mat-form-field appearance="fill" class="column-item">
-              <mat-label>Sugar</mat-label>
-              <input type="number" matInput placeholder="ex. 2.10" step="1" min="0" max="99" autocomplete="off"
-                formControlName="sugar">
-            </mat-form-field>
-
-            <mat-form-field appearance="fill" class="column-item">
-              <mat-label>Starch</mat-label>
-              <input type="number" matInput placeholder="ex. 2.10" step="1" min="0" max="99" autocomplete="off"
-                formControlName="starch">
-            </mat-form-field>
-          </mat-card-content>
-        </mat-card>
-
-        <mat-card>
-          <span class="editable-card-header mat-typography">
-            <h4>Fats</h4>
-            <i>in g.</i>
-          </span>
-          <mat-card-content class="edit-card-content">
-            <mat-form-field appearance="fill" class="column-item">
-              <mat-label>Saturated</mat-label>
-              <input type="number" matInput placeholder="ex. 2.10" step="1" min="0" max="99" autocomplete="off"
-                formControlName="saturated">
-            </mat-form-field>
-
-            <mat-form-field appearance="fill" class="column-item">
-              <mat-label>Monounsaturated</mat-label>
-              <input type="number" matInput placeholder="ex. 2.10" step="1" min="0" max="99" autocomplete="off"
-                formControlName="monounsaturated">
-            </mat-form-field>
-
-            <mat-form-field appearance="fill" class="column-item">
-              <mat-label>Polyunsaturated</mat-label>
-              <input type="number" matInput placeholder="ex. 2.10" step="1" min="0" max="99" autocomplete="off"
-                formControlName="polyunsaturated">
-            </mat-form-field>
+          <mat-card-content *ngIf="foodStats$ | async as foodStats; else loadingStats">
+            <dl>
+              <dt>
+                <h3>Frequently Eaten With:</h3>
+                <ol class="stat-category">
+                  <li *ngFor="let food of foodStats.frequentFoods"><span>x{{food.frequency}}</span> <a
+                      [routerLink]="['../', food.shortUrl]">{{food.name}}</a></li>
+                </ol>
+              </dt>
+            </dl>
 
           </mat-card-content>
+
+          <ng-template #loadingStats>
+            <mat-card-content>
+              <div>
+                <h3>loading statistics ...</h3>
+                <mat-spinner></mat-spinner>
+              </div>
+            </mat-card-content>
+          </ng-template>
         </mat-card>
 
-        <mat-card>
-          <span class="editable-card-header mat-typography">
-            <h4>Minerals</h4>
-            <i>RDA %</i>
-          </span>
-
-          <mat-card-content class="edit-card-content">
-            <section class="edit-card-row">
-              <mat-form-field appearance="fill" class="mg-field">
-                <mat-label>Sodium</mat-label>
-                <input type="number" matInput placeholder="ex. 300" min="0" max="9900" autocomplete="off"
-                  formControlName="sodium" />
-              </mat-form-field>
-              <span>10%</span>
-            </section>
-            <section class="edit-card-row">
-              <mat-form-field appearance="fill" class="mg-field">
-                <mat-label>Calcium</mat-label>
-                <input type="number" matInput placeholder="ex. 300" min="0" max="9900" autocomplete="off"
-                  formControlName="calcium">
-              </mat-form-field>
-              <span>30%</span>
-            </section>
-            <section class="edit-card-row">
-              <mat-form-field appearance="fill" class="mg-field">
-                <mat-label>Potassium</mat-label>
-                <input type="number" matInput placeholder="ex. 300" min="0" max="9900" autocomplete="off"
-                  formControlName="potassium">
-              </mat-form-field>
-              <span>30%</span>
-            </section>
-            <section class="edit-card-row">
-              <mat-form-field appearance="fill" class="mg-field">
-                <mat-label>Magnesium</mat-label>
-                <input type="number" matInput autocomplete="off" min="0" max="9900" formControlName="magnesium">
-              </mat-form-field>
-              <span>15%</span>
-            </section>
-            <section class="edit-card-row">
-              <mat-form-field appearance="fill" class="mg-field">
-                <mat-label>Zinc</mat-label>
-                <input type="number" matInput placeholder="ex. 300" min="0" max="9900" autocomplete="off"
-                  formControlName="zinc">
-              </mat-form-field>
-              <span>70%</span>
-            </section>
-            <section class="edit-card-row">
-              <mat-form-field appearance="fill" class="mg-field">
-                <mat-label>Iron</mat-label>
-                <input type="number" matInput placeholder="ex. 210" min="0" max="9900" autocomplete="off"
-                  formControlName="iron">
-              </mat-form-field>
-              <span>80%</span>
-            </section>
-
-
-          </mat-card-content>
-        </mat-card>
-
-        <mat-card>
-          <span class="editable-card-header mat-typography">
-            <h4>Other Nutrients</h4>
-            <i>in g.</i>
-          </span>
-          <mat-card-content class="edit-card-content">
-            <mat-form-field appearance="fill" class="column-item">
-              <mat-label>Alcohol</mat-label>
-              <input type="number" matInput placeholder="ex. 2.10" step="1" min="0" max="99" autocomplete="off"
-                formControlName="alcohol">
-            </mat-form-field>
-
-            <mat-form-field appearance="fill" class="column-item">
-              <mat-label>Cholesterol</mat-label>
-              <input type="number" matInput placeholder="ex. 2.10" step="1" min="0" max="99" autocomplete="off"
-                formControlName="cholesterol">
-            </mat-form-field>
-
-            <mat-form-field appearance="fill" class="column-item">
-              <mat-label>Trans Fats</mat-label>
-              <input type="number" matInput placeholder="ex. 2.10" step="1" min="0" max="99" autocomplete="off"
-                formControlName="trans">
-            </mat-form-field>
-
-            <mat-form-field appearance="fill" class="column-item">
-              <mat-label>Omega-3</mat-label>
-              <input type="number" matInput placeholder="ex. 2.10" step="1" min="0" max="99" autocomplete="off"
-                formControlName="omega3">
-            </mat-form-field>
-            <mat-form-field appearance="fill" class="column-item">
-              <mat-label>Omega-6</mat-label>
-              <input type="number" matInput placeholder="ex. 2.10" step="1" min="0" max="99" autocomplete="off"
-                formControlName="omega6">
-            </mat-form-field>
-          </mat-card-content>
-        </mat-card>
-
-
-      </section>
-
-      <mat-divider vertical="true">
-
-      </mat-divider>
-      <section class="infographics">
-        <mat-form-field>
-          <mat-label>Source</mat-label>
-          <input type="text" matInput autocomplete="off" formControlName="source">
-        </mat-form-field>
-
-        <mat-form-field>
-          <mat-label>Notes</mat-label>
-          <input type="text" matInput autocomplete="off" formControlName="notes">
-        </mat-form-field>
       </section>
 
     </section>
 
-    <button class="save" mat-fab color="primary" type="submit" [disabled]="!isSaveable">
-      <mat-icon aria-label="Save changes">save</mat-icon>
-    </button>
 
   </form>
 
-  <mat-card *ngSwitchCase="editFoodStatus.InvalidID" class="error-notice">
+
+</ng-container>
+
+<ng-template #missingFood>
+  <mat-card class="error-notice">
     <mat-card-title class="error-title">Invalid Food</mat-card-title>
     <mat-card-content>
-      The food identifier was malformed: <em>{{FoodIdentifier}}</em>.
+      The food identifier was malformed: <em>{{id$ | async}}</em>.
     </mat-card-content>
     <mat-card-actions>
       <button mat-stroked-button (click)="ui.goToAddFood()">Create New Food</button>
     </mat-card-actions>
   </mat-card>
+  <!-- <mat-card *ngSwitchCase="editFoodStatus.InvalidID" class="error-notice">
+      <mat-card-title class="error-title">Invalid Food</mat-card-title>
+      <mat-card-content>
+        The food identifier was malformed: <em>{{RouteFoodId}}</em>.
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-stroked-button (click)="ui.goToAddFood()">Create New Food</button>
+      </mat-card-actions>
+    </mat-card> -->
 
-  <mat-card *ngSwitchCase="editFoodStatus.NotFound" class="error-notice">
-    <mat-card-title class="error-title">Missing Food</mat-card-title>
-    <mat-card-content>
-      The server couldn't find a food with the identifier <em>{{FoodIdentifier}}</em>.
-    </mat-card-content>
-    <mat-card-actions>
-      <button mat-stroked-button (click)="ui.goToAddFood()">Create New Food</button>
-    </mat-card-actions>
-  </mat-card>
-</ng-container>
+  <!-- <mat-card *ngSwitchCase="editFoodStatus.NotFound" class="error-notice">
+      <mat-card-title class="error-title">Missing Food</mat-card-title>
+      <mat-card-content>
+        The server couldn't find a food with the identifier <em>{{RouteFoodId}}</em>.
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-stroked-button (click)="ui.goToAddFood()">Create New Food</button>
+      </mat-card-actions>
+    </mat-card> -->
+</ng-template>

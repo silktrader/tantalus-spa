@@ -5,7 +5,7 @@ mat-sidenav {
 }
 
 mat-sidenav {
-  min-width: 25ch;
+  /* min-width: 25ch; */
 }
 
 .avatar {

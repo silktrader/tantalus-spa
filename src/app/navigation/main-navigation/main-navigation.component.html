@@ -1,6 +1,6 @@
 <mat-sidenav-container class="sidenav-container">
   <!-- don't position the `ngIf` on the sidenav, to ensure its assignment -->
-  <mat-sidenav #sidenav class="sidenav" fixedInViewport="true">
+  <mat-sidenav #sidenav disableClose [opened]="true" mode="side" class="sidenav" fixedInViewport="true">
     <mat-toolbar color="primary" *ngIf="authenticatedUser">
 
       <button mat-icon-button [matMenuTriggerFor]="profileMenu" class="avatar" aria-label="Profile actions">

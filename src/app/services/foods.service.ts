@@ -1,16 +1,29 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { map, switchMap, debounceTime, distinctUntilChanged, tap, catchError } from 'rxjs/operators';
+import { map, switchMap, debounceTime, distinctUntilChanged, catchError } from 'rxjs/operators';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Food } from '../models/food.model';
 import { FoodDto } from '../models/food-dto.model';
-import { RecipeFoodDto } from '../models/recipe-autocomplete.model';
 import { UiService } from './ui.service';
 import { environment } from 'src/environments/environment';
+import { FoodProp } from '../models/food-prop.model';
 
 @Injectable({ providedIn: 'root' })
 export class FoodsService {
+
   constructor(private readonly http: HttpClient, private ui: UiService) { }
+
+  // the AI/PRI values derived from the EFSA tables at https://multimedia.efsa.europa.eu/drvs/index.htm
+  // values are in mg
+  private adultMaleDRV: Map<FoodProp, number> = new Map([
+    [FoodProp.calcium, 950],
+    [FoodProp.magnesium, 350],
+    [FoodProp.iron, 11],
+    [FoodProp.potassium, 3500],
+    [FoodProp.sodium, 2000],
+    [FoodProp.zinc, 11],
+  ]);
+
   private readonly url = environment.apiUrl + 'foods/';
 
   public addFood(food: FoodDto): Observable<FoodDto> {
@@ -26,7 +39,7 @@ export class FoodsService {
   }
 
   public getFood(foodUrl: string): Observable<Food | undefined> {
-    return this.http.get<FoodDto>(this.url + foodUrl, { withCredentials: true }).pipe(
+    return this.http.get<FoodDto>(this.url + foodUrl).pipe(
       map(data => new Food(data)),
       catchError(error => {
         this.ui.warn(error);
@@ -73,11 +86,33 @@ export class FoodsService {
 
   // tk check whether this belongs here
   public getAutocompleteFoods(filter: string): Observable<ReadonlyArray<PortionResource>> {
-    return this.http
-      //.get<RecipeFoodDto[]>(`${this.url}autocomplete?filter=${filter}`)
-      .get<Array<PortionResource>>(`${this.url}names?filter=${filter}`)
-      .pipe(tap(() => console.log('fetching ' + filter + ' ')));
+    return this.isString(filter) ? this.http.get<Array<PortionResource>>(`${this.url}names?filter=${filter.toLowerCase()}`) : of([]);
   }
+
+  private isString(data: unknown): data is string {
+    return typeof data === 'string';
+  }
+
+  public foodStats(foodId: string) {
+    return this.http.get<GetFoodStatsResponse>(`${this.url + foodId}/stats`);
+  }
+
+  /** Returns the Dietary Reference Values (DRV) for selected food properties, for males (at present) */
+  public getDRV(property: FoodProp, value: number): number {
+    const referenceValue = this.adultMaleDRV.get(property);
+    return (referenceValue === undefined || referenceValue === 0) ? 1 : (value / referenceValue);
+  }
+}
+
+export interface GetFoodStatsResponse {
+  frequentFoods: FrequentFood[];
+}
+
+export interface FrequentFood {
+  id: string;
+  name: string;
+  shortUrl: string;
+  frequency: number;
 }
 
 export interface PortionResource {
@@ -86,3 +121,5 @@ export interface PortionResource {
   isRecipe: boolean;
   priority: number;
 }
+
+
