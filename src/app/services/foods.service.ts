@@ -109,7 +109,7 @@ export interface GetFoodStatsResponse {
   count: number;
   quantity: number;
   max: number;
-  lastEaten: Date;
+  lastEaten: Date | null;
   frequentFoods: FrequentFood[];
   frequentMeals: FrequentMeal[];
   recipes: RecipeFoodStat[];

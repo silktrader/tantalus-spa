@@ -268,17 +268,17 @@
                   <li>Consumed: {{foodStats.count}} times</li>
                   <li>Aggregate consumption: {{foodStats.quantity}} grams</li>
                   <li>Max. Meal Consumption: {{foodStats.max}} grams</li>
-                  <li>Last Eaten: {{foodStats.lastEaten | date}}</li>
+                  <li *ngIf="foodStats.lastEaten">Last Eaten: {{foodStats.lastEaten | date}}</li>
                 </ol>
               </dt>
-              <dt>
+              <dt *ngIf="foodStats.frequentFoods.length > 0">
                 <h3>Frequently Eaten With:</h3>
                 <ol>
                   <li *ngFor="let food of foodStats.frequentFoods"><span>x{{food.frequency}}</span> <a
                       [routerLink]="['../', food.shortUrl]">{{food.name}}</a></li>
                 </ol>
               </dt>
-              <dt>
+              <dt *ngIf="foodStats.frequentMeals.length > 0">
                 <h3>Frequently Eaten At:</h3>
                 <ol>
                   <li *ngFor="let stat of foodStats.frequentMeals">
