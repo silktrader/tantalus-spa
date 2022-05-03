@@ -7,6 +7,7 @@ import { FoodDto } from '../models/food-dto.model';
 import { UiService } from './ui.service';
 import { environment } from 'src/environments/environment';
 import { FoodProp } from '../models/food-prop.model';
+import { Meal } from '../models/portion.model';
 
 @Injectable({ providedIn: 'root' })
 export class FoodsService {
@@ -105,7 +106,13 @@ export class FoodsService {
 }
 
 export interface GetFoodStatsResponse {
+  count: number;
+  quantity: number;
+  max: number;
+  lastEaten: Date;
   frequentFoods: FrequentFood[];
+  frequentMeals: FrequentMeal[];
+  recipes: RecipeFoodStat[];
 }
 
 export interface FrequentFood {
@@ -113,6 +120,17 @@ export interface FrequentFood {
   name: string;
   shortUrl: string;
   frequency: number;
+}
+
+export interface FrequentMeal {
+  frequency: number;
+  meal: Meal;
+}
+
+export interface RecipeFoodStat {
+  id: string;
+  name: string;
+  quantity: number;
 }
 
 export interface PortionResource {

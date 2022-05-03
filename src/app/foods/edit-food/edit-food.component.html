@@ -263,10 +263,35 @@
           <mat-card-content *ngIf="foodStats$ | async as foodStats; else loadingStats">
             <dl>
               <dt>
+                <h3>Consumption:</h3>
+                <ol>
+                  <li>Consumed: {{foodStats.count}} times</li>
+                  <li>Aggregate consumption: {{foodStats.quantity}} grams</li>
+                  <li>Max. Meal Consumption: {{foodStats.max}} grams</li>
+                  <li>Last Eaten: {{foodStats.lastEaten | date}}</li>
+                </ol>
+              </dt>
+              <dt>
                 <h3>Frequently Eaten With:</h3>
-                <ol class="stat-category">
+                <ol>
                   <li *ngFor="let food of foodStats.frequentFoods"><span>x{{food.frequency}}</span> <a
                       [routerLink]="['../', food.shortUrl]">{{food.name}}</a></li>
+                </ol>
+              </dt>
+              <dt>
+                <h3>Frequently Eaten At:</h3>
+                <ol>
+                  <li *ngFor="let stat of foodStats.frequentMeals">
+                    <span>x{{stat.frequency}}</span><span>{{stat.meal}}</span>
+                  </li>
+                </ol>
+              </dt>
+              <dt>
+                <h3 *ngIf="foodStats.recipes.length > 0">Featured in:</h3>
+                <ol>
+                  <li *ngFor="let recipe of foodStats.recipes">
+                    <span>{{recipe.name}}</span><span>{{recipe.quantity}}</span>
+                  </li>
                 </ol>
               </dt>
             </dl>

@@ -7,24 +7,12 @@ import { Food } from 'src/app/models/food.model';
 import { UiService } from 'src/app/services/ui.service';
 import { FoodProp } from 'src/app/models/food-prop.model';
 
-enum EditFoodStatus {
-  Editing,
-  InvalidID,
-  NotFound
-}
-
 @Component({
   selector: 'app-edit-food',
   templateUrl: './edit-food.component.html',
   styleUrls: ['./edit-food.component.css']
 })
 export class EditFoodComponent implements OnInit {
-
-  public get isEditing() { return this.status === EditFoodStatus.Editing; } // turn into observable tk?
-
-  public editFoodStatus = EditFoodStatus;
-  public status: EditFoodStatus = undefined;
-
 
   FoodProp = FoodProp;
 
