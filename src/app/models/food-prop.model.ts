@@ -10,6 +10,7 @@ export enum FoodProp {
   sugar = 'sugar',
   starch = 'starch',
   saturated = 'saturated',
+  monounsaturated = 'monounsaturated',
   trans = 'trans',
   cholesterol = 'cholesterol',
   sodium = 'sodium',

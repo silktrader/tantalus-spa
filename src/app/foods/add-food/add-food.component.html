@@ -1,4 +1,4 @@
-<h3>Add Food</h3>
+<h2>Add Food</h2>
 
 <mat-stepper orientation="vertical" linear="true" #stepper>
   <mat-step [stepControl]="identification">
@@ -31,11 +31,14 @@
           <mat-label>Fats</mat-label>
           <input type="number" matInput formControlName="fats" autocomplete="off" min="0" max="99" step="1">
         </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Alcohol</mat-label>
+          <input type="number" matInput formControlName="alcohol" autocomplete="off" min="0" max="99" step="1">
+        </mat-form-field>
       </div>
       <div>
         <button mat-button matStepperPrevious>Back</button>
         <button mat-button matStepperNext>Next</button>
-        <button mat-button (click)="addFood()">Add Food</button>
       </div>
     </form>
   </mat-step>
@@ -89,6 +92,46 @@
             <input type="number" matInput formControlName="omega6" min="0" max="99" step="1">
           </mat-form-field>
         </div>
+      </div>
+      <div>
+        <button mat-button matStepperPrevious>Back</button>
+        <button mat-button matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="details" optional="true">
+    <form [formGroup]="micronutrients">
+      <ng-template matStepLabel>Enter Micronutrients <i>(in grams)</i></ng-template>
+      <div class="inputs">
+        <div class="details-column">
+          <mat-form-field appearance="fill">
+            <mat-label>Sodium</mat-label>
+            <input type="number" matInput formControlName="sodium" min="0" max="10000" step="10">
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Calcium</mat-label>
+            <input type="number" matInput formControlName="calcium" min="0" max="10000" step="10">
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Potassium</mat-label>
+            <input type="number" matInput formControlName="potassium" min="0" max="10000" step="10">
+          </mat-form-field>
+        </div>
+        <div class="details-column">
+          <mat-form-field appearance="fill">
+            <mat-label>Magnesium</mat-label>
+            <input type="number" matInput formControlName="magnesium" min="0" max="10000" step="10">
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Zinc</mat-label>
+            <input type="number" matInput formControlName="zinc" min="0" max="10000" step="10">
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Iron</mat-label>
+            <input type="number" matInput formControlName="iron" min="0" max="10000" step="10">
+          </mat-form-field>
+        </div>
+
       </div>
       <div>
         <button mat-button matStepperPrevious>Back</button>

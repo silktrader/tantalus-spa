@@ -20,7 +20,7 @@
 
       <section class="rating rating-fitness">
         <h2>Fitness</h2>
-        <bar-rating [(rate)]="fitness" [max]="5" [theme]="'fitness'"
+        <bar-rating [(rate)]="fitness" [max]="5" [theme]="'fitness'" (rateChange)="updateFitness($event)"
           [titles]="['None', 'Ill', 'Poor', 'Average' , 'Good', 'Spirited']"></bar-rating>
       </section>
     </div>

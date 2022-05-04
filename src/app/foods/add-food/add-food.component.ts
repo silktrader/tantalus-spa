@@ -19,6 +19,7 @@ export class AddFoodComponent implements OnInit {
     proteins: new FormControl(0, [Validators.required, Validators.max(100)]),
     carbs: new FormControl(0, [Validators.required, Validators.max(100)]),
     fats: new FormControl(0, [Validators.required, Validators.max(100)]),
+    alcohol: new FormControl(0, [Validators.required, Validators.max(100)]),
   });
 
   details = new FormGroup({
@@ -52,7 +53,6 @@ export class AddFoodComponent implements OnInit {
   constructor(private readonly fs: FoodsService, private readonly ui: UiService) { }
 
   ngOnInit(): void {
-    console.log("start");
   }
 
   public addFood(): void {

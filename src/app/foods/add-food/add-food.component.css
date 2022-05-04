@@ -1,3 +1,9 @@
+h2 {
+  margin: auto;
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
 .inputs {
   display: flex;
   flex-direction: row;
@@ -16,6 +22,7 @@
 
 mat-stepper {
   max-width: min-content;
+  margin: auto;
 }
 
 mat-form-field {
