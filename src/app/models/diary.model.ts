@@ -1,3 +1,4 @@
+import { DiaryEntryDto } from './diary-entry-dto.model';
 import { Meal, Portion } from './portion.model';
 
 export class Diary {
@@ -9,7 +10,11 @@ export class Diary {
   public readonly fats = 0;
   public readonly calories = 0;
 
-  constructor(portions: Portion[], public readonly comment?: string) {
+  readonly mood: number;
+  readonly fitness: number;
+  readonly comment?: string;
+
+  constructor(portions: Portion[], data: DiaryEntryDto) {
     const meals = new Map<Meal, Array<Portion>>();
 
     // slot portions in the ordered map
@@ -30,6 +35,9 @@ export class Diary {
 
     // assign the cached map to a readonly collection
     this.meals = meals;
+
+    this.mood = data.mood;
+    this.fitness = data.fitness;
   }
 
   public getTotalProperty(propertyName: string) {

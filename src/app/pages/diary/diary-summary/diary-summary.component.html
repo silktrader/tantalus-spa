@@ -1,42 +1,40 @@
-<div class="full-height">
-  <app-toolbar>
-    <h4 desktop-title class="date-selection" (click)="picker.open()">{{date | date:'longDate'}}
-      <input class="hidden-date-input" [matDatepicker]="picker" [formControl]="dateInput">
-      <mat-datepicker-toggle [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </h4>
+<div class="main">
 
-    <h4 mobile-title (click)="picker.open()">{{date | date:'longDate'}}
-      <input class="hidden-date-input" [matDatepicker]="mobilePicker" [formControl]="dateInput">
-      <mat-datepicker #mobilePicker></mat-datepicker>
-    </h4>
+  <section class="summary">
 
-    <section desktop-actions>
-      <button *ngIf="diary" mat-raised-button color="warn" (click)="deleteAll()">
-        Erase
-      </button>
+    <section class="date">
+      <h1 (click)="picker.open()">{{date | date:'longDate'}}
+        <input class="hidden-date-input" [matDatepicker]="picker" [formControl]="dateInput">
+        <mat-datepicker-toggle [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </h1>
+      <h2>{{date | date:'EEEE'}}</h2>
+    </section>
+
+    <div class="ratings">
+      <section class="rating rating-mood">
+        <h2>Mood</h2>
+        <bar-rating [(rate)]="mood" [max]="5" [theme]="'mood'" (rateChange)="updateMood($event)"
+          [titles]="['None', 'Depressed', 'Glum', 'Neutral' , 'Content', 'Ecstatic']"></bar-rating>
+      </section>
+
+      <section class="rating rating-fitness">
+        <h2>Fitness</h2>
+        <bar-rating [(rate)]="fitness" [max]="5" [theme]="'fitness'"
+          [titles]="['None', 'Ill', 'Poor', 'Average' , 'Good', 'Spirited']"></bar-rating>
+      </section>
+    </div>
+
+    <section class="buttons">
       <button mat-raised-button color="accent" (click)="addPortion()">
         Add Portions
       </button>
+      <button *ngIf="diary" mat-raised-button color="warn" (click)="deleteAll()">
+        Erase
+      </button>
     </section>
 
-    <section mobile-actions>
-      <button mat-icon-button (click)="addPortion()">
-        <mat-icon>add</mat-icon>
-      </button>
-      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions Menu">
-        <mat-icon>more_vert</mat-icon>
-      </button>
-
-      <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="deleteAll()">
-          <mat-icon>delete</mat-icon>
-          <span>Delete All</span>
-        </button>
-      </mat-menu>
-    </section>
-
-  </app-toolbar>
+  </section>
 
   <section class="container">
 
@@ -49,11 +47,8 @@
 
       <ng-container *ngIf="diary?.hasContents; else noMeals">
 
-        <app-long-portions-list *ngIf='view === viewType.large' (deletePortionsEvent)="deletePortions($event)">
+        <app-long-portions-list (deletePortionsEvent)="deletePortions($event)">
         </app-long-portions-list>
-
-        <app-short-portions-list *ngIf='view === viewType.small' (deletePortionsEvent)="deletePortions($event)">
-        </app-short-portions-list>
 
       </ng-container>
 

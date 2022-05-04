@@ -138,7 +138,7 @@ export class DiaryService {
         map(response => {
           // the first portions of a new diary don't need to be added to a previous state
           if (this.state === undefined) {
-            this.state$.next({ portions: response.portions, foods: response.foods });
+            this.state$.next({ ...this.state, portions: response.portions, foods: response.foods });
             return response.portions;
           }
 
@@ -188,19 +188,19 @@ export class DiaryService {
     return this.removePortions([id]);
   }
 
-  public editComment(comment: string): Observable<string> {
-    return this.http.post<{ comment: string }>(this.baseUrl + ' /comment', { comment }).pipe(
-      map(response => {
-        // update the state with the latest comments, or add an empty state when required
-        this.state$.next({
-          ...(this.state || { portions: [], foods: [] }),
-          comment: response.comment
-        });
+  // public editComment(comment: string): Observable<string> {
+  //   return this.http.post<{ comment: string }>(this.baseUrl + ' /comment', { comment }).pipe(
+  //     map(response => {
+  //       // update the state with the latest comments, or add an empty state when required
+  //       this.state$.next({
+  //         ...(this.state || { portions: [], foods: [] }),
+  //         comment: response.comment
+  //       });
 
-        return response.comment;
-      })
-    );
-  }
+  //       return response.comment;
+  //     })
+  //   );
+  // }
 
   public deleteDiary(): Observable<void> {
     return this.http.delete<void>(this.baseUrl).pipe(tap(() => this.state$.next(undefined)));
@@ -212,6 +212,18 @@ export class DiaryService {
         this.state$.next(responseDto);
         return responseDto;
       })
+    );
+  }
+
+  updateMood(mood: number): Observable<unknown> {
+    return this.http.put(`${this.baseUrl}/mood`, { mood }).pipe(
+      tap(() => this.state$.next({ ...this.state, mood }))
+    );
+  }
+
+  updateFitness(fitness: number): Observable<unknown> {
+    return this.http.put(`${this.baseUrl}/fitness`, { fitness }).pipe(
+      tap(() => this.state$.next({ ...this.state, fitness }))
     );
   }
 }

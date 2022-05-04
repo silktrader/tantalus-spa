@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { UiService } from 'src/app/services/ui.service';
 import { Diary } from 'src/app/models/diary.model';
 import { DiaryService } from 'src/app/services/diary.service';
@@ -12,29 +12,29 @@ import { AddPortionDialogComponent } from '../add-portion-dialog/add-portion-dia
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 
-enum ViewType {
-  large = 1,
-  small = 2
-}
-
 @Component({
   selector: 'app-diary-summary',
   templateUrl: './diary-summary.component.html',
-  styleUrls: ['./diary-summary.component.css']
+  styleUrls: ['./diary-summary.component.scss']
 })
 export class DiarySummaryComponent implements OnInit, OnDestroy {
-  public viewType = ViewType;
 
   public diary: Diary;
 
   public readonly dateInput = new FormControl();
+
+  readonly moodFitnessForm = new FormGroup({
+    mood: new FormControl(),
+    fitness: new FormControl()
+  });
 
   private readonly subscription: Subscription = new Subscription();
 
   public loading = true;
   public settings: ISummarySettings = undefined;
 
-  public view: ViewType;
+  mood: number;
+  fitness: number;
 
   constructor(
     private ds: DiaryService,
@@ -53,7 +53,10 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
         this.diary = diary;
         this.dateInput.setValue(this.ds.date);
 
-        // populate chart data, tk here? what about mobile?
+        // handle undefined diary with no ratings
+        this.mood = diary?.mood ?? 0;
+        this.fitness = diary?.fitness ?? 0;
+
         this.loading = false;
       })
     );
@@ -61,23 +64,6 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
     // read display settings before all other operations
     this.ss.summary$.subscribe(settings => {
       this.settings = settings;
-
-      // subscribe to breakpoint notifiers only once settings are read
-      this.subscription.add(
-        this.ui.desktop.subscribe(isDesktop => {
-          if (isDesktop) {
-            this.view = ViewType.large;
-          }
-        })
-      );
-
-      this.subscription.add(
-        this.ui.mobile.subscribe(isMobile => {
-          if (isMobile) {
-            this.view = ViewType.small;
-          }
-        })
-      );
     });
 
     this.dateInput.valueChanges.subscribe((date: Date) => {
@@ -91,7 +77,7 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  public get date(): Date {
+  get date(): Date {
     return this.ds.date;
   }
 
@@ -145,6 +131,26 @@ export class DiarySummaryComponent implements OnInit, OnDestroy {
         data: { ds: this.ds, meal }
       });
     }
+  }
+
+  updateMood(mood: number) {
+    this.ds.updateMood(mood).subscribe({
+      next: () => this.ui.notify(`Rated daily mood as ${mood} out of 5`),
+      error: () => {
+        this.ui.warn('Error while rating mood; reverting to previous value');
+        this.mood = this.diary.mood;        // the diary won't have changed on error
+      }
+    });
+  }
+
+  updateFitness(fitness: number) {
+    this.ds.updateFitness(fitness).subscribe({
+      next: () => this.ui.notify(`Rated daily fitness as ${fitness} out of 5`),
+      error: () => {
+        this.ui.warn('Error while rating fitness; reverting to previous value');
+        this.fitness = this.diary.fitness;        // the diary won't have changed on error
+      }
+    });
   }
 
   // public editComment() {

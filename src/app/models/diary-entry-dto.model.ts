@@ -3,6 +3,8 @@ import { FoodDto } from './food-dto.model';
 
 export interface DiaryEntryDto {
   readonly comment?: string;
+  readonly mood: number;
+  readonly fitness: number;
   readonly portions: ReadonlyArray<PortionDto>;
   readonly foods: ReadonlyArray<FoodDto>;
 }

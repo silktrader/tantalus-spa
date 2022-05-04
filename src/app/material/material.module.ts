@@ -29,6 +29,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatStepperModule } from '@angular/material/stepper';
+import { BarRatingModule } from 'ngx-bar-rating';
 
 @NgModule({
   declarations: [],
@@ -65,7 +66,8 @@ import { MatStepperModule } from '@angular/material/stepper';
     MatNativeDateModule,
     MatSliderModule,
     MatSlideToggleModule,
-    MatStepperModule
+    MatStepperModule,
+    BarRatingModule,
   ],
   exports: [
     MatFormFieldModule,
@@ -99,7 +101,8 @@ import { MatStepperModule } from '@angular/material/stepper';
     MatNativeDateModule,
     MatSliderModule,
     MatSlideToggleModule,
-    MatStepperModule
+    MatStepperModule,
+    BarRatingModule
   ]
 })
 export class MaterialModule { }

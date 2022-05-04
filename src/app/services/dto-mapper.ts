@@ -35,9 +35,9 @@ export class DtoMapper {
   }
 
   public mapDiary(dto: DiaryEntryDto): Diary {
-    // build foods map
+    // build foods map, default to empty array when the property is missing
     const foods = new Map<string, Food>();
-    for (const foodDto of dto.foods) {
+    for (const foodDto of dto.foods ?? []) {
       if (foods.get(foodDto.id)) {
         continue;
       }
@@ -45,7 +45,7 @@ export class DtoMapper {
     }
 
     const portions: Array<Portion> = [];
-    for (const portionDto of dto.portions) {
+    for (const portionDto of dto.portions ?? []) {
       const food = foods.get(portionDto.foodId);
       if (food === undefined) {
         return undefined;
@@ -53,7 +53,7 @@ export class DtoMapper {
       portions.push(new Portion(portionDto.id, portionDto.quantity, food, portionDto.meal));
     }
 
-    return new Diary(portions, dto.comment);
+    return new Diary(portions, dto);
   }
 
   public mapDiaryDto(diary: Diary): DiaryEntryDto {
@@ -79,6 +79,6 @@ export class DtoMapper {
       }
     }
 
-    return { portions, foods, comment: diary.comment };
+    return { portions, foods, comment: diary.comment, mood: diary.mood, fitness: diary.fitness };
   }
 }

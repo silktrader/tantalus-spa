@@ -1,0 +1,105 @@
+.main {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  /* Look to remove this value and fixate navbar */
+  margin-left: 2rem;  
+}
+
+.summary {
+  /* tk temporary */
+  min-width: 15rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.date {
+  margin-top: 1rem;
+}
+
+.date h1 {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0;
+}
+
+.hidden-date-input {
+  width: 0;
+  height: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  visibility: hidden;
+}
+
+.summary > .buttons {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  gap: 1rem;
+}
+
+.ratings {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin: auto;
+}
+
+.rating {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  h2 {
+    margin-bottom: 0rem;
+  }
+}
+
+.rating-mood {
+  h2 {
+    color: #FDA172;
+  }
+}
+
+.rating-fitness {
+  h2 {
+    color: #318CE7;
+  }
+}
+
+.loading-notice {
+  font-style: italic;
+  margin: auto;
+}
+
+app-long-portions-list {
+  width: 100%;
+}
+
+app-short-portions-list {
+  width: 100%;
+}
+
+.container {
+  display: flex;
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+
+mat-card.no-meals {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 10rem;
+  margin: auto;
+  margin-top: 5rem;
+  padding: 5rem;
+  font-style: italic;
+  font-weight: 500;
+}
+
+mat-datepicker-toggle {
+  margin-left: 1rem;
+}
