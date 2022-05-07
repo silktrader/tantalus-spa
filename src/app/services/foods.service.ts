@@ -28,15 +28,15 @@ export class FoodsService {
   private readonly url = environment.apiUrl + 'foods/';
 
   public addFood(food: FoodDto): Observable<FoodDto> {
-    return this.http.post<FoodDto>(this.url, food, { withCredentials: true });
+    return this.http.post<FoodDto>(this.url, food);
   }
 
   public editFood(food: FoodDto): Observable<unknown> {
-    return this.http.put<unknown>(this.url + food.id, food, { withCredentials: true });
+    return this.http.put<unknown>(this.url + food.id, food);
   }
 
   public deleteFood(id: string): Observable<unknown> {
-    return this.http.delete<unknown>(this.url + id, { withCredentials: true });   // tk no need for credentials!! check
+    return this.http.delete<unknown>(this.url + id);   // tk no need for credentials!! check
   }
 
   public getFood(foodUrl: string): Observable<Food | undefined> {

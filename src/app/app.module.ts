@@ -30,6 +30,8 @@ import { appInitializerFactory } from "./auth/app.initializer";
 import { AuthService } from "./auth/auth.service";
 import { AuthModule } from "./auth/auth.module";
 import { AddFoodComponent } from './foods/add-food/add-food.component';
+import { StatsOverviewComponent } from './stats/stats-overview/stats-overview.component';
+import { MoodStatsComponent } from './stats/mood-stats/mood-stats.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +57,8 @@ import { AddFoodComponent } from './foods/add-food/add-food.component';
     LongPortionsListComponent,
     ShortPortionsListComponent,
     AddFoodComponent,
+    StatsOverviewComponent,
+    MoodStatsComponent,
   ],
   imports: [
     BrowserModule,

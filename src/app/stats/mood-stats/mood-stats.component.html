@@ -1,0 +1,63 @@
+<div class="stat-main">
+  <div class="controls">
+    <h1>Mood Statistics</h1>
+
+    <form [formGroup]="controls">
+      <h3>Records</h3>
+      <mat-button-toggle-group formControlName="records" aria-label="Number of records">
+        <mat-button-toggle value="10">10</mat-button-toggle>
+        <mat-button-toggle value="20">20</mat-button-toggle>
+        <mat-button-toggle value="30">30</mat-button-toggle>
+      </mat-button-toggle-group>
+    </form>
+  </div>
+
+  <div class="contents">
+    <mat-form-field appearance="fill" class="selector">
+      <mat-label>Mood Statistics</mat-label>
+      <mat-select [formControl]="statSelector">
+        <mat-option value="nothing">
+          Nothing
+        </mat-option>
+        <mat-option value="high-mood-foods">
+          Foods Most Often Linked to Positive Mood
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- <section class="loading-notice" *ngIf="loading$ | async">
+      <h3>loading</h3>
+      <mat-spinner></mat-spinner>
+    </section> -->
+
+    <ng-container [ngSwitch]="chosenStat$ | async">
+      <section *ngSwitchDefault>Select item above</section>
+      <section *ngSwitchCase="'high-mood-foods'">
+        <table mat-table [dataSource]="highMoodFoodsData" class="mat-elevation-z8">
+
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Name</th>
+            <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="total">
+            <th class="numeric-column" mat-header-cell *matHeaderCellDef>Total</th>
+            <td class="numeric-column" mat-cell *matCellDef="let element"> {{element.total}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="percent">
+            <th class="numeric-column" mat-header-cell *matHeaderCellDef>Percent</th>
+            <td class="numeric-column" mat-cell *matCellDef="let element"> {{element.percent | percent}} </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="['name', 'total', 'percent']"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['name', 'total', 'percent'];"></tr>
+        </table>
+
+      </section>
+    </ng-container>
+  </div>
+
+
+
+</div>

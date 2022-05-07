@@ -51,9 +51,13 @@
         <mat-icon mat-list-icon>table_chart</mat-icon>
         <h4 mat-line>Foods</h4>
       </a>
-      <a mat-list-item routerLink="/recipes" (click)="navigateAway()" cdkFocusRegionEnd>
+      <a mat-list-item routerLink="/recipes" (click)="navigateAway()">
         <mat-icon mat-list-icon>table_chart</mat-icon>
         <h4 mat-line>Recipes</h4>
+      </a>
+      <a mat-list-item routerLink="/stats" (click)="navigateAway()" cdkFocusRegionEnd>
+        <mat-icon mat-list-icon>query_stats</mat-icon>
+        <h4 mat-line>Stats</h4>
       </a>
       <mat-divider></mat-divider>
       <a mat-list-item routerLink="/settings" (click)="navigateAway()" cdkFocusRegionEnd>

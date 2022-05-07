@@ -1,0 +1,29 @@
+.stat-main {
+  display: flex;
+  margin: auto;
+  padding: 1rem;
+  justify-content: space-evenly;
+
+  .controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    mat-button-toggle-group {
+      width: fit-content;
+    }
+  }
+
+  .contents {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  table .numeric-column {
+    text-align: right;
+    padding-left: 1rem;
+  }
+
+  .selector {}
+}
