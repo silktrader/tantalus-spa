@@ -5,7 +5,15 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { BehaviorSubject, combineLatest, debounceTime, map, Observable, startWith, tap } from 'rxjs';
 import { DiaryService } from 'src/app/services/diary.service';
+import { UiService } from 'src/app/services/ui.service';
 import { StatsService } from '../stats.service';
+
+export enum MoodStat {
+  None = 0,
+  HighMoodFoods,
+  LowMoodFoods,
+  MoodPerCaloricRange
+}
 
 @Component({
   selector: 'app-mood-stats',
@@ -22,16 +30,18 @@ export class MoodStatsComponent implements OnInit {
 
   statSelector = new FormControl('nothing');
 
-  chosenStat$: Observable<string>;
+  chosenStat$: Observable<MoodStat>;
 
   dataSource;
 
   loading$ = new BehaviorSubject<boolean>(false);
 
+  moodStat = MoodStat;
+
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private ss: StatsService) { }
+  constructor(private ss: StatsService, private ui: UiService) { }
 
   ngOnInit(): void {
 
@@ -39,13 +49,13 @@ export class MoodStatsComponent implements OnInit {
     const date = new Date(Date.now());
     date.setFullYear(date.getFullYear() - 1);
     this.controls.patchValue({ records: '15', startDate: date, endDate: new Date(Date.now()) });
-    this.statSelector.setValue('nothing');
+    this.statSelector.setValue(MoodStat.None);
 
     this.chosenStat$ = combineLatest([
       this.statSelector.valueChanges.pipe(startWith(this.statSelector.value)),
       this.controls.valueChanges.pipe(startWith(this.controls.value))]).pipe(
         debounceTime(500),
-        tap((changes: [string, string]) => {
+        tap((changes: [MoodStat, string]) => {
           this.fetchData(changes[0], changes[1]);
         }),
         map((selector) => {
@@ -54,23 +64,61 @@ export class MoodStatsComponent implements OnInit {
       );
   }
 
-  fetchData(value: string, parameters) {
-    console.log(parameters);
+  fetchData(value: MoodStat, parameters) {
     if (parameters.startDate === null || parameters.endDate === null)
       return;
 
     parameters = { ...parameters, startDate: DiaryService.toDateUrl(parameters.startDate), endDate: DiaryService.toDateUrl(parameters.endDate) };
-    if (value === 'high-mood-foods') {
-      this.loading$.next(true);
-      this.ss.getHighMoodFoods(parameters).subscribe({
-        next: data => {
-          this.dataSource = new MatTableDataSource(data.foods);
-          this.dataSource.sort = this.sort;
-          this.dataSource.paginator = this.paginator;
-          this.loading$.next(false);
-        },
-        error: error => console.log('issue fetching stat')
-      });
+
+    switch (value) {
+      case MoodStat.HighMoodFoods: {
+        this.loading$.next(true);
+        this.ss.getHighMoodFoods(parameters).subscribe({
+          next: data => {
+            this.dataSource = new MatTableDataSource(data.foods);
+            this.dataSource.sort = this.sort;
+            this.dataSource.paginator = this.paginator;
+            this.loading$.next(false);
+          },
+          error: error => {
+            this.ui.warn('Failed to fetch data from server', error);
+            this.loading$.next(false);
+          }
+        });
+        break;
+      }
+
+      case MoodStat.LowMoodFoods: {
+        this.loading$.next(true);
+        this.ss.getLowMoodFoods(parameters).subscribe({
+          next: data => {
+            this.dataSource = new MatTableDataSource(data.foods);
+            this.dataSource.sort = this.sort;
+            this.dataSource.paginator = this.paginator;
+            this.loading$.next(false);
+          },
+          error: error => {
+            this.ui.warn('Failed to fetch data from server', error);
+            this.loading$.next(false);
+          }
+        });
+        break;
+      }
+
+      case MoodStat.MoodPerCaloricRange: {
+        this.loading$.next(true);
+        this.ss.getMoodPerCaloricRange(parameters).subscribe({
+          next: data => {
+            this.dataSource = data;
+            this.loading$.next(false);
+          },
+          error: error => {
+            this.ui.warn('Failed to fetch data from server', error);
+            this.loading$.next(false);
+          }
+        });
+        break;
+      }
     }
 
   }

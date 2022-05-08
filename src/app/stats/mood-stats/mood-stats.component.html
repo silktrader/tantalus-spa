@@ -37,23 +37,28 @@
     <mat-form-field appearance="fill" class="selector">
       <mat-label>Mood Statistics</mat-label>
       <mat-select [formControl]="statSelector">
-        <mat-option value="nothing">
-          Nothing
+        <mat-option [value]="moodStat.HighMoodFoods">
+          Foods Linked to High Mood Ratings
         </mat-option>
-        <mat-option value="high-mood-foods">
-          Foods Linked to Positive Mood
+        <mat-option [value]="moodStat.LowMoodFoods">
+          Foods Linked to Low Mood Ratings
+        </mat-option>
+        <mat-option [value]="moodStat.MoodPerCaloricRange">
+          Average Mood per Daily Caloric Consumption
         </mat-option>
       </mat-select>
     </mat-form-field>
 
-    <!-- <section class="loading-notice" *ngIf="loading$ | async">
-      <h3>loading</h3>
+    <section class="loading-notice" *ngIf="(loading$ | async); else stats">
+      <h3>Fetching data...</h3>
       <mat-spinner></mat-spinner>
-    </section> -->
+    </section>
 
-    <ng-container [ngSwitch]="chosenStat$ | async">
+    <ng-template #stats [ngSwitch]="chosenStat$ | async">
       <section *ngSwitchDefault>Select item above</section>
-      <section *ngSwitchCase="'high-mood-foods'">
+
+      <!-- High Mood Foods Table -->
+      <section *ngSwitchCase="moodStat.HighMoodFoods">
         <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
 
           <ng-container matColumnDef="name">
@@ -77,9 +82,45 @@
         </table>
         <mat-paginator [pageSizeOptions]="[15]">
         </mat-paginator>
+      </section>
+
+      <!-- Low Mood Foods Table -->
+      <section *ngSwitchCase="moodStat.LowMoodFoods">
+        <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+            <td mat-cell *matCellDef="let element"> <a
+                [routerLink]="['/foods/' + element.shortUrl]">{{element.name}}</a></td>
+          </ng-container>
+
+          <ng-container matColumnDef="total">
+            <th class="numeric-column" mat-header-cell *matHeaderCellDef mat-sort-header>Times</th>
+            <td class="numeric-column" mat-cell *matCellDef="let element"> {{element.total}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="percent">
+            <th class="numeric-column" mat-header-cell *matHeaderCellDef mat-sort-header>Percent</th>
+            <td class="numeric-column" mat-cell *matCellDef="let element"> {{element.percent | percent}} </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="['name', 'total', 'percent']"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['name', 'total', 'percent'];"></tr>
+        </table>
+        <mat-paginator [pageSizeOptions]="[15]">
+        </mat-paginator>
+      </section>
+
+      <!-- Average Mood per Daily Caloric Consumption -->
+      <section *ngSwitchCase="moodStat.MoodPerCaloricRange">
+        <ul>
+          <li *ngFor="let range of dataSource.ranges">{{range.lowerLimit}}-{{range.upperLimit}} {{range.averageMood}}
+          </li>
+        </ul>
+
 
       </section>
-    </ng-container>
+    </ng-template>
   </div>
 
 
