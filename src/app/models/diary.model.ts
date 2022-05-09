@@ -14,6 +14,8 @@ export class Diary {
   readonly fitness: number;
   readonly comment?: string;
 
+  private static orderedMeals = [Meal.Breakfast, Meal.Morning, Meal.Lunch, Meal.Afternoon, Meal.Dinner].map(meal => meal.toString());
+
   constructor(portions: Portion[], data: DiaryEntryDto) {
     const meals = new Map<Meal, Array<Portion>>();
 
@@ -51,13 +53,14 @@ export class Diary {
   }
 
   public get latestMeal(): string {
-    let latestMeal: string = Meal.Breakfast;
+    let latestMeal = 0;
     for (const kvp of this.meals) {
-      if (kvp[1].length > 0 && kvp[0] > latestMeal) {   // tk review ordering!
-        latestMeal = kvp[0];
-      }
+      if (kvp[1].length === 0)
+        continue;
+      const order = Diary.orderedMeals.indexOf(kvp[0]);
+      latestMeal = Math.max(latestMeal, order);
     }
-    return latestMeal;
+    return Diary.orderedMeals[latestMeal];
   }
 
   public get hasContents(): boolean {

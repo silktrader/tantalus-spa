@@ -46,7 +46,7 @@ export class AddPortionDialogComponent {
     private ui: UiService
   ) {
     // determine whether to use state or fall back to the latest used meal
-    const meal = Number.isInteger(data.meal) ? data.meal : data.ds.focusedMeal;
+    const meal = data.meal ?? data.ds.focusedMeal;
     this.mealSelector.setValue(meal);
 
     this.filteredFoods$ = this.fs.getFilteredFoods(this.filterText$);
