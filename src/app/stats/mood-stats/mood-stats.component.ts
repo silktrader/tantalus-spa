@@ -12,8 +12,9 @@ export enum MoodStat {
   None = 0,
   HighMoodFoods,
   LowMoodFoods,
-  MoodPerCaloricRange,
-  FoodsHighestAverageMood
+  FoodsHighestAverageMood,
+  FoodsLowestAverageMood,
+  MoodPerCaloricRange
 }
 
 @Component({
@@ -42,6 +43,9 @@ export class MoodStatsComponent implements OnInit {
   loading$ = new BehaviorSubject<boolean>(false);
 
   moodStat = MoodStat;
+
+  // storing the table stats avoids new assignments on each check
+  private readonly tableStats = [MoodStat.HighMoodFoods, MoodStat.LowMoodFoods, MoodStat.FoodsHighestAverageMood, MoodStat.FoodsLowestAverageMood];
 
   @ViewChild(MatSort)
   set sort(matSort: MatSort) {
@@ -80,7 +84,7 @@ export class MoodStatsComponent implements OnInit {
 
     // the shareReplay is necessary to ensure that on new subscriptions, from templates appearing, adequate values are available
     this.showTable$ = this.chosenStat$.pipe(
-      map(stat => [MoodStat.HighMoodFoods, MoodStat.LowMoodFoods, MoodStat.FoodsHighestAverageMood].includes(stat)),
+      map(stat => this.tableStats.includes(stat)),
       shareReplay(1)
     );
   }
@@ -142,6 +146,22 @@ export class MoodStatsComponent implements OnInit {
       case MoodStat.FoodsHighestAverageMood: {
         this.loading$.next(true);
         this.ss.getFoodsHighestAverageMood(parameters).subscribe({
+          next: data => {
+            this.dataSource = new MatTableDataSource(data.foods);
+            this.tableColumns = ['name', 'averageMood'];
+            this.loading$.next(false);
+          },
+          error: error => {
+            this.ui.warn('Failed to fetch data from server', error);
+            this.loading$.next(false);
+          }
+        });
+        break;
+      }
+
+      case MoodStat.FoodsLowestAverageMood: {
+        this.loading$.next(true);
+        this.ss.getFoodsLowestAverageMood(parameters).subscribe({
           next: data => {
             this.dataSource = new MatTableDataSource(data.foods);
             this.tableColumns = ['name', 'averageMood'];

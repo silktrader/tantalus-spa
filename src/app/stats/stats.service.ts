@@ -49,4 +49,8 @@ export class StatsService {
   public getFoodsHighestAverageMood(parameters): Observable<MoodFoods> {
     return this.http.get<MoodFoods>(`${this.url}/mood/foods-highest-average-mood`, { params: new HttpParams().appendAll(parameters) });
   }
+
+  public getFoodsLowestAverageMood(parameters): Observable<MoodFoods> {
+    return this.http.get<MoodFoods>(`${this.url}/mood/foods-lowest-average-mood`, { params: new HttpParams().appendAll(parameters) });
+  }
 }
