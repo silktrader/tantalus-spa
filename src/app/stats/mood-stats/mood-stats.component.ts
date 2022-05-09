@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { BehaviorSubject, combineLatest, debounceTime, map, Observable, startWith, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, debounceTime, map, Observable, shareReplay, startWith, tap } from 'rxjs';
 import { DiaryService } from 'src/app/services/diary.service';
 import { UiService } from 'src/app/services/ui.service';
 import { StatsService } from '../stats.service';
@@ -12,7 +12,8 @@ export enum MoodStat {
   None = 0,
   HighMoodFoods,
   LowMoodFoods,
-  MoodPerCaloricRange
+  MoodPerCaloricRange,
+  FoodsHighestAverageMood
 }
 
 @Component({
@@ -31,15 +32,28 @@ export class MoodStatsComponent implements OnInit {
   statSelector = new FormControl('nothing');
 
   chosenStat$: Observable<MoodStat>;
+  showTable$: Observable<boolean>;
 
   dataSource;
+
+  // declaring the columns at the start ensures they are sortable later
+  tableColumns: string[] = ['name', 'total', 'percent', 'averageMood'];
 
   loading$ = new BehaviorSubject<boolean>(false);
 
   moodStat = MoodStat;
 
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort)
+  set sort(matSort: MatSort) {
+    if (this.dataSource)
+      this.dataSource.sort = matSort;
+  }
+
+  @ViewChild(MatPaginator)
+  set paginator(matPaginator: MatPaginator) {
+    if (this.dataSource)
+      this.dataSource.paginator = matPaginator;
+  }
 
   constructor(private ss: StatsService, private ui: UiService) { }
 
@@ -60,8 +74,15 @@ export class MoodStatsComponent implements OnInit {
         }),
         map((selector) => {
           return selector[0];
-        })
+        }),
+        shareReplay(1)
       );
+
+    // the shareReplay is necessary to ensure that on new subscriptions, from templates appearing, adequate values are available
+    this.showTable$ = this.chosenStat$.pipe(
+      map(stat => [MoodStat.HighMoodFoods, MoodStat.LowMoodFoods, MoodStat.FoodsHighestAverageMood].includes(stat)),
+      shareReplay(1)
+    );
   }
 
   fetchData(value: MoodStat, parameters) {
@@ -76,8 +97,7 @@ export class MoodStatsComponent implements OnInit {
         this.ss.getHighMoodFoods(parameters).subscribe({
           next: data => {
             this.dataSource = new MatTableDataSource(data.foods);
-            this.dataSource.sort = this.sort;
-            this.dataSource.paginator = this.paginator;
+            this.tableColumns = ['name', 'total', 'percent'];
             this.loading$.next(false);
           },
           error: error => {
@@ -93,8 +113,7 @@ export class MoodStatsComponent implements OnInit {
         this.ss.getLowMoodFoods(parameters).subscribe({
           next: data => {
             this.dataSource = new MatTableDataSource(data.foods);
-            this.dataSource.sort = this.sort;
-            this.dataSource.paginator = this.paginator;
+            this.tableColumns = ['name', 'total', 'percent'];
             this.loading$.next(false);
           },
           error: error => {
@@ -119,9 +138,23 @@ export class MoodStatsComponent implements OnInit {
         });
         break;
       }
+
+      case MoodStat.FoodsHighestAverageMood: {
+        this.loading$.next(true);
+        this.ss.getFoodsHighestAverageMood(parameters).subscribe({
+          next: data => {
+            this.dataSource = new MatTableDataSource(data.foods);
+            this.tableColumns = ['name', 'averageMood'];
+            this.loading$.next(false);
+          },
+          error: error => {
+            this.ui.warn('Failed to fetch data from server', error);
+            this.loading$.next(false);
+          }
+        });
+        break;
+      }
     }
 
   }
-
-
 }

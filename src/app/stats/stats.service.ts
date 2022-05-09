@@ -9,9 +9,12 @@ interface MoodFoods {
 }
 
 interface MoodFood {
+  id: string;
   name: string;
-  total: number;
-  percent: number;
+  short_url: string;
+  total?: number;
+  percent?: number;
+  averageMood?: number;
 }
 
 interface MoodPerCaloricRanges {
@@ -41,5 +44,9 @@ export class StatsService {
 
   public getMoodPerCaloricRange(parameters): Observable<MoodPerCaloricRanges> {
     return this.http.get<MoodPerCaloricRanges>(`${this.url}/mood/mood-per-caloric-range`, { params: new HttpParams().appendAll(parameters) });
+  }
+
+  public getFoodsHighestAverageMood(parameters): Observable<MoodFoods> {
+    return this.http.get<MoodFoods>(`${this.url}/mood/foods-highest-average-mood`, { params: new HttpParams().appendAll(parameters) });
   }
 }

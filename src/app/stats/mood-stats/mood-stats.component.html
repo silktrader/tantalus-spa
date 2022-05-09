@@ -29,6 +29,10 @@
             <mat-error *ngIf="controls.controls.endDate.hasError('matEndDateInvalid')">Invalid end date</mat-error>
           </mat-form-field>
         </section>
+
+        <section>
+          <h3>Include</h3>
+        </section>
       </div>
     </form>
   </div>
@@ -43,6 +47,9 @@
         <mat-option [value]="moodStat.LowMoodFoods">
           Foods Linked to Low Mood Ratings
         </mat-option>
+        <mat-option [value]="moodStat.FoodsHighestAverageMood">
+          Foods with the Highest Average Mood
+        </mat-option>
         <mat-option [value]="moodStat.MoodPerCaloricRange">
           Average Mood per Daily Caloric Consumption
         </mat-option>
@@ -54,17 +61,15 @@
       <mat-spinner></mat-spinner>
     </section>
 
-    <ng-template #stats [ngSwitch]="chosenStat$ | async">
-      <section *ngSwitchDefault>Select item above</section>
-
-      <!-- High Mood Foods Table -->
-      <section *ngSwitchCase="moodStat.HighMoodFoods">
+    <ng-template #stats>
+      <section *ngIf="showTable$ | async">
         <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
 
           <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
             <td mat-cell *matCellDef="let element"> <a
-                [routerLink]="['/foods/' + element.shortUrl]">{{element.name}}</a></td>
+                [routerLink]="['/foods/' + element.shortUrl]">{{element.name}}</a>
+            </td>
           </ng-container>
 
           <ng-container matColumnDef="total">
@@ -77,42 +82,20 @@
             <td class="numeric-column" mat-cell *matCellDef="let element"> {{element.percent | percent}} </td>
           </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="['name', 'total', 'percent']"></tr>
-          <tr mat-row *matRowDef="let row; columns: ['name', 'total', 'percent'];"></tr>
-        </table>
-        <mat-paginator [pageSizeOptions]="[15]">
-        </mat-paginator>
-      </section>
-
-      <!-- Low Mood Foods Table -->
-      <section *ngSwitchCase="moodStat.LowMoodFoods">
-        <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
-
-          <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-            <td mat-cell *matCellDef="let element"> <a
-                [routerLink]="['/foods/' + element.shortUrl]">{{element.name}}</a></td>
+          <ng-container matColumnDef="averageMood">
+            <th class="numeric-column" mat-header-cell *matHeaderCellDef mat-sort-header>Average Mood</th>
+            <td class="numeric-column" mat-cell *matCellDef="let element"> {{element.averageMood}} </td>
           </ng-container>
 
-          <ng-container matColumnDef="total">
-            <th class="numeric-column" mat-header-cell *matHeaderCellDef mat-sort-header>Times</th>
-            <td class="numeric-column" mat-cell *matCellDef="let element"> {{element.total}} </td>
-          </ng-container>
-
-          <ng-container matColumnDef="percent">
-            <th class="numeric-column" mat-header-cell *matHeaderCellDef mat-sort-header>Percent</th>
-            <td class="numeric-column" mat-cell *matCellDef="let element"> {{element.percent | percent}} </td>
-          </ng-container>
-
-          <tr mat-header-row *matHeaderRowDef="['name', 'total', 'percent']"></tr>
-          <tr mat-row *matRowDef="let row; columns: ['name', 'total', 'percent'];"></tr>
+          <tr mat-header-row *matHeaderRowDef="tableColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: tableColumns;"></tr>
         </table>
         <mat-paginator [pageSizeOptions]="[15]">
         </mat-paginator>
       </section>
 
       <!-- Average Mood per Daily Caloric Consumption -->
-      <section *ngSwitchCase="moodStat.MoodPerCaloricRange">
+      <section *ngIf="(chosenStat$ | async) === moodStat.MoodPerCaloricRange">
         <ul>
           <li *ngFor="let range of dataSource.ranges">{{range.lowerLimit}}-{{range.upperLimit}} {{range.averageMood}}
           </li>
