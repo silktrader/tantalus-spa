@@ -31,7 +31,25 @@
         </section>
 
         <section>
-          <h3>Include</h3>
+          <h3>Included Foods</h3>
+          <mat-form-field class="tags-field">
+            <mat-label></mat-label>
+            <mat-chip-list #chipList aria-label="Include Foods">
+              <mat-chip *ngFor="let food of (includedFoods$ | async)" [selectable]="false" [removable]="true"
+                (removed)="removeIncludedFood(food)">
+                {{food.name}}
+                <mat-icon matChipRemove>cancel</mat-icon>
+              </mat-chip>
+              <input #includedInput placeholder="Enter food name" [formControl]="includedControl"
+                [matAutocomplete]="auto" [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separators"
+                (matChipInputTokenEnd)="addFood($event)" (blur)="clearIncluded()">
+            </mat-chip-list>
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFood"
+              (optionSelected)="selectIncluded($event)">
+              <mat-option *ngFor="let resource of (filteredFoods$ | async)" [value]="resource">{{resource.name}}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
         </section>
       </div>
     </form>
@@ -55,6 +73,9 @@
         </mat-option>
         <mat-option [value]="moodStat.MoodPerCaloricRange">
           Average Mood per Daily Caloric Consumption
+        </mat-option>
+        <mat-option [value]="moodStat.AverageMoodPerDoW">
+          Average Mood per Day of the Week
         </mat-option>
       </mat-select>
     </mat-form-field>
@@ -103,8 +124,14 @@
           <li *ngFor="let range of dataSource.ranges">{{range.lowerLimit}}-{{range.upperLimit}} {{range.averageMood}}
           </li>
         </ul>
+      </section>
 
-
+      <!-- Average Mood per Day of the Week -->
+      <section *ngIf="(chosenStat$ | async) === moodStat.AverageMoodPerDoW">
+        <ul>
+          <li *ngFor="let averageMood of dataSource; let i = index">{{daysOfTheWeek[i]}}: {{averageMood}}
+          </li>
+        </ul>
       </section>
     </ng-template>
   </div>
