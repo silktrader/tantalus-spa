@@ -57,12 +57,18 @@
             </ng-container>
 
             <ng-template #editControls>
-              <button mat-button class="left-aligned" (click)="disableEdit()">Dismiss</button>
-              <button mat-button (click)="reset()" [disabled]="!(resettable$ | async)">Reset</button>
-              <button mat-raised-button (click)="save()" color="primary" type="submit"
-                [disabled]="!(saveable$ | async)">
-                Save
-              </button>
+              <section class="edit-controls-update">
+                <button mat-button class="left-aligned" (click)="disableEdit()">Dismiss</button>
+                <button mat-button (click)="reset()" [disabled]="!(resettable$ | async)">Reset</button>
+                <button mat-raised-button (click)="save()" color="primary" type="submit"
+                  [disabled]="!(saveable$ | async)">
+                  Save
+                </button>
+              </section>
+              <section class="edit-controls-delete">
+                <button mat-raised-button (click)="delete()" color="warn" [disabled]="!(deletable$ | async)"
+                  matTooltip="Only foods that weren't previously consumed can be deleted">Delete</button>
+              </section>
             </ng-template>
           </aside>
 

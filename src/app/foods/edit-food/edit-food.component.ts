@@ -58,8 +58,12 @@ export class EditFoodComponent implements OnInit {
     }));
 
   foodStats$: Observable<GetFoodStatsResponse> = this.food$.pipe(
-    switchMap(food => food === undefined ? of(undefined) : this.fs.foodStats(food.id))
+    switchMap(food => food === undefined ? of(undefined) : this.fs.foodStats(food.id)),
+    shareReplay()
   );
+
+  // allow foods to be deleted only when they weren't used
+  deletable$: Observable<boolean> = this.foodStats$.pipe(map(response => response.count === 0));
 
   disabled$: BehaviorSubject<boolean> = new BehaviorSubject(true);
 
@@ -118,7 +122,6 @@ export class EditFoodComponent implements OnInit {
 
   delete() {
     this.fs.deleteFood(this.food.id).subscribe(() => {
-      // this.ui.warn(`Deleted ${food.name} and its ${result.portions.length} portions`);
       this.ui.warn(`Deleted ${this.food.name}`);
       this.ui.goToFoods();
     });

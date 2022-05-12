@@ -21,7 +21,19 @@
 
 .edit-controls {
   display: flex;
+  flex-direction: column;
+  gap: 2rem;
   margin-top: 3rem;
+  justify-content: right;
+}
+
+.edit-controls-update {
+  display: flex;
+  justify-content: right;
+}
+
+.edit-controls-delete {
+  display: flex;
   justify-content: right;
 }
 

@@ -30,6 +30,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatStepperModule } from '@angular/material/stepper';
 import { BarRatingModule } from 'ngx-bar-rating';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [],
@@ -68,6 +69,7 @@ import { BarRatingModule } from 'ngx-bar-rating';
     MatSlideToggleModule,
     MatStepperModule,
     BarRatingModule,
+    MatTooltipModule
   ],
   exports: [
     MatFormFieldModule,
@@ -102,7 +104,8 @@ import { BarRatingModule } from 'ngx-bar-rating';
     MatSliderModule,
     MatSlideToggleModule,
     MatStepperModule,
-    BarRatingModule
+    BarRatingModule,
+    MatTooltipModule
   ]
 })
 export class MaterialModule { }
