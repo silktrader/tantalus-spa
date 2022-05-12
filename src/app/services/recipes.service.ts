@@ -6,18 +6,19 @@ import { RecipesPaginationDto } from '../models/recipes-pagination.model';
 import { Recipe } from '../models/recipe.model';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { PortionResource } from './foods.service';
 
 @Injectable({ providedIn: 'root' })
 export class RecipesService {
-  private url = environment.apiUrl + 'recipes/';
+  private readonly url = environment.apiUrl + 'recipes/';
 
   constructor(private readonly http: HttpClient) { }
 
-  public saveRecipe(recipe: RecipePostRequest): Observable<RecipeGetResponse> {
+  saveRecipe(recipe: RecipePostRequest): Observable<RecipeGetResponse> {
     return this.http.post<RecipeGetResponse>(this.url, recipe);
   }
 
-  public findRecipes(pageNumber: number, pageSize: number): Observable<RecipesPaginationDto> {
+  findRecipes(pageNumber: number, pageSize: number): Observable<RecipesPaginationDto> {
     return this.http.get<RecipesPaginationDto>(this.url, {
       params: new HttpParams()
         .set('pageIndex', pageNumber.toString())
@@ -27,11 +28,15 @@ export class RecipesService {
     });
   }
 
-  public findRecipe(id: string): Observable<Recipe> {
+  findRecipe(id: string): Observable<Recipe> {
     return this.http.get<RecipeGetResponse>(this.url + id).pipe(map(recipeDto => new Recipe(recipeDto)));
   }
 
-  public editRecipe(recipe: RecipePostRequest): Observable<unknown> {
+  editRecipe(recipe: RecipePostRequest): Observable<unknown> {
     return this.http.put<RecipeGetResponse>(this.url + recipe.id, recipe);
+  }
+
+  getAutocompleteRecipes(nameFilter: string): Observable<ReadonlyArray<PortionResource>> {
+    return this.http.get<ReadonlyArray<PortionResource>>(`${this.url}autocomplete?filter=${nameFilter.toLowerCase()}`);
   }
 }

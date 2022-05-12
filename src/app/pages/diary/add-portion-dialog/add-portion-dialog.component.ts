@@ -5,10 +5,11 @@ import { UiService } from 'src/app/services/ui.service';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { QuantityEditorComponent } from 'src/app/ui/quantity-editor/quantity-editor.component';
 import { FoodDto } from 'src/app/models/food-dto.model';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { FoodsService, PortionResource } from 'src/app/services/foods.service';
-import { Observable, Subject } from 'rxjs';
+import { forkJoin, Observable, Subject } from 'rxjs';
 import { PossibleMeals } from 'src/app/models/portion.model';
+import { RecipesService } from 'src/app/services/recipes.service';
 
 export interface AddPortionDialogData {
   readonly ds: DiaryService;
@@ -32,8 +33,12 @@ export class AddPortionDialogComponent {
     foodInput: this.foodInput
   });
 
-  public readonly filteredFoods$: Observable<ReadonlyArray<PortionResource>>;
   private readonly filterText$ = new Subject<string>();
+
+  // perform two parallel get requests, waiting until their completion, merging results
+  public readonly filteredFoods$: Observable<ReadonlyArray<PortionResource>> = this.filterText$.pipe(
+    switchMap(filter => forkJoin([this.fs.getAutocompleteFoods(filter), this.rs.getAutocompleteRecipes(filter)])),
+    map(results => results.flat()));
 
   private selectedResource: PortionResource;
 
@@ -43,13 +48,13 @@ export class AddPortionDialogComponent {
     public dialogRef: MatDialogRef<AddPortionDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: AddPortionDialogData,
     private fs: FoodsService,
+    private rs: RecipesService,
     private ui: UiService
   ) {
     // determine whether to use state or fall back to the latest used meal
     const meal = data.meal ?? data.ds.focusedMeal;
     this.mealSelector.setValue(meal);
 
-    this.filteredFoods$ = this.fs.getFilteredFoods(this.filterText$);
     this.foodInput.valueChanges
       .pipe(
         debounceTime(300),
@@ -120,26 +125,19 @@ export class AddPortionDialogComponent {
           }
         });
     } else if (this.selectedResource.isRecipe) {
-      // const portions: Array<PortionAddDto> = [];
-      // for (const ingredient of this.selectedRecipe.ingredients) {
-      //   portions.push({
-      //     foodId: ingredient.food.id,
-      //     quantity: ingredient.quantity,
-      //     meal: this.mealSelector.value
-      //   });
-      // }
-      // this.data.ds.addPortions(portions).subscribe(
-      //   () => {
-      //     this.ui.notifyAddedPortions(portions.length, () => {
-      //       // tk implement mass removal
-      //     });
-      //     this.dialogRef.close();
-      //   },
-      //   () => {
-      //     this.ui.warnFailedAddedPortions();
-      //     this.dialogRef.close();
-      //   }
-      // );
+      // tk shouldn't rely on the date like so
+      this.data.ds.addRecipe(this.selectedResource.id, this.mealSelector.value, this.data.ds.date).subscribe({
+        next: (portions) => {
+          this.ui.notifyAddedPortions(portions.length, () => {
+            // tk implement mass removal
+          });
+          this.dialogRef.close();
+        },
+        error: () => {
+          this.ui.warnFailedAddedPortions();
+          this.dialogRef.close();
+        }
+      });
     }
   }
 }

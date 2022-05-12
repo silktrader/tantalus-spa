@@ -36,7 +36,7 @@ export class FoodsService {
   }
 
   public deleteFood(id: string): Observable<unknown> {
-    return this.http.delete<unknown>(this.url + id);   // tk no need for credentials!! check
+    return this.http.delete<unknown>(this.url + id);
   }
 
   public getFood(foodUrl: string): Observable<Food | undefined> {
@@ -74,7 +74,7 @@ export class FoodsService {
     );
   }
 
-  public getFilteredFoods(filter: Observable<string>): Observable<Array<PortionResource>> {
+  public getFilteredFoods(filter: Observable<string>): Observable<ReadonlyArray<PortionResource>> {
     return filter.pipe(
       switchMap(filterText => {
         const text = filterText.toLowerCase();
@@ -85,7 +85,7 @@ export class FoodsService {
     );
   }
 
-  // tk check whether this belongs here
+  // tk check whether isString is necessary
   public getAutocompleteFoods(filter: string): Observable<ReadonlyArray<PortionResource>> {
     return this.isString(filter) ? this.http.get<Array<PortionResource>>(`${this.url}names?filter=${filter.toLowerCase()}`) : of([]);
   }

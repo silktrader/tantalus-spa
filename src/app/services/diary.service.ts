@@ -108,6 +108,10 @@ export class DiaryService {
     return this.http.get<DiaryEntryDto>(this.baseUrl);
   }
 
+  private getBaseUrl(date: Date) {
+    return environment.apiUrl + 'diary/' + DiaryService.toDateUrl(date);
+  }
+
   /** Adds one portion and returns the server provided DTO; acts as a proxy of `addPortions` */
   public addPortion(portionDto: PortionAddDto): Observable<PortionDto> {
     return this.addPortions([portionDto]).pipe(map(dtos => dtos[0]));
@@ -186,6 +190,31 @@ export class DiaryService {
 
   public removePortion(id: string): Observable<void> {
     return this.removePortions([id]);
+  }
+
+  /** Adds multiple portions when subscribed to and updates the diary with the new additions. */
+  addRecipe(id: string, meal: Meal, date: Date): Observable<PortionDto[]> {
+    return this.http
+      .post<{ portions: PortionDto[]; foods: FoodDto[] }>(`${this.getBaseUrl(date)}/recipes`, { id, meal })
+      .pipe(
+        map(response => {
+          // the first portions of a new diary don't need to be added to a previous state
+          // tk refactor this and matching addPortions method
+          if (this.state === undefined) {
+            this.state$.next({ ...this.state, portions: response.portions, foods: response.foods });
+            return response.portions;
+          }
+
+          const portions = [...this.state.portions, ...response.portions];
+          this.state$.next({
+            ...this.state,
+            portions,
+            foods: this.removeDuplicateFoods(portions, [...this.state.foods, ...response.foods])
+          });
+
+          return response.portions;
+        })
+      );
   }
 
   // public editComment(comment: string): Observable<string> {
