@@ -300,6 +300,13 @@
                   </li>
                 </ol>
               </dt>
+              <dt>
+                <h3 *ngIf="foodStats.similarFoods.length > 0">Similar Foods:</h3>
+                <ol>
+                  <li *ngFor="let food of foodStats.similarFoods"><a
+                      [routerLink]="['../', food.shortUrl]">{{food.name}}</a></li>
+                </ol>
+              </dt>
             </dl>
 
           </mat-card-content>

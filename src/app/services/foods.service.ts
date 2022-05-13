@@ -111,6 +111,7 @@ export interface GetFoodStatsResponse {
   max: number;
   lastEaten: Date | null;
   frequentFoods: FrequentFood[];
+  similarFoods: { id: string, name: string, shortUrl: string, divergence: number }[];
   frequentMeals: FrequentMeal[];
   recipes: RecipeFoodStat[];
 }
