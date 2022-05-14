@@ -10,6 +10,10 @@ mat-card {
   margin: auto;
 }
 
+mat-card-title {
+  margin-bottom: 2rem;
+}
+
 mat-card-content {
   display: flex;
   align-items: center;
@@ -29,7 +33,7 @@ mat-card-content {
 
 table {
   td {
-    padding-right: 1rem;
+    padding-right: 2rem;
   }
 
   td.unit {
@@ -53,4 +57,16 @@ form {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.error-notice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  margin: auto;
+}
+
+.error-reset {
+  width: fit-content;
 }

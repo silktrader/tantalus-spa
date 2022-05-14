@@ -1,32 +1,38 @@
 <div class="main">
   <h1>Import Data</h1>
 
-
   <mat-card>
     <mat-card-title>Weight Measurements</mat-card-title>
     <mat-card-content>
 
-      <form [formGroup]="weightMeasurementsForm">
-        <div class="choose-file">
-          <button mat-stroked-button (click)="weightsFileInput.click()" class="import-button">
-            <mat-icon>folder_open</mat-icon>
-            Choose File
-          </button>
-          <input hidden type="file" #weightsFileInput (change)="onWeightsFileChanged($event)" accept=".csv" />
-          <span class="filename">{{(weightsFile$ | async)?.name}}</span>
+      <ng-template #error>
+        <div *ngIf="error$ | async; else weightImportControls" class="error-notice">
+          <h3>Couldn't import data from the specified file</h3>
+          <button mat-stroked-button (click)="reset()" color="warn" class="error-reset">Reset and Retry</button>
         </div>
+      </ng-template>
 
-        <button mat-raised-button color="primary" class="import-button" (click)="uploadWeightMeasurements()"
-          [disabled]="!(weightsFile$ | async)">
-          <mat-icon>file_upload</mat-icon>
-          Import
-        </button>
-      </form>
+      <mat-progress-spinner [mode]="'determinate'" *ngIf="uploading$ | async; else error" [value]="progress">
+      </mat-progress-spinner>
 
-      <mat-progress-spinner [mode]="'determinate'" *ngIf="uploading$ | async; else weightsDescription"
-        [value]="progress"></mat-progress-spinner>
 
-      <ng-template #weightsDescription>
+      <ng-template #weightImportControls>
+        <form [formGroup]="weightMeasurementsForm">
+          <div class="choose-file">
+            <button mat-stroked-button (click)="weightsFileInput.click()" class="import-button">
+              <mat-icon>folder_open</mat-icon>
+              Choose File
+            </button>
+            <input hidden type="file" #weightsFileInput (change)="onWeightsFileChanged($event)" accept=".csv" />
+            <span class="filename">{{(weightsFile$ | async)?.name}}</span>
+          </div>
+
+          <button mat-raised-button color="primary" class="import-button" (click)="uploadWeightMeasurements()"
+            [disabled]="!(weightsFile$ | async)">
+            <mat-icon>file_upload</mat-icon>
+            Import
+          </button>
+        </form>
         <div>
           <p>Expects a comma-separated values file, containing:</p>
           <table>

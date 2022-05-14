@@ -2,6 +2,7 @@ import { HttpClient, HttpEventType } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
+import { UiService } from 'src/app/services/ui.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -17,12 +18,12 @@ export class DataImportComponent {
 
   progress: number;
   uploading$ = new BehaviorSubject(false);
+  error$ = new BehaviorSubject(false);
   weightsFile$ = new BehaviorSubject(undefined);
 
   private readonly url = environment.apiUrl + 'import/weight';
 
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient, private ui: UiService) { }
 
   uploadWeightMeasurements() {
     console.log(this.weightMeasurementsForm.value);
@@ -44,6 +45,11 @@ export class DataImportComponent {
           this.weightMeasurementsForm.reset();
         }
       },
+      error: (error) => {
+        this.ui.warn(`Couldn't import data from ${this.weightsFile$.value.name}`, error);
+        this.uploading$.next(false);
+        this.error$.next(true);
+      },
       complete: () => this.uploading$.next(false)
     });
   }
@@ -59,5 +65,11 @@ export class DataImportComponent {
     else {
       this.weightsFile$.next(undefined);
     }
+  }
+
+  reset() {
+    this.weightsFile$.next(undefined);
+    this.weightMeasurementsForm.reset();
+    this.error$.next(false);
   }
 }
