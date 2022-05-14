@@ -1,0 +1,65 @@
+<div class="main">
+  <h1>Import Data</h1>
+
+
+  <mat-card>
+    <mat-card-title>Weight Measurements</mat-card-title>
+    <mat-card-content>
+
+      <form [formGroup]="weightMeasurementsForm">
+        <div class="choose-file">
+          <button mat-stroked-button (click)="weightsFileInput.click()" class="import-button">
+            <mat-icon>folder_open</mat-icon>
+            Choose File
+          </button>
+          <input hidden type="file" #weightsFileInput (change)="onWeightsFileChanged($event)" accept=".csv" />
+          <span class="filename">{{(weightsFile$ | async)?.name}}</span>
+        </div>
+
+        <button mat-raised-button color="primary" class="import-button" (click)="uploadWeightMeasurements()"
+          [disabled]="!(weightsFile$ | async)">
+          <mat-icon>file_upload</mat-icon>
+          Import
+        </button>
+      </form>
+
+      <mat-progress-spinner [mode]="'determinate'" *ngIf="uploading$ | async; else weightsDescription"
+        [value]="progress"></mat-progress-spinner>
+
+      <ng-template #weightsDescription>
+        <div>
+          <p>Expects a comma-separated values file, containing:</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Header</th>
+                <th>Unit</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>Weight</code></td>
+                <td class="unit">kgs</td>
+                <td>User weight, in decimal notation</td>
+              </tr>
+              <tr>
+                <td><code>Timestamp</code></td>
+                <td class="unit">ms</td>
+                <td>Date and time of the measurement, as per Unix Epoch</td>
+              </tr>
+              <tr>
+                <td><code>Impedance</code></td>
+                <td class="unit">ohms</td>
+                <td>Impedance reading from BIA scales, as an integer</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ng-template>
+
+    </mat-card-content>
+  </mat-card>
+
+
+</div>

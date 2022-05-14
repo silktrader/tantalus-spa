@@ -32,6 +32,7 @@ import { AuthModule } from "./auth/auth.module";
 import { AddFoodComponent } from './foods/add-food/add-food.component';
 import { StatsOverviewComponent } from './stats/stats-overview/stats-overview.component';
 import { MoodStatsComponent } from './stats/mood-stats/mood-stats.component';
+import { DataImportComponent } from './data-import/data-import/data-import.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +60,7 @@ import { MoodStatsComponent } from './stats/mood-stats/mood-stats.component';
     AddFoodComponent,
     StatsOverviewComponent,
     MoodStatsComponent,
+    DataImportComponent,
   ],
   imports: [
     BrowserModule,
