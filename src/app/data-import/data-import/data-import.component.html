@@ -15,8 +15,8 @@
       <mat-progress-spinner [mode]="'determinate'" *ngIf="uploading$ | async; else error" [value]="progress">
       </mat-progress-spinner>
 
-
       <ng-template #weightImportControls>
+
         <form [formGroup]="weightMeasurementsForm">
           <div class="choose-file">
             <button mat-stroked-button (click)="weightsFileInput.click()" class="import-button">
@@ -32,7 +32,10 @@
             <mat-icon>file_upload</mat-icon>
             Import
           </button>
+
+          <mat-checkbox formControlName="overwrite">Overwrite Measurements</mat-checkbox>
         </form>
+
         <div>
           <p>Expects a comma-separated values file, containing:</p>
           <table>

@@ -25,6 +25,14 @@
       </section>
     </div>
 
+    <div class="weight">
+      <ol *ngIf="diary?.weightMeasurements?.length > 0">
+        <li *ngFor="let measurement of diary.weightMeasurements">
+          {{measurement.measuredOn}}: {{measurement.weight}}
+        </li>
+      </ol>
+    </div>
+
     <section class="buttons">
       <button mat-raised-button color="accent" (click)="addPortion()">
         Add Portions

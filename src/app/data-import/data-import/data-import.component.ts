@@ -13,7 +13,8 @@ import { environment } from 'src/environments/environment';
 export class DataImportComponent {
 
   weightMeasurementsForm = new FormGroup({
-    data: new FormControl(undefined)
+    data: new FormControl(undefined),
+    overwrite: new FormControl(false)
   });
 
   progress: number;
@@ -26,9 +27,8 @@ export class DataImportComponent {
   constructor(private http: HttpClient, private ui: UiService) { }
 
   uploadWeightMeasurements() {
-    console.log(this.weightMeasurementsForm.value);
     const formData = new FormData();
-    formData.append('overwrite', 'true');
+    formData.append('overwrite', this.weightMeasurementsForm.value.overwrite);
     formData.append('data', this.weightMeasurementsForm.value.data);
     this.uploading$.next(true);
 
@@ -41,8 +41,8 @@ export class DataImportComponent {
           this.progress = Math.round((100 * event.loaded) / event.total);
         }
         else if (event.type === HttpEventType.Response) {
-          console.log(event.body);
-          this.weightMeasurementsForm.reset();
+          this.reset();
+          this.ui.notify(`Imported ${event.body['imported']} weight measurements`);
         }
       },
       error: (error) => {
