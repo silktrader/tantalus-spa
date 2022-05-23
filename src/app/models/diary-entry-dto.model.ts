@@ -7,7 +7,7 @@ export interface DiaryEntryDto {
   readonly fitness: number;
   readonly portions: ReadonlyArray<PortionDto>;
   readonly foods: ReadonlyArray<FoodDto>;
-  readonly weightMeasurements: ReadonlyArray<WeightMeasurement>;
+  readonly weightReport: WeightReport;
 }
 
 export interface DiaryEntryPostDto {
@@ -15,9 +15,13 @@ export interface DiaryEntryPostDto {
   readonly portions: ReadonlyArray<PortionDto>;
 }
 
-export interface WeightMeasurement {
+export interface WeightReport {
   weight: number;
-  measuredOn: Date;
+  fat: number;
+  measurements: number;
   impedance?: number;
-  note?: string;
+  previousWeightChange: number;
+  previousFatChange: number;
+  last30DaysWeightChange: number;
+  last30DaysFatChange: number;
 }

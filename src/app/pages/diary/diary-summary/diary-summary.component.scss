@@ -3,7 +3,7 @@
   flex-direction: row;
   height: 100%;
   /* Look to remove this value and fixate navbar */
-  margin-left: 2rem;  
+  margin-left: 2rem;
 }
 
 .summary {
@@ -32,7 +32,7 @@
   visibility: hidden;
 }
 
-.summary > .buttons {
+.summary>.buttons {
   display: flex;
   flex-direction: column;
   margin: auto;
@@ -102,4 +102,56 @@ mat-card.no-meals {
 
 mat-datepicker-toggle {
   margin-left: 1rem;
+}
+
+// weight section
+.weight-report {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+
+  h2 {
+    margin: 0px;
+
+    i {
+      font-size: small;
+    }
+  }
+}
+
+.weight,
+.fat {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.weight-report-reading {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 5rem;
+  height: 5rem;
+  background-color: cadetblue;
+  border-radius: 50%;
+
+  h2 {
+    margin: 0
+  }
+}
+
+.weight-report-trend {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: maroon;
+  font-style: italic;
+}
+
+.negative {
+  color: darkgreen;
 }

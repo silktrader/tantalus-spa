@@ -79,6 +79,6 @@ export class DtoMapper {
       }
     }
 
-    return { portions, foods, comment: diary.comment, mood: diary.mood, fitness: diary.fitness, weightMeasurements: diary.weightMeasurements };
+    return { portions, foods, comment: diary.comment, mood: diary.mood, fitness: diary.fitness, weightReport: diary.weightReport };
   }
 }

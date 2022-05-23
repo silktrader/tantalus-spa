@@ -25,12 +25,54 @@
       </section>
     </div>
 
-    <div class="weight">
-      <ol *ngIf="diary?.weightMeasurements?.length > 0">
-        <li *ngFor="let measurement of diary.weightMeasurements">
-          {{measurement.measuredOn}}: {{measurement.weight}}
-        </li>
-      </ol>
+    <div *ngIf="diary?.weightReport?.weight" class="weight-report">
+
+      <h2>Weight, <i>kg</i></h2>
+      <div class="weight">
+        <div>
+          <span class="weight-report-trend" [ngClass]="{'negative': diary.weightReport.previousWeightChange < 0}"
+            matTooltip="Weight change compared to the last measurement, in grams" matTooltipPosition="right">
+            <mat-icon>{{diary.weightReport.previousWeightChange > 0 ? 'arrow_drop_up' : 'arrow_drop_down'}}
+            </mat-icon>{{diary.weightReport.previousWeightChange}} g.
+          </span>
+        </div>
+        <div class="weight-report-reading">
+          <h2>
+            {{diary.weightReport.weight / 1000 | number: '1.2-2'}}
+          </h2>
+        </div>
+        <div>
+          <span class="weight-report-trend" [ngClass]="{'negative': diary.weightReport.last30DaysWeightChange < 0}"
+            matTooltip="Weight change during the last 30 days, in grams" matTooltipPosition="right">
+            <mat-icon>{{diary.weightReport.last30DaysWeightChange > 0 ? 'arrow_drop_up' : 'arrow_drop_down'}}
+            </mat-icon>{{diary.weightReport.last30DaysWeightChange}} g.
+          </span>
+        </div>
+      </div>
+
+      <h2>Body Fat, <i>%</i></h2>
+      <div class="fat">
+        <div>
+          <span class="weight-report-trend" [ngClass]="{'negative': diary.weightReport.previousFatChange < 0}"
+            matTooltip="Body fat change compared to the last measurement, in percentage" matTooltipPosition="right">
+            <mat-icon>{{diary.weightReport.previousFatChange > 0 ? 'arrow_drop_up' : 'arrow_drop_down'}}
+            </mat-icon>{{diary.weightReport.previousFatChange}} %
+          </span>
+        </div>
+        <div class="weight-report-reading">
+          <h2>
+            {{diary.weightReport.fat | number: '1.2-2'}}
+          </h2>
+        </div>
+        <div>
+          <span class="weight-report-trend" [ngClass]="{'negative': diary.weightReport.last30DaysFatChange < 0}"
+            matTooltip="Body fat change during the last 30 days, in percentage" matTooltipPosition="right">
+            <mat-icon>{{diary.weightReport.last30DaysFatChange > 0 ? 'arrow_drop_up' : 'arrow_drop_down'}}
+            </mat-icon>{{diary.weightReport.last30DaysFatChange}} %
+          </span>
+        </div>
+      </div>
+
     </div>
 
     <section class="buttons">

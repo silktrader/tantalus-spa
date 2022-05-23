@@ -37,7 +37,7 @@
         </form>
 
         <div>
-          <p>Expects a comma-separated values file, containing:</p>
+          <p>Expects a tabular file (ie. CSV, TSV, etc.) containing:</p>
           <table>
             <thead>
               <tr>
@@ -49,18 +49,23 @@
             <tbody>
               <tr>
                 <td><code>Weight</code></td>
-                <td class="unit">kgs</td>
-                <td>User weight, in decimal notation</td>
+                <td class="unit">grams</td>
+                <td>User weight, in decimal notation (e.g. 80000)</td>
               </tr>
               <tr>
                 <td><code>Timestamp</code></td>
                 <td class="unit">ms</td>
-                <td>Date and time of the measurement, as per Unix Epoch</td>
+                <td>The measurement's date and time, as per Unix Epoch (e.g. 1653057572)</td>
               </tr>
               <tr>
                 <td><code>Impedance</code></td>
                 <td class="unit">ohms</td>
-                <td>Impedance reading from BIA scales, as an integer</td>
+                <td>Impedance reading from BIA scales, as an integer (e.g. 223)</td>
+              </tr>
+              <tr>
+                <td><code>Body Fat</code></td>
+                <td class="unit">%</td>
+                <td>Body fat percentage (e.g. 10.5)</td>
               </tr>
             </tbody>
           </table>

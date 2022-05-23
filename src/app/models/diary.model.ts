@@ -1,4 +1,4 @@
-import { DiaryEntryDto, WeightMeasurement } from './diary-entry-dto.model';
+import { DiaryEntryDto, WeightReport } from './diary-entry-dto.model';
 import { Meal, Portion } from './portion.model';
 
 export class Diary {
@@ -14,7 +14,7 @@ export class Diary {
   readonly fitness: number;
   readonly comment?: string;
 
-  readonly weightMeasurements: ReadonlyArray<WeightMeasurement>;
+  readonly weightReport: WeightReport;
 
   private static orderedMeals = [Meal.Breakfast, Meal.Morning, Meal.Lunch, Meal.Afternoon, Meal.Dinner].map(meal => meal.toString());
 
@@ -43,7 +43,7 @@ export class Diary {
     this.mood = data.mood;
     this.fitness = data.fitness;
 
-    this.weightMeasurements = data.weightMeasurements;
+    this.weightReport = data.weightReport;
   }
 
   public getTotalProperty(propertyName: string) {
