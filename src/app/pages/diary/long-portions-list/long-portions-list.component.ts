@@ -91,4 +91,9 @@ export class LongPortionsListComponent implements OnInit, OnDestroy {
   public chronologicalMeals = (first: KeyValue<string, readonly Portion[]>, second: KeyValue<string, readonly Portion[]>) => {
     return PossibleMeals.indexOf(first.key as Meal) < PossibleMeals.indexOf(second.key as Meal) ? -1 : 1;
   };
+
+  sortedPortions(portions: readonly Portion[]) {
+    return [...portions].sort((a, b) => a.calories < b.calories ? 1 : -1);
+  }
+
 }

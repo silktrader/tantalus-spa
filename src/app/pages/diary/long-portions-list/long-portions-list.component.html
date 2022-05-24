@@ -98,7 +98,7 @@
                 </mat-expansion-panel-header>
 
                 <mat-nav-list>
-                    <mat-list-item *ngFor="let portion of kvp.value">
+                    <mat-list-item *ngFor="let portion of sortedPortions(kvp.value)">
                         <a [ngSwitch]="focusedSet" (click)="editPortion(portion)" class="largescreen-row">
                             <span class="portion-header">
                                 <span>{{portion.food.name}}</span>
@@ -136,7 +136,7 @@
                     </mat-list-item>
                 </mat-nav-list>
 
-                <mat-action-row>
+                <!-- <mat-action-row>
                     <button mat-button color="warn" (click)="deletePortions(kvp.value)"
                         [disabled]="diary.recordedMeals(kvp.key) == 0">
                         Remove Meal
@@ -144,7 +144,7 @@
                     <button mat-button color="accent" (click)="addPortion(kvp.key)">
                         Add Portions
                     </button>
-                </mat-action-row>
+                </mat-action-row> -->
 
             </mat-expansion-panel>
 
