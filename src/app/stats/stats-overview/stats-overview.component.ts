@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { shareReplay } from 'rxjs';
+import { StatsService } from '../stats.service';
 
 @Component({
   selector: 'app-stats-overview',
@@ -7,7 +9,11 @@ import { Component } from '@angular/core';
 })
 export class StatsOverviewComponent {
 
+  statsOverview$ = this.ss.getOverview().pipe(shareReplay(1));
 
+  constructor(private ss: StatsService) {
+
+  }
 
 
 

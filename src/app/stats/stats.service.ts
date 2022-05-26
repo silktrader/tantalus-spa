@@ -29,9 +29,13 @@ interface CaloricRange {
 }
 
 export interface GetStatsParameters {
-  records: number;
-  startDate: Date;
-  endDate: Date;
+  records?: number;
+  pageSize?: number;
+  pageIndex?: number;
+  sort?: string;
+  direction?: 'asc' | 'desc' | '';
+  start: Date;
+  end: Date;
   included?: ReadonlyArray<string>;
 }
 
@@ -66,14 +70,50 @@ export class StatsService {
     return this.http.get<ReadonlyArray<number>>(`${this.url}/mood/average-mood-per-DoW`, { params: this.buildStatParameters(parameters) });
   }
 
+  public getAllWeightMeasurements(parameters: GetStatsParameters): Observable<any> {
+    return this.http.get(`${environment.apiUrl}weight`, { params: this.buildStatParameters(parameters) });
+  }
+
+  public getOverview() {
+    return this.http.get<StatsOverview>(`${this.url}/overview`);
+  }
+
   private buildStatParameters(parameters: GetStatsParameters): HttpParams {
     let params = new HttpParams();
-    params = params.set('records', parameters.records);
-    params = params.set('startDate', DiaryService.toDateUrl(parameters.startDate));
-    params = params.set('endDate', DiaryService.toDateUrl(parameters.endDate));
 
-    parameters.included.forEach(id => params = params.append('included', id));
+    if (parameters.pageIndex)
+      params = params.set('pageIndex', parameters.pageIndex);
+    if (parameters.pageSize)
+      params = params.set('pageSize', parameters.pageSize);
+
+    // tk rememeber to substitute this
+    if (parameters.records)
+      params = params.set('records', parameters.records);
+
+    if (parameters.sort)
+      params = params.set('sort', parameters.sort);
+
+    if (parameters.direction)
+      params = params.set('direction', parameters.direction);
+
+    params = params.set('start', DiaryService.toDateUrl(parameters.start));
+    params = params.set('end', DiaryService.toDateUrl(parameters.end));
+
+    parameters.included?.forEach(id => params = params.append('included', id));
 
     return params;
   }
+}
+
+export interface StatsOverview {
+
+  weightOverview: {
+    lastWeight: number,
+    lastMeasured: Date,
+    measurements: number,
+    minWeight: number,
+    maxWeight: number,
+    averageWeight: number
+  }
+
 }

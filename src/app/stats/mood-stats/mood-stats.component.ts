@@ -28,10 +28,10 @@ export enum MoodStat {
 })
 export class MoodStatsComponent implements OnInit {
 
-  controls = new FormGroup({
+  readonly controls = new FormGroup({
     records: new FormControl(undefined),
-    startDate: new FormControl(),
-    endDate: new FormControl()
+    start: new FormControl(),
+    end: new FormControl()
   });
 
   readonly statSelector = new FormControl('nothing');
@@ -91,7 +91,7 @@ export class MoodStatsComponent implements OnInit {
     // remember previous values; seems necessary to trigger the combineLatest operator
     const date = new Date(Date.now());
     date.setFullYear(date.getFullYear() - 1);
-    this.controls.patchValue({ records: '15', startDate: date, endDate: new Date(Date.now()) });
+    this.controls.patchValue({ records: '15', start: date, end: new Date(Date.now()) });
     this.statSelector.setValue(MoodStat.None);
 
     this.chosenStat$ = combineLatest([
@@ -118,7 +118,7 @@ export class MoodStatsComponent implements OnInit {
   fetchData(value: MoodStat, parameters: GetStatsParameters) {
 
     // tk check whether relevant
-    if (parameters.startDate === null || parameters.endDate === null)
+    if (parameters.start === null || parameters.end === null)
       return;
 
     switch (value) {

@@ -1,8 +1,89 @@
-<h1>Statistics</h1>
-<div class="grid">
-  <a mat-list-item routerLink="/stats/mood" routerLinkActive="active" cdkFocusInitial>
-    <mat-icon mat-list-icon>table_chart</mat-icon>
-    <h2 mat-line>Mood</h2>
-  </a>
+<div class="stats-main">
+  <h1>Statistics</h1>
+  <div class="stats-cards">
 
+    <mat-card>
+      <mat-card-header>
+        <div mat-card-avatar class="example-header-image">
+          <mat-icon>mood</mat-icon>
+        </div>
+        <mat-card-title>Mood</mat-card-title>
+        <mat-card-subtitle>Daily mood ratings</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <p>
+          The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan.
+          A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally
+          bred for hunting.
+        </p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button routerLink="/stats/mood">View Stats</button>
+      </mat-card-actions>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-header>
+        <div mat-card-avatar class="example-header-image">
+          <mat-icon>fitness_center</mat-icon>
+        </div>
+        <mat-card-title>Fitness</mat-card-title>
+        <mat-card-subtitle>Daily fitness ratings</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+          magna
+          aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+          consequat. Duis
+          aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+        </p>
+      </mat-card-content>
+      <mat-card-actions>
+        <!-- <button mat-button routerLink="/stats/fitness">View Stats</button> -->
+      </mat-card-actions>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-header>
+        <div mat-card-avatar class="example-header-image">
+          <mat-icon>monitor_weight</mat-icon>
+        </div>
+        <mat-card-title>Weight</mat-card-title>
+        <mat-card-subtitle>Scale measurements</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <table *ngIf="(statsOverview$ | async).weightOverview as weightStats">
+          <tr>
+            <th>Total Measurements</th>
+            <td>{{weightStats.measurements}}</td>
+          </tr>
+          <tr>
+            <th>Min Weight</th>
+            <td>{{weightStats.minWeight / 1000 | number: '1.2-2'}} kgs</td>
+          </tr>
+          <tr>
+            <th>Max Weight</th>
+            <td>{{weightStats.maxWeight / 1000 | number: '1.2-2'}} kgs</td>
+          </tr>
+          <tr>
+            <th>Average Weight</th>
+            <td>{{weightStats.averageWeight / 1000 | number: '1.2-2'}} kgs</td>
+          </tr>
+          <tr>
+            <th>Last Measurement</th>
+            <td>{{weightStats.lastWeight / 1000 | number: '1.2-2'}} @ {{weightStats.lastMeasured | date: 'yyyy/MM/dd'}}
+            </td>
+          </tr>
+        </table>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button routerLink="/stats/weight">View Weight Statistics</button>
+      </mat-card-actions>
+    </mat-card>
+
+  </div>
 </div>

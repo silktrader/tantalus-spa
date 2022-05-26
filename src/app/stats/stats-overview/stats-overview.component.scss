@@ -1,0 +1,35 @@
+.stats-main {
+  margin-left: 2rem;
+}
+
+.stats-cards {
+  display: flex;
+  gap: 2rem;
+}
+
+mat-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 20%;
+
+  li {
+    list-style: none;
+  }
+}
+
+mat-card-header {
+  align-self: normal;
+}
+
+th {
+  font-style: italic;
+  font-weight: 500;
+  text-align: left;
+}
+
+td {
+  font-family: monospace;
+  text-align: right;
+}

@@ -18,6 +18,7 @@ import { AddFoodComponent } from './foods/add-food/add-food.component';
 import { StatsOverviewComponent } from './stats/stats-overview/stats-overview.component';
 import { MoodStatsComponent } from './stats/mood-stats/mood-stats.component';
 import { DataImportComponent } from './data-import/data-import/data-import.component';
+import { WeightStatsComponent } from './stats/weight-stats/weight-stats.component';
 
 const routes: Routes = [
   { path: 'login', component: AuthenticationPromptComponent },
@@ -58,6 +59,7 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   { path: 'stats/mood', component: MoodStatsComponent, canActivate: [AuthGuard] },
+  { path: 'stats/weight', component: WeightStatsComponent, canActivate: [AuthGuard] },
   { path: 'import', component: DataImportComponent, canActivate: [AuthGuard] },
   {
     path: 'settings',

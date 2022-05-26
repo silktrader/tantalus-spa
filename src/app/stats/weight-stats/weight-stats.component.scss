@@ -1,0 +1,48 @@
+.stat-main {
+  display: flex;
+  margin: auto;
+  padding: 1rem;
+  justify-content: space-evenly;
+
+  .margin {
+    display: flex;
+    flex-direction: column;
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    mat-button-toggle-group {
+      width: fit-content;
+    }
+  }
+
+  .contents {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    min-width: 80ch;
+
+    table {
+      width: 100%;
+
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+    }
+  }
+
+  // table .numeric-column {
+  // }
+
+  .selector {}
+
+  .loading-notice {
+    font-style: italic;
+    margin: auto;
+    text-align: center;
+  }
+}
