@@ -1,0 +1,56 @@
+<h1 mat-dialog-title>Edit Weight Measurement</h1>
+
+<div mat-dialog-content>
+
+  <form [formGroup]="weightForm">
+
+    <section class="datetime">
+
+      <!-- <mat-form-field appearance="fill">
+        <mat-label>Date</mat-label>
+        <input matInput [matDatepicker]="picker">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field> -->
+
+      <mat-form-field>
+        <mat-label>Date and Time</mat-label>
+        <input matInput type="datetime-local" placeholder="start date" formControlName="measuredOn">
+      </mat-form-field>
+
+    </section>
+
+
+    <section class="details">
+
+      <section class="weight-fat">
+
+        <mat-form-field appearance="fill" class="numeric-input">
+          <mat-label>Weight</mat-label>
+          <input type="number" matInput placeholder="∅" min="30" max="200" autocomplete="off"
+            formControlName="weight" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="numeric-input">
+          <mat-label>Body Fat %</mat-label>
+          <input type="number" matInput placeholder="∅" min="1" max="50" autocomplete="off" formControlName="fat" />
+        </mat-form-field>
+      </section>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Note</mat-label>
+        <textarea matInput cdkTextareaAutosize cdkAutosizeMinRows="1" cdkAutosizeMaxRows="5"
+          placeholder="Comments concerning the measure's scale, circumstances, etc."></textarea>
+      </mat-form-field>
+
+    </section>
+
+  </form>
+
+</div>
+
+<div mat-dialog-actions>
+  <button mat-flat-button color="warn" class="delete-button" (click)="delete()">Delete</button>
+  <button mat-flat-button mat-dialog-close>Close</button>
+  <button mat-flat-button color="accent" (click)="save()" [disabled]="disabledSave$ | async">Save</button>
+</div>

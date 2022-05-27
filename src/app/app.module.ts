@@ -34,6 +34,7 @@ import { StatsOverviewComponent } from './stats/stats-overview/stats-overview.co
 import { MoodStatsComponent } from './stats/mood-stats/mood-stats.component';
 import { DataImportComponent } from './data-import/data-import/data-import.component';
 import { WeightStatsComponent } from './stats/weight-stats/weight-stats.component';
+import { EditWeightDialogComponent } from './weight/edit-weight-dialog/edit-weight-dialog.component';
 
 @NgModule({
   declarations: [
@@ -63,6 +64,7 @@ import { WeightStatsComponent } from './stats/weight-stats/weight-stats.componen
     MoodStatsComponent,
     DataImportComponent,
     WeightStatsComponent,
+    EditWeightDialogComponent,
   ],
   imports: [
     BrowserModule,

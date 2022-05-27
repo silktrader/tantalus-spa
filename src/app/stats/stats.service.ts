@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { WeightMeasurement } from '../models/weightMeasurement';
 import { DiaryService } from '../services/diary.service';
 import { UiService } from '../services/ui.service';
 
@@ -72,6 +73,10 @@ export class StatsService {
 
   public getAllWeightMeasurements(parameters: GetStatsParameters): Observable<any> {
     return this.http.get(`${environment.apiUrl}weight`, { params: this.buildStatParameters(parameters) });
+  }
+
+  public updateWeightMeasurement(request: WeightMeasurement) {
+    return this.http.put(`${environment.apiUrl}weight`, request);
   }
 
   public getOverview() {

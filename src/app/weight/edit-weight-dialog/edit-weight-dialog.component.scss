@@ -1,0 +1,54 @@
+.dialog {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  min-width: 20rem;
+  max-width: 35rem;
+}
+
+.mat-dialog-title {
+  text-align: center;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.datetime {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.numeric-input {
+  width: 10ch;
+}
+
+.weight-fat {
+  display: flex;
+  gap: 1rem;
+}
+
+.mat-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.delete-button {
+  margin: auto;
+  margin-left: 0;
+}
