@@ -32,7 +32,7 @@ export class EditWeightDialogComponent implements OnInit {
     const date = new Date(this.data.weightData.measuredOn);
     this.weightForm.patchValue({
       ... this.data.weightData,
-      measuredOn: `${date.toISOString().substring(0, 10)}T${date.toLocaleTimeString().substring(0, 5)}`,
+      measuredOn: `${date.toISOString().substring(0, 10)}T${date.toLocaleTimeString().substring(0, 8)}`,
       weight: this.data.weightData.weight / 1000,
     });
 
