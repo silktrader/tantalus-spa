@@ -22,8 +22,6 @@ export class DataImportComponent {
   error$ = new BehaviorSubject(false);
   weightsFile$ = new BehaviorSubject(undefined);
 
-  private readonly url = environment.apiUrl + 'import/weight';
-
   constructor(private http: HttpClient, private ui: UiService) { }
 
   uploadWeightMeasurements() {
@@ -32,7 +30,7 @@ export class DataImportComponent {
     formData.append('data', this.weightMeasurementsForm.value.data);
     this.uploading$.next(true);
 
-    this.http.post<unknown>(this.url, formData, {
+    this.http.post<unknown>(`${environment.apiUrl}weight/import`, formData, {
       reportProgress: true,
       observe: 'events'
     }).subscribe({

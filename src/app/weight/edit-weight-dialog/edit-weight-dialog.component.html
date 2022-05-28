@@ -51,6 +51,6 @@
 
 <div mat-dialog-actions>
   <button mat-flat-button color="warn" class="delete-button" (click)="delete()">Delete</button>
-  <button mat-flat-button mat-dialog-close>Close</button>
+  <button mat-flat-button (click)="close()">Close</button>
   <button mat-flat-button color="accent" (click)="save()" [disabled]="disabledSave$ | async">Save</button>
 </div>

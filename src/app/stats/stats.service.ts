@@ -79,6 +79,10 @@ export class StatsService {
     return this.http.put(`${environment.apiUrl}weight`, request);
   }
 
+  public deleteWeightMeasurement(measuredOn) {
+    return this.http.delete(`${environment.apiUrl}weight/${measuredOn}`);
+  }
+
   public getOverview() {
     return this.http.get<StatsOverview>(`${this.url}/overview`);
   }

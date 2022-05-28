@@ -42,8 +42,22 @@ export class EditWeightDialogComponent implements OnInit {
     ).subscribe();
   }
 
+  close(): void {
+    this.dialogRef.close({ updated: false });
+  }
+
   delete(): void {
-    console.log("deleting");
+    const dateString = new Date(this.weightForm.value.measuredOn);
+    this.data.service.deleteWeightMeasurement(dateString.toJSON()).subscribe({
+      complete: () => {
+        this.data.ui.notify(`Deleted weight measured on ${dateString.toUTCString()}`);
+        this.dialogRef.close({ updated: true });
+      },
+      error: error => {
+        this.data.ui.warn(`Couldn't delete weight measured on ${dateString.toUTCString()}`);
+        console.log(error);
+      }
+    });
   }
 
   save(): void {
