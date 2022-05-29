@@ -75,6 +75,10 @@ export class StatsService {
     return this.http.get(`${environment.apiUrl}weight`, { params: this.buildStatParameters(parameters) });
   }
 
+  public getDuplicateWeights(parameters: GetStatsParameters): Observable<{ duplicates: unknown[], total: number }> {
+    return this.http.get<{ duplicates: unknown[], total: number }>(`${environment.apiUrl}weight/duplicates`, { params: this.buildStatParameters(parameters) });
+  }
+
   public updateWeightMeasurement(request: WeightMeasurement) {
     return this.http.put(`${environment.apiUrl}weight`, request);
   }
@@ -92,6 +96,7 @@ export class StatsService {
 
     if (parameters.pageIndex)
       params = params.set('pageIndex', parameters.pageIndex);
+
     if (parameters.pageSize)
       params = params.set('pageSize', parameters.pageSize);
 

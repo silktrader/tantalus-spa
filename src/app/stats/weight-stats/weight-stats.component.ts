@@ -2,8 +2,8 @@ import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { BehaviorSubject, combineLatest, map, merge, startWith, tap } from 'rxjs';
+import { MatSort, MatSortable } from '@angular/material/sort';
+import { BehaviorSubject, combineLatest, filter, map, merge, startWith, tap } from 'rxjs';
 import { UiService } from 'src/app/services/ui.service';
 import { EditWeightDialogComponent } from 'src/app/weight/edit-weight-dialog/edit-weight-dialog.component';
 import { GetStatsParameters, StatsService } from '../stats.service';
@@ -11,6 +11,7 @@ import { GetStatsParameters, StatsService } from '../stats.service';
 export enum WeightStat {
   None = 0,
   All,
+  Duplicates,
 }
 
 @Component({
@@ -40,6 +41,8 @@ export class WeightStatsComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
+  readonly defaultSort: MatSortable = { id: null, start: 'asc', disableClear: false };
+
   constructor(private ss: StatsService, private ui: UiService, private dialog: MatDialog) { }
 
   ngOnInit(): void {
@@ -51,10 +54,20 @@ export class WeightStatsComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
 
+    // the sorter must be reinitialised (before other observables), so to avoid invalid properties
+    this.statSelector.valueChanges.pipe(
+      tap(() => {
+        this.sort.sort(this.defaultSort);
+        this.paginator.pageIndex = 0;
+      })
+    ).subscribe();
+
     combineLatest([
       this.statSelector.valueChanges.pipe(startWith(this.statSelector.value)),
       this.controls.valueChanges.pipe(startWith(this.controls.value)),
-      merge(this.sort.sortChange, this.paginator.page).pipe(startWith({})),
+      merge(
+        this.sort.sortChange.pipe(filter(x => x.active !== this.defaultSort.id)),
+        this.paginator.page).pipe(startWith({})),
       this.refresh$
     ]).pipe(
       tap(([stat, parameters]) => {
@@ -64,6 +77,7 @@ export class WeightStatsComponent implements OnInit, AfterViewInit {
         return stat;
       }),
     ).subscribe();
+
   }
 
   fetchData(stat: WeightStat, parameters: GetStatsParameters) {
@@ -79,15 +93,32 @@ export class WeightStatsComponent implements OnInit, AfterViewInit {
             this.loading$.next(false);
             this.hideTable$.next(false);
           },
-          error: error => {
-            this.ui.warn('Failed to fetch data from server', error);
-            this.loading$.next(false);
-            this.hideTable$.next(true);
-          }
+          error: error => this.handleTableDataError(error)
         });
         break;
       }
+
+      case WeightStat.Duplicates: {
+        this.loading$.next(true);
+        this.ss.getDuplicateWeights(parameters).subscribe({
+          next: data => {
+            this.data = data.duplicates;
+            this.dataLength = data.total;
+            this.tableColumns = ['measuredOn', 'weight', 'fat', 'secondsAfter', 'weightDifference', 'fatDifference'];
+            this.loading$.next(false);
+            this.hideTable$.next(false);
+          },
+          error: error => this.handleTableDataError(error)
+        });
+      }
+        break;
     }
+  }
+
+  private handleTableDataError(error: any): void {
+    this.ui.warn('Failed to fetch data from server', error);
+    this.loading$.next(false);
+    this.hideTable$.next(true);
   }
 
   edit(measurement) {
@@ -106,6 +137,13 @@ export class WeightStatsComponent implements OnInit, AfterViewInit {
       if (result.updated)
         this.refresh$.next(true);
     });
+  }
+
+  formatSeconds(seconds: number): string {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds - mins * 60;
+
+    return `${mins > 0 ? mins + " m. " : ''}${secs + " s."}`;
   }
 
 }

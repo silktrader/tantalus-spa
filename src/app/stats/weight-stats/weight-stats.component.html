@@ -31,6 +31,9 @@
         <mat-option [value]="weightStat.All">
           All Weight Measurements
         </mat-option>
+        <mat-option [value]="weightStat.Duplicates">
+          Measurements within 20 min. of Each Others
+        </mat-option>
       </mat-select>
     </mat-form-field>
 
@@ -49,8 +52,7 @@
         <ng-container matColumnDef="measuredOn">
           <th class="numeric-column" mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
           <td class="numeric-column" mat-cell *matCellDef="let element"> {{element.measuredOn | date: 'yyyy/MM/dd
-            H:mm:ss zzzz'}}
-          </td>
+            H:mm:ss'}}</td>
         </ng-container>
 
         <ng-container matColumnDef="weight">
@@ -62,6 +64,21 @@
         <ng-container matColumnDef="fat">
           <th class="numeric-column" mat-header-cell *matHeaderCellDef mat-sort-header>Body Fat (%)</th>
           <td class="numeric-column" mat-cell *matCellDef="let element"> {{element.fat | number }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="secondsAfter">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Time After</th>
+          <td mat-cell *matCellDef="let element"> {{formatSeconds(element.secondsAfter)}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="weightDifference">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Weight Δ</th>
+          <td mat-cell *matCellDef="let element"> {{element.weightDifference}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="fatDifference">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Fat Δ</th>
+          <td mat-cell *matCellDef="let element"> {{element.fatDifference}} </td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="tableColumns"></tr>
