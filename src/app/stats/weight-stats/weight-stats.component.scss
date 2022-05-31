@@ -1,12 +1,14 @@
 .stat-main {
   display: flex;
-  margin: auto;
-  padding: 1rem;
+  margin: 3rem;
+  margin-top: 1rem;
   justify-content: space-evenly;
+  gap: 5rem;
 
   .margin {
     display: flex;
     flex-direction: column;
+    width: fit-content;
 
     .controls {
       display: flex;
@@ -24,8 +26,9 @@
     flex-direction: column;
     gap: 2rem;
     min-width: 80ch;
+    flex-grow: 3;
 
-    table {
+    mat-table {
       width: 100%;
 
       a {
@@ -35,14 +38,35 @@
     }
   }
 
-  // table .numeric-column {
-  // }
-
-  .selector {}
-
   .loading-notice {
     font-style: italic;
     margin: auto;
     text-align: center;
   }
+}
+
+// Flex table design
+
+mat-cell {
+  justify-content: right;
+}
+
+mat-cell:first-of-type {
+  justify-content: left;
+}
+
+mat-header-cell {
+  justify-content: right;
+}
+
+::ng-deep mat-header-cell>div:first-of-type {
+  flex-direction: row-reverse; // inverts the position of the sorting arrow
+}
+
+mat-header-cell:first-of-type {
+  justify-content: left;
+}
+
+::ng-deep mat-header-cell:first-of-type>div:first-of-type {
+  flex-direction: row;
 }

@@ -34,57 +34,95 @@
         <mat-option [value]="weightStat.Duplicates">
           Measurements within 20 min. of Each Others
         </mat-option>
+        <mat-option [value]="weightStat.MonthlyChanges">
+          Monthly Weight and Fat Changes
+        </mat-option>
       </mat-select>
     </mat-form-field>
 
-    <!-- <section class="loading-notice" *ngIf="(loading$ | async); else stats"> -->
     <section class="loading-notice" *ngIf="(loading$ | async)">
       <h3>Fetching data...</h3>
       <mat-spinner></mat-spinner>
     </section>
 
-    <!-- <ng-template #stats> -->
-    <!-- <section *ngIf="showTable$ | async"> -->
     <section [hidden]="(hideTable$ | async) || (loading$ | async)">
-      <table mat-table [dataSource]="data" matSort matSortDisableClear matSortDirection="desc"
-        matSortActive="measuredOn" class="mat-elevation-z8">
+      <mat-table [dataSource]="data" matSort matSortDisableClear matSortDirection="desc" matSortActive="measuredOn"
+        class="mat-elevation-z8">
 
         <ng-container matColumnDef="measuredOn">
-          <th class="numeric-column" mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
-          <td class="numeric-column" mat-cell *matCellDef="let element"> {{element.measuredOn | date: 'yyyy/MM/dd
-            H:mm:ss'}}</td>
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Date</mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            {{element.measuredOn | date: 'yyyy/MM/dd H:mm:ss'}}
+          </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="weight">
-          <th class="numeric-column" mat-header-cell *matHeaderCellDef mat-sort-header>Weight (kg)</th>
-          <td class="numeric-column" mat-cell *matCellDef="let element"> {{element.weight / 1000 | number: '1.2-2'}}
-          </td>
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Weight (kg)</mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.weight / 1000 | number: '1.2-2'}}
+          </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="fat">
-          <th class="numeric-column" mat-header-cell *matHeaderCellDef mat-sort-header>Body Fat (%)</th>
-          <td class="numeric-column" mat-cell *matCellDef="let element"> {{element.fat | number }} </td>
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Body Fat (%)</mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.fat | number }} </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="secondsAfter">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Time After</th>
-          <td mat-cell *matCellDef="let element"> {{formatSeconds(element.secondsAfter)}} </td>
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Time After</mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{formatSeconds(element.secondsAfter)}} </mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="weightDifference">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Weight Δ</th>
-          <td mat-cell *matCellDef="let element"> {{element.weightDifference}} </td>
+        <ng-container matColumnDef="weightChange">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Weight Δ</mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.weightChange}} </mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="fatDifference">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Fat Δ</th>
-          <td mat-cell *matCellDef="let element"> {{element.fatDifference}} </td>
+        <ng-container matColumnDef="fatChange">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Fat Δ</mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.fatChange | number }} </mat-cell>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="tableColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: tableColumns;" (click)="edit(row)"></tr>
-      </table>
-      <mat-paginator [length]="dataLength" [pageSize]="15"> </mat-paginator>
+        <!-- Monthly Weight Changes -->
+
+        <ng-container matColumnDef="month">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Month</mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            {{element.month | date: 'yyyy/MM'}}
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="recordedMeasures">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Measurements</mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            {{element.recordedMeasures | number}}
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="monthlyAvgCalories">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Avg. KCal</mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            {{element.monthlyAvgCalories | number}}
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="caloriesChange">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>KCal Δ</mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            {{element.caloriesChange | number}}
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="recordedDays">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Recorded Days</mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            {{element.recordedDays | number}}
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="tableColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: tableColumns;" (click)="edit(row)" matRipple></mat-row>
+      </mat-table>
+      <mat-paginator [length]="dataLength" [pageSize]="15" class="mat-elevation-z8"> </mat-paginator>
     </section>
 
 

@@ -12,6 +12,7 @@ export enum WeightStat {
   None = 0,
   All,
   Duplicates,
+  MonthlyChanges,
 }
 
 @Component({
@@ -88,7 +89,7 @@ export class WeightStatsComponent implements OnInit, AfterViewInit {
         this.ss.getAllWeightMeasurements(parameters).subscribe({
           next: data => {
             this.data = data.measurements;
-            this.dataLength = data.count;
+            this.dataLength = data.total;
             this.tableColumns = ['measuredOn', 'weight', 'fat'];
             this.loading$.next(false);
             this.hideTable$.next(false);
@@ -104,7 +105,23 @@ export class WeightStatsComponent implements OnInit, AfterViewInit {
           next: data => {
             this.data = data.duplicates;
             this.dataLength = data.total;
-            this.tableColumns = ['measuredOn', 'weight', 'fat', 'secondsAfter', 'weightDifference', 'fatDifference'];
+            this.tableColumns = ['measuredOn', 'weight', 'fat', 'secondsAfter', 'weightChange', 'fatChange'];
+            this.loading$.next(false);
+            this.hideTable$.next(false);
+          },
+          error: error => this.handleTableDataError(error)
+        });
+      }
+        break;
+
+      case WeightStat.MonthlyChanges: {
+        this.loading$.next(true);
+        this.ss.getWeightMonthlyChanges(parameters).subscribe({
+          next: data => {
+            this.data = data.records;
+            this.dataLength = data.total;
+            // 'recordedMeasures', 'monthlyAvgCalories', 'caloriesChange', 'recordedDays'
+            this.tableColumns = ['month', 'weight', 'weightChange', 'fat', 'fatChange', 'recordedMeasures', 'monthlyAvgCalories', 'caloriesChange', 'recordedDays'];
             this.loading$.next(false);
             this.hideTable$.next(false);
           },

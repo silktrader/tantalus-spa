@@ -79,6 +79,10 @@ export class StatsService {
     return this.http.get<{ duplicates: unknown[], total: number }>(`${environment.apiUrl}weight/duplicates`, { params: this.buildStatParameters(parameters) });
   }
 
+  public getWeightMonthlyChanges(parameters: GetStatsParameters): Observable<{ records: unknown[], total: number }> {
+    return this.http.get<{ records: unknown[], total: number }>(`${environment.apiUrl}weight/monthly-changes`, { params: this.buildStatParameters(parameters) });
+  }
+
   public updateWeightMeasurement(request: WeightMeasurement) {
     return this.http.put(`${environment.apiUrl}weight`, request);
   }
