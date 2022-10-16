@@ -46,8 +46,7 @@
     </section>
 
     <section [hidden]="(hideTable$ | async) || (loading$ | async)">
-      <mat-table [dataSource]="data" matSort matSortDisableClear matSortDirection="desc" matSortActive="measuredOn"
-        class="mat-elevation-z8">
+      <mat-table [dataSource]="data" matSort matSortDisableClear class="mat-elevation-z8">
 
         <ng-container matColumnDef="measuredOn">
           <mat-header-cell *matHeaderCellDef mat-sort-header>Date</mat-header-cell>
@@ -58,13 +57,16 @@
 
         <ng-container matColumnDef="weight">
           <mat-header-cell *matHeaderCellDef mat-sort-header>Weight (kg)</mat-header-cell>
-          <mat-cell *matCellDef="let element"> {{element.weight / 1000 | number: '1.2-2'}}
+          <mat-cell *matCellDef="let element">
+            {{element.weight === undefined ? '∅' : element.weight / 1000 | number: '1.2-2'}}
           </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="fat">
           <mat-header-cell *matHeaderCellDef mat-sort-header>Body Fat (%)</mat-header-cell>
-          <mat-cell *matCellDef="let element"> {{element.fat | number }} </mat-cell>
+          <mat-cell *matCellDef="let element">
+            {{element.fat === undefined ? '∅' : element.fat | number: '1.1-1'}}
+          </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="secondsAfter">
@@ -74,12 +76,15 @@
 
         <ng-container matColumnDef="weightChange">
           <mat-header-cell *matHeaderCellDef mat-sort-header>Weight Δ</mat-header-cell>
-          <mat-cell *matCellDef="let element"> {{element.weightChange}} </mat-cell>
+          <mat-cell *matCellDef="let element">
+            {{element.weightChange === undefined ? '∅' : element.weightChange | number}}
+          </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="fatChange">
           <mat-header-cell *matHeaderCellDef mat-sort-header>Fat Δ</mat-header-cell>
-          <mat-cell *matCellDef="let element"> {{element.fatChange | number }} </mat-cell>
+          <mat-cell *matCellDef="let element"> {{element.fatChange === undefined ? '∅' : element.fatChange | number}}
+          </mat-cell>
         </ng-container>
 
         <!-- Monthly Weight Changes -->
@@ -101,14 +106,14 @@
         <ng-container matColumnDef="monthlyAvgCalories">
           <mat-header-cell *matHeaderCellDef mat-sort-header>Avg. KCal</mat-header-cell>
           <mat-cell *matCellDef="let element">
-            {{element.monthlyAvgCalories | number}}
+            {{(element.monthlyAvgCalories === undefined ? '∅' : element.monthlyAvgCalories | number)}}
           </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="caloriesChange">
           <mat-header-cell *matHeaderCellDef mat-sort-header>KCal Δ</mat-header-cell>
           <mat-cell *matCellDef="let element">
-            {{element.caloriesChange | number}}
+            {{element.caloriesChange === undefined ? '∅' : element.caloriesChange | number}}
           </mat-cell>
         </ng-container>
 

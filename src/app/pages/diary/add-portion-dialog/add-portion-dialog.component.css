@@ -2,14 +2,19 @@
   display: flex;
   flex-direction: row;
   align-items: baseline;
-  min-width: 20rem;
-  max-width: 40rem;
+  min-width: 25rem;
 }
 
 .food-name {
   flex-grow: 5;
   color: inherit;
   text-decoration: none;
+}
+
+/* the padding ensures the field name is visibile */
+.resource-input {
+  padding-top: 1rem;
+  min-width: 20rem;
 }
 
 .spacer {

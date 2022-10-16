@@ -1,12 +1,13 @@
 <form [formGroup]="mainFormGroup" (ngSubmit)="save()">
     <section class="dialog" mat-dialog-content>
-        <mat-form-field class="ingredient-row-name" appearance="outline">
+        <mat-form-field class="resource-input" appearance="outline">
             <mat-label>Food Name</mat-label>
             <input matInput [matAutocomplete]="auto" type="text" [formControl]="foodInput"
-                (blur)="checkMissingPortion()">
+                (blur)="checkMissingPortion()" spellcheck="false">
             <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFood"
                 (optionSelected)="quantityEditor.focus()">
-                <mat-option *ngFor="let resource of (filteredFoods$ | async)" [value]="resource">{{resource.name}}
+                <mat-option *ngFor="let resource of (filteredFoods$ | async)" [value]="resource">
+                    {{resource.name}} <sup>{{(resource.isRecipe ? '*' : '')}}</sup>
                 </mat-option>
             </mat-autocomplete>
         </mat-form-field>

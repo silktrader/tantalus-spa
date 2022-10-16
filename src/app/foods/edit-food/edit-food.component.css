@@ -179,8 +179,8 @@ ol > li {
   display: flex;  
 }
 
-ol > li > span {
-  width: 2rem;
+ol > li > span:first-of-type {
+  width: 3rem;
   font-style: italic;
 }
 

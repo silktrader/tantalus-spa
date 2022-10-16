@@ -40,6 +40,11 @@ export interface GetStatsParameters {
   included?: ReadonlyArray<string>;
 }
 
+export interface WeightStatTableResponse {
+  records: unknown[],
+  total: number
+}
+
 @Injectable({ providedIn: 'root' })
 export class StatsService {
 
@@ -71,16 +76,16 @@ export class StatsService {
     return this.http.get<ReadonlyArray<number>>(`${this.url}/mood/average-mood-per-DoW`, { params: this.buildStatParameters(parameters) });
   }
 
-  public getAllWeightMeasurements(parameters: GetStatsParameters): Observable<any> {
-    return this.http.get(`${environment.apiUrl}weight`, { params: this.buildStatParameters(parameters) });
+  public getAllWeightMeasurements(parameters: GetStatsParameters): Observable<WeightStatTableResponse> {
+    return this.http.get<WeightStatTableResponse>(`${environment.apiUrl}weight`, { params: this.buildStatParameters(parameters) });
   }
 
-  public getDuplicateWeights(parameters: GetStatsParameters): Observable<{ duplicates: unknown[], total: number }> {
-    return this.http.get<{ duplicates: unknown[], total: number }>(`${environment.apiUrl}weight/duplicates`, { params: this.buildStatParameters(parameters) });
+  public getDuplicateWeights(parameters: GetStatsParameters): Observable<WeightStatTableResponse> {
+    return this.http.get<WeightStatTableResponse>(`${environment.apiUrl}weight/duplicates`, { params: this.buildStatParameters(parameters) });
   }
 
-  public getWeightMonthlyChanges(parameters: GetStatsParameters): Observable<{ records: unknown[], total: number }> {
-    return this.http.get<{ records: unknown[], total: number }>(`${environment.apiUrl}weight/monthly-changes`, { params: this.buildStatParameters(parameters) });
+  public getWeightMonthlyChanges(parameters: GetStatsParameters): Observable<WeightStatTableResponse> {
+    return this.http.get<WeightStatTableResponse>(`${environment.apiUrl}weight/monthly-changes`, { params: this.buildStatParameters(parameters) });
   }
 
   public updateWeightMeasurement(request: WeightMeasurement) {

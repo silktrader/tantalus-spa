@@ -2,8 +2,8 @@ import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatSort, MatSortable } from '@angular/material/sort';
-import { BehaviorSubject, combineLatest, filter, map, merge, startWith, tap } from 'rxjs';
+import { MatSort } from '@angular/material/sort';
+import { BehaviorSubject, combineLatest, filter, map, merge, skipWhile, startWith, tap } from 'rxjs';
 import { UiService } from 'src/app/services/ui.service';
 import { EditWeightDialogComponent } from 'src/app/weight/edit-weight-dialog/edit-weight-dialog.component';
 import { GetStatsParameters, StatsService } from '../stats.service';
@@ -22,6 +22,26 @@ export enum WeightStat {
 })
 export class WeightStatsComponent implements OnInit, AfterViewInit {
 
+  readonly statistics: { id: WeightStat, columns: string[], initDirection: 'asc' | 'desc' }[] = [
+    {
+      id: WeightStat.None,
+      columns: [],
+      initDirection: 'desc'
+    }, {
+      id: WeightStat.All,
+      columns: ['measuredOn', 'weight', 'fat'],
+      initDirection: 'desc'
+    }, {
+      id: WeightStat.Duplicates,
+      columns: ['measuredOn', 'weight', 'fat', 'secondsAfter', 'weightChange', 'fatChange'],
+      initDirection: 'desc'
+    }, {
+      id: WeightStat.MonthlyChanges,
+      columns: ['month', 'weight', 'weightChange', 'fat', 'fatChange', 'recordedMeasures', 'monthlyAvgCalories', 'caloriesChange', 'recordedDays'],
+      initDirection: 'desc'
+    },
+  ];
+
   readonly weightStat = WeightStat;
   readonly controls = new FormGroup({
     start: new FormControl(),
@@ -38,11 +58,10 @@ export class WeightStatsComponent implements OnInit, AfterViewInit {
 
   readonly loading$ = new BehaviorSubject<boolean>(false);
   readonly refresh$ = new BehaviorSubject<boolean>(true);
+  preparingQuery = false;       /// used to disable sort observable triggering two queries
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
-
-  readonly defaultSort: MatSortable = { id: null, start: 'asc', disableClear: false };
 
   constructor(private ss: StatsService, private ui: UiService, private dialog: MatDialog) { }
 
@@ -57,9 +76,12 @@ export class WeightStatsComponent implements OnInit, AfterViewInit {
 
     // the sorter must be reinitialised (before other observables), so to avoid invalid properties
     this.statSelector.valueChanges.pipe(
-      tap(() => {
-        this.sort.sort(this.defaultSort);
+      tap(index => {
+        this.preparingQuery = true;
+        const stat = this.statistics[index];
+        this.sort.sort({ id: stat.columns[0], start: stat.initDirection, disableClear: false });
         this.paginator.pageIndex = 0;
+        this.preparingQuery = false;
       })
     ).subscribe();
 
@@ -67,8 +89,8 @@ export class WeightStatsComponent implements OnInit, AfterViewInit {
       this.statSelector.valueChanges.pipe(startWith(this.statSelector.value)),
       this.controls.valueChanges.pipe(startWith(this.controls.value)),
       merge(
-        this.sort.sortChange.pipe(filter(x => x.active !== this.defaultSort.id)),
-        this.paginator.page).pipe(startWith({})),
+        this.sort.sortChange,
+        this.paginator.page).pipe(startWith({}), filter(() => !this.preparingQuery)),
       this.refresh$
     ]).pipe(
       tap(([stat, parameters]) => {
@@ -83,14 +105,16 @@ export class WeightStatsComponent implements OnInit, AfterViewInit {
 
   fetchData(stat: WeightStat, parameters: GetStatsParameters) {
 
-    switch (stat) {
+    const selection = this.statistics[stat];
+
+    switch (selection.id) {
       case WeightStat.All: {
         this.loading$.next(true);
         this.ss.getAllWeightMeasurements(parameters).subscribe({
           next: data => {
-            this.data = data.measurements;
+            this.tableColumns = selection.columns;
+            this.data = data.records;
             this.dataLength = data.total;
-            this.tableColumns = ['measuredOn', 'weight', 'fat'];
             this.loading$.next(false);
             this.hideTable$.next(false);
           },
@@ -103,9 +127,9 @@ export class WeightStatsComponent implements OnInit, AfterViewInit {
         this.loading$.next(true);
         this.ss.getDuplicateWeights(parameters).subscribe({
           next: data => {
-            this.data = data.duplicates;
+            this.tableColumns = selection.columns;
+            this.data = data.records;
             this.dataLength = data.total;
-            this.tableColumns = ['measuredOn', 'weight', 'fat', 'secondsAfter', 'weightChange', 'fatChange'];
             this.loading$.next(false);
             this.hideTable$.next(false);
           },
@@ -118,16 +142,18 @@ export class WeightStatsComponent implements OnInit, AfterViewInit {
         this.loading$.next(true);
         this.ss.getWeightMonthlyChanges(parameters).subscribe({
           next: data => {
+            this.tableColumns = selection.columns;
             this.data = data.records;
             this.dataLength = data.total;
-            // 'recordedMeasures', 'monthlyAvgCalories', 'caloriesChange', 'recordedDays'
-            this.tableColumns = ['month', 'weight', 'weightChange', 'fat', 'fatChange', 'recordedMeasures', 'monthlyAvgCalories', 'caloriesChange', 'recordedDays'];
             this.loading$.next(false);
             this.hideTable$.next(false);
           },
           error: error => this.handleTableDataError(error)
         });
       }
+        break;
+
+      default:
         break;
     }
   }
@@ -138,16 +164,21 @@ export class WeightStatsComponent implements OnInit, AfterViewInit {
     this.hideTable$.next(true);
   }
 
-  edit(measurement) {
+  edit(row) {
+
+    // check whether the row contains editable data
+    if (!row.measuredOn)
+      return;
+
     this.dialog.open(EditWeightDialogComponent, {
       data: {
         service: this.ss,
         ui: this.ui,
         weightData: {
-          measuredOn: measurement.measuredOn,
-          weight: measurement.weight,
-          fat: measurement.fat,
-          note: measurement.note
+          measuredOn: row.measuredOn,
+          weight: row.weight,
+          fat: row.fat,
+          note: row.note
         }
       },
     }).afterClosed().subscribe(result => {
